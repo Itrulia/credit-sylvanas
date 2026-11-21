@@ -5,24 +5,20 @@ cost real time. Read this before "simplifying" config, the server boundary or
 ingest. When a subtle failure costs you time, add an entry using the template
 at the bottom.
 
-### Vitest breaks on the app's `vite.config.ts`
+### Vitest has its own `vitest.config.ts` on purpose
 
-Without a `vitest.config.ts`, vitest loads `vite.config.ts` with the
-devtools, nitro and tanstackStart plugins. On 2026-11-22 `pnpm test` died with
-`ReferenceError: module is not defined` at `react/index.js` and "something
-prevents 2 Vite servers from exiting", while the same spec passed under a
-plugin-free config. The culprit plugin was not bisected. Vitest also exits 1
-on "No test files found". Give vitest its own `vitest.config.ts` (react
-plugin, `resolve.tsconfigPaths`, no nitro/start/devtools, and
-`environment: 'node'` for server code) instead of reusing the app config.
+Don't merge it back into `vite.config.ts`. Under the app config, vitest loads
+the devtools, nitro and tanstackStart plugins and dies with
+`ReferenceError: module is not defined` at `react/index.js`, leaving Vite
+servers hanging. The separate config keeps only `resolve.tsconfigPaths`,
+`environment: 'node'` and `passWithNoTests`. Component specs that need a DOM
+set `// @vitest-environment jsdom` per file (install jsdom first).
 
-### `pnpm lint` fails on `.output/` and on shadcn components
+### ESLint ignores `.output/`, `routeTree.gen.ts` and `src/components/ui/`
 
-`eslint.config.js` does not ignore `.output/`, so a stale build gets linted.
-shadcn's generated files use inline `type` specifiers, which
-`@tanstack/eslint-config` rejects. Fix it with `ignores: ['.output/**']` and
-`pnpm lint --fix`, or an override for `src/components/ui/**`. Never disable
-the rule for the whole repo.
+Without the ignores, a stale build gets linted and the shadcn components fail
+`import/consistent-type-specifier-style`. The ui folder is CLI-managed vendored
+code, so it stays out of lint instead of the rule being disabled repo-wide.
 
 ### Vite regenerates `routeTree.gen.ts`
 

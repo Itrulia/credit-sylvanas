@@ -15,6 +15,14 @@ export default [
     },
   },
   {
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      'vitest.config.ts',
+      '.output/**',
+      'src/routeTree.gen.ts',
+      // shadcn CLI-managed vendored components
+      'src/components/ui/**',
+    ],
   },
 ]

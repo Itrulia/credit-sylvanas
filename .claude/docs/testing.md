@@ -39,5 +39,5 @@ function instead of asserting nothing.
 - Test components only where logic lives (formatting, table and filter state,
   empty states). Query by role, label or text, never by CSS class.
 
-Read the vitest entry in [gotchas.md](gotchas.md) before writing the first
-spec. The app's `vite.config.ts` breaks vitest as it stands.
+Vitest uses `vitest.config.ts`, not the app's `vite.config.ts`; see
+[gotchas.md](gotchas.md) for why.
