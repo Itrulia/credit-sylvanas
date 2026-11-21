@@ -4,9 +4,7 @@ dist
 dist-ssr
 *.local
 # .env holds public values and is committed; secrets go in the files below
-.env.local
-.env.*.local
-.env.prod
+.env.*
 .dev.vars*
 .nitro
 .tanstack
