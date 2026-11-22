@@ -1,6 +1,7 @@
+import { useMemo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { REGION_INFO } from '#/config/regions'
-import { recentItems, useSavedItems } from '#/lib/saved-items'
+import { favouriteItems, recentItems, useSavedItems } from '#/lib/saved-items'
 import type { SavedItem } from '#/lib/saved-items'
 import { itemName } from '#/lib/wowhead'
 import type { Command, DynamicGroup } from '../command-palette/command'
@@ -46,4 +47,17 @@ export function useRecentGroups(query: string): DynamicGroup[] {
       ),
     },
   ]
+}
+
+/** Favourites as plain commands, so the fuzzy search matches them too. */
+export function useFavouriteCommands(): Command[] {
+  const navigate = useNavigate()
+  const favourites = useSavedItems(favouriteItems)
+  return useMemo(
+    () =>
+      favourites.map((item) =>
+        savedItemCommand(item, 'Favourites', 'star', navigate),
+      ),
+    [favourites, navigate],
+  )
 }

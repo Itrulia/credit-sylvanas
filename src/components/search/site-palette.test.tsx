@@ -334,3 +334,43 @@ describe('saved items', () => {
     expect(screen.queryByRole('option', { name: /Arcanite Bar/ })).toBeNull()
   })
 })
+
+describe('favourites', () => {
+  const FAVOURITES = JSON.stringify([
+    { region: 'eu', itemId: 12360, name: 'Arcanite Bar' },
+    { region: 'us', itemId: 7076, name: 'Essence of Earth' },
+  ])
+
+  afterEach(() => localStorage.clear())
+
+  it('lists favourites after Recent while the query is empty', async () => {
+    localStorage.setItem('favourite-items', FAVOURITES)
+    localStorage.setItem(
+      'recent-items',
+      JSON.stringify([{ region: 'us', itemId: 2, name: 'Linen Cloth' }]),
+    )
+    setup('/us')
+    await openPalette()
+    const labels = screen
+      .getAllByRole('group')
+      .map(
+        (g) =>
+          document.getElementById(g.getAttribute('aria-labelledby')!)
+            ?.textContent,
+      )
+    expect(labels).toEqual(['Recent', 'Favourites', 'Navigate', 'Region'])
+  })
+
+  it('matches favourites when typing and opens the stored region', async () => {
+    search.mockResolvedValue([])
+    localStorage.setItem('favourite-items', FAVOURITES)
+    const router = setup('/us')
+    await openPalette()
+    type('essence')
+    expect(screen.getByRole('option', { name: /^Essence/ })).toBeTruthy()
+    expect(screen.queryByRole('option', { name: /Arcanite Bar/ })).toBeNull()
+    type('arcanit')
+    press('Enter')
+    await waitFor(() => expect(location(router)).toBe('/eu/items/12360'))
+  })
+})

@@ -78,9 +78,9 @@ function About() {
       <ProseSection title="Privacy">
         <p>
           No accounts and no cookies. We host every font ourselves. Your last
-          region and the items you viewed recently stay in your browser's local
-          storage and are never sent anywhere. Three outside services are
-          involved:
+          region, the items you viewed recently and your favourites stay in your
+          browser's local storage and are never sent anywhere. Three outside
+          services are involved:
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>

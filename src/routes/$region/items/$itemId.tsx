@@ -9,6 +9,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { REGION_INFO } from '#/config/regions'
 import { findRealm } from '#/config/realms'
 import { Freshness } from '#/components/freshness'
+import { FavouriteButton } from '#/components/item/favourite-button'
 import { Icon } from '#/components/icon'
 import { WowheadLink } from '#/components/wowhead-link'
 import { Badge } from '#/components/ui/badge'
@@ -106,6 +107,7 @@ function ItemDetail() {
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           <span className="font-mono text-muted-foreground">#{item.id}</span>
           <WowheadLink id={item.id} />
+          <FavouriteButton region={region} itemId={item.id} name={item.name} />
           {isVolatile(current.mv, current.hist) && (
             <span className="inline-flex items-center">
               <Badge variant="outline">Volatile</Badge>
