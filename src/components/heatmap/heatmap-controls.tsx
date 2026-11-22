@@ -1,5 +1,6 @@
 import { useId } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
+import { m } from '#/i18n'
 import { HeatMetric, HeatmapN } from '#/lib/search'
 
 export interface HeatmapControlsProps {
@@ -9,9 +10,9 @@ export interface HeatmapControlsProps {
   onMetric: (metric: HeatMetric) => void
 }
 
-const METRIC_LABEL: Record<HeatMetric, string> = {
-  index: 'vs other regions',
-  price: 'Price',
+const METRIC_LABEL: Record<HeatMetric, () => string> = {
+  index: m.heatmap.metricIndex,
+  price: m.heatmap.metricPrice,
 }
 const item = 'min-h-11 min-w-11'
 
@@ -27,7 +28,7 @@ export function HeatmapControls({
     <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
       <div className="space-y-1">
         <p id={itemsId} className="text-label">
-          Items
+          {m.heatmap.controlsItemsLabel()}
         </p>
         <ToggleGroup
           type="single"
@@ -50,7 +51,7 @@ export function HeatmapControls({
       </div>
       <div className="space-y-1">
         <p id={showId} className="text-label">
-          Show
+          {m.heatmap.controlsShowLabel()}
         </p>
         <ToggleGroup
           type="single"
@@ -66,7 +67,7 @@ export function HeatmapControls({
         >
           {HeatMetric.options.map((value) => (
             <ToggleGroupItem key={value} value={value} className={item}>
-              {METRIC_LABEL[value]}
+              {METRIC_LABEL[value]()}
             </ToggleGroupItem>
           ))}
         </ToggleGroup>

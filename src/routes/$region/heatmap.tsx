@@ -13,6 +13,7 @@ import { MomentumGrid } from '#/components/heatmap/momentum-grid'
 import { SectionBoundary } from '#/components/section-boundary'
 import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
@@ -33,8 +34,8 @@ export const Route = createFileRoute('/$region/heatmap')({
   head: ({ params }) => {
     const name = params.region.toUpperCase()
     return pageHead(
-      `Heatmaps · ${name} Forever AH`,
-      `See where the top ${name} Forever auction house items cost more or less than in other regions and than their 60-day average. Pricing data from TradeSkillMaster.`,
+      m.heatmap.headTitle({ region: name }),
+      m.heatmap.headDescription({ region: name }),
     )
   },
   component: Heatmaps,
@@ -52,10 +53,10 @@ function Heatmaps() {
   return (
     <div className="page-wrap space-y-8 py-6">
       <header className="space-y-1">
-        <h1 className="text-display">Price heatmaps</h1>
+        <h1 className="text-display">{m.heatmap.pageTitle()}</h1>
         {realm !== undefined && (
           <p className="text-sm text-muted-foreground">
-            Heatmaps are region-wide.
+            {m.heatmap.realmNote()}
           </p>
         )}
       </header>
@@ -77,14 +78,14 @@ function Heatmaps() {
 
       {data.rows.length === 0 ? (
         <StatePanel
-          title={`Not enough trading in ${name} to build a heatmap.`}
+          title={m.heatmap.emptyTitle({ region: name })}
           actions={
             <Link to="/$region/items" params={{ region }} className="underline">
-              Browse all items
+              {m.heatmap.emptyLink()}
             </Link>
           }
         >
-          <p>Items need about one sale every two days to count.</p>
+          <p>{m.heatmap.emptyBody()}</p>
         </StatePanel>
       ) : (
         <>
@@ -108,12 +109,15 @@ function Heatmaps() {
           <MomentumGrid region={region} rows={data.rows} busy={busy} />
           <section aria-labelledby="day-by-day" className="space-y-3">
             <h2 id="day-by-day" className="text-title" tabIndex={-1}>
-              Day by day
+              {m.heatmap.dailyTitle()}
             </h2>
-            <p className="max-w-prose text-sm">
-              Market value change since the previous daily update, last 14 days.
-            </p>
-            <DivergingLegend labels={['Fell', 'Rose']} />
+            <p className="max-w-prose text-sm">{m.heatmap.dailyIntro()}</p>
+            <DivergingLegend
+              labels={[
+                m.heatmap.dailyLegendFell(),
+                m.heatmap.dailyLegendRose(),
+              ]}
+            />
             <SectionBoundary headingId="day-by-day">
               <DailyChangeSection region={region} n={n} busy={busy} />
             </SectionBoundary>

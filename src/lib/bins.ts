@@ -1,3 +1,5 @@
+import { m } from '#/i18n'
+
 // Shared diverging scale for every heatmap and the market map (DESIGN §5).
 export type Bin = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4
 export const BINS: readonly Bin[] = [-4, -3, -2, -1, 0, 1, 2, 3, 4]
@@ -35,13 +37,13 @@ export function binInk(bin: Bin | null): string {
 const MINUS = '−'
 /** Each bin's range as text, so the legend never depends on hue. */
 export const BIN_LABELS: Record<Bin, string> = {
-  [-4]: `${MINUS}35% or less`,
-  [-3]: `${MINUS}15 to ${MINUS}35%`,
-  [-2]: `${MINUS}5 to ${MINUS}15%`,
-  [-1]: `${MINUS}2 to ${MINUS}5%`,
+  [-4]: m.heatmap.binAtMost({ pct: `${MINUS}35` }),
+  [-3]: m.heatmap.binRange({ from: `${MINUS}15`, to: `${MINUS}35` }),
+  [-2]: m.heatmap.binRange({ from: `${MINUS}5`, to: `${MINUS}15` }),
+  [-1]: m.heatmap.binRange({ from: `${MINUS}2`, to: `${MINUS}5` }),
   0: '±2%',
-  1: '+2 to +5%',
-  2: '+5 to +15%',
-  3: '+15 to +35%',
-  4: '+35% or more',
+  1: m.heatmap.binRange({ from: '+2', to: '+5' }),
+  2: m.heatmap.binRange({ from: '+5', to: '+15' }),
+  3: m.heatmap.binRange({ from: '+15', to: '+35' }),
+  4: m.heatmap.binAtLeast({ pct: '+35' }),
 }

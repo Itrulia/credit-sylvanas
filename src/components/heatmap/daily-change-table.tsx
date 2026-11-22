@@ -4,6 +4,7 @@ import { Delta } from '#/components/delta'
 import { ItemLink } from '#/components/item-link'
 import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatDate, formatDay, isoFromDay } from '#/lib/format'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
@@ -30,14 +31,11 @@ export function DailyChangeTable({
         as="h3"
         title={
           data.from === null
-            ? 'Daily changes need a week of daily updates.'
-            : `Daily changes start on ${formatDate(data.from)}.`
+            ? m.heatmap.dailyNeedsWeekTitle()
+            : m.heatmap.dailyStartsTitle({ date: formatDate(data.from) })
         }
       >
-        <p>
-          We've saved {data.days} of 7 daily updates for {name}. Until then, the
-          60-day heatmap above works from day one.
-        </p>
+        <p>{m.heatmap.dailyWaitBody({ days: data.days, region: name })}</p>
       </StatePanel>
     )
   }
@@ -45,7 +43,7 @@ export function DailyChangeTable({
   const columns: DataColumn<DailyRow>[] = [
     {
       id: 'name',
-      header: 'Item',
+      header: m.heatmap.itemColumn(),
       meta: { rowHeader: true },
       cell: ({ row }) => (
         <ItemLink
@@ -71,8 +69,12 @@ export function DailyChangeTable({
 
   return (
     <DataTable
-      caption={`Market value change since the previous daily update for the top ${data.rows.length} ${name} items, last ${data.cols.length} days.`}
-      label="Day by day"
+      caption={m.heatmap.dailyCaption({
+        count: data.rows.length,
+        region: name,
+        days: data.cols.length,
+      })}
+      label={m.heatmap.dailyTitle()}
       columns={columns}
       data={data.rows}
       getRowId={(row) => String(row.id)}

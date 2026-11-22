@@ -2,6 +2,7 @@ import { Delta } from '#/components/delta'
 import { DivergingLegend } from '#/components/diverging-legend'
 import { ItemLink } from '#/components/item-link'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import type { HeatRow } from '#/server/types'
@@ -20,13 +21,17 @@ export function MomentumGrid({ region, rows, busy }: MomentumGridProps) {
   return (
     <section aria-labelledby={HEADING_ID} className="space-y-3">
       <h2 id={HEADING_ID} className="text-title">
-        Against the 60-day average
+        {m.heatmap.momentumTitle()}
       </h2>
       <p className="max-w-prose text-sm">
-        Today's market value against each item's own 60-day average in{' '}
-        {REGION_INFO[region].name}. Pricier first.
+        {m.heatmap.momentumIntro({ region: REGION_INFO[region].name })}
       </p>
-      <DivergingLegend labels={['Cheaper than usual', 'Pricier than usual']} />
+      <DivergingLegend
+        labels={[
+          m.heatmap.momentumLegendCheaper(),
+          m.heatmap.momentumLegendPricier(),
+        ]}
+      />
       <figure
         aria-busy={busy || undefined}
         className={cn(busy && 'opacity-60')}

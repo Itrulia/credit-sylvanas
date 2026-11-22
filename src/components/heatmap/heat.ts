@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import { binFill, binInk, binOf } from '#/lib/bins'
-import { plural } from '#/lib/format'
+import { m } from '#/i18n'
+import { formatInt } from '#/lib/format'
 import type { HeatSort } from '#/lib/search'
 import { cn } from '#/lib/utils'
 
@@ -43,8 +44,16 @@ export function momentumSummary(rows: readonly { vsHist: number | null }[]) {
       flat++
     }
   }
-  const tail = none ? `, ${none} without a 60-day average` : ''
-  return `${plural(rows.length, 'item', 'items')}: ${up} pricier than usual, ${down} cheaper, ${flat} about usual${tail}.`
+  const counts = {
+    n: rows.length,
+    count: formatInt(rows.length),
+    up,
+    down,
+    flat,
+  }
+  return none
+    ? m.heatmap.momentumSummaryWithMissing({ ...counts, none })
+    : m.heatmap.momentumSummary(counts)
 }
 
 /** Pricier first, a missing 60-day comparison last. */
@@ -59,10 +68,10 @@ export function byVsHist<TRow extends { vsHist: number | null }>(
   })
 }
 
-export const SORT_LABEL: Record<HeatSort, string> = {
-  volume: 'gold traded per day',
-  spread: 'spread',
-  name: 'name',
+export const SORT_LABEL: Record<HeatSort, () => string> = {
+  volume: m.heatmap.sortVolume,
+  spread: m.heatmap.sortSpread,
+  name: m.heatmap.sortName,
 }
 
 /** Pressing the active header goes back to the default volume order. */
@@ -70,4 +79,6 @@ export const nextSort = (current: HeatSort, pressed: HeatSort): HeatSort =>
   current === pressed ? 'volume' : pressed
 
 export const sortAnnouncement = (sort: HeatSort) =>
-  `Sorted by ${SORT_LABEL[sort]}, ${sort === 'name' ? 'A to Z' : 'highest'} first.`
+  (sort === 'name' ? m.heatmap.sortedAsc : m.heatmap.sortedDesc)({
+    sort: SORT_LABEL[sort](),
+  })

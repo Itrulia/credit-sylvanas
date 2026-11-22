@@ -8,6 +8,7 @@ import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { StatePanel } from '#/components/state-panel'
 import { REGIONS, REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatPct } from '#/lib/format'
 import { sortHeatRows } from '#/lib/heatmap'
 import type { HeatMetric, HeatSort, HeatmapN, Region } from '#/lib/search'
@@ -50,8 +51,12 @@ function regionColumn(
     header: () => (
       <>
         {name}
-        {r === current && <span className="sr-only"> (this region)</span>}
-        {!hasData && <span className="normal-case"> (no data yet)</span>}
+        {r === current && (
+          <span className="sr-only"> {m.heatmap.regionCurrent()}</span>
+        )}
+        {!hasData && (
+          <span className="normal-case"> {m.heatmap.regionNoData()}</span>
+        )}
       </>
     ),
     meta: {
@@ -68,10 +73,10 @@ function regionColumn(
     cell: ({ row }) => {
       const cell = row.original.cells[r]
       if (!hasData) {
-        return <Missing text={`No ${name} prices yet`} />
+        return <Missing text={m.heatmap.cellNoPrices({ region: name })} />
       }
       if (!cell) {
-        return <Missing text={`Not listed in ${name}`} />
+        return <Missing text={m.heatmap.cellNotListed({ region: name })} />
       }
       if (metric === 'price' || cell.index === null) {
         return <Money copper={cell.mv} variant="compact" />
@@ -99,12 +104,10 @@ export function CrossRegionTable({
     return (
       <section aria-labelledby={HEADING_ID} className="space-y-3">
         <h2 id={HEADING_ID} className="text-title">
-          Across regions
+          {m.heatmap.acrossTitle()}
         </h2>
-        <StatePanel as="h3" title="Cross-region comparison needs two regions.">
-          <p>
-            Only {name} has prices so far. The other two heatmaps still work.
-          </p>
+        <StatePanel as="h3" title={m.heatmap.acrossNeedsTwoTitle()}>
+          <p>{m.heatmap.acrossNeedsTwoBody({ region: name })}</p>
         </StatePanel>
       </section>
     )
@@ -113,7 +116,7 @@ export function CrossRegionTable({
   const columns: DataColumn<HeatRow>[] = [
     {
       id: 'name',
-      header: 'Item',
+      header: m.heatmap.itemColumn(),
       meta: { sortable: true, rowHeader: true },
       cell: ({ row }) => (
         <ItemLink
@@ -129,51 +132,51 @@ export function CrossRegionTable({
     ),
     {
       id: 'spread',
-      header: 'Spread',
+      header: m.heatmap.spreadLabel(),
       meta: { sortable: true, align: 'right' },
       cell: ({ row }) =>
         row.original.spread === null ? (
-          <Missing text="Needs two regions" />
+          <Missing text={m.heatmap.cellNoSpread()} />
         ) : (
           formatPct(row.original.spread, { sign: false })
         ),
     },
   ]
 
-  const top =
+  const sortLabel = SORT_LABEL[sort]()
+  const caption =
     rows.length < n
-      ? `Top ${rows.length} items (only ${rows.length} pass the trading filter)`
-      : `Top ${n} ${name} items`
-  const caption = `${top}, market value in each region against the other regions. Sorted by ${SORT_LABEL[sort]}.`
+      ? m.heatmap.acrossCaptionFiltered({ count: rows.length, sort: sortLabel })
+      : m.heatmap.acrossCaption({ n, region: name, sort: sortLabel })
 
   return (
     <section aria-labelledby={HEADING_ID} className="space-y-3">
       <h2 id={HEADING_ID} className="text-title">
-        Across regions
+        {m.heatmap.acrossTitle()}
       </h2>
       <p className="max-w-prose text-sm">
-        Top {count} items by gold traded per day in {name}. Each cell compares
-        that region's market value with the median of every region that lists
-        it. Regions have separate economies. A higher price means the item is
-        scarcer there.
+        {m.heatmap.acrossIntro({ count, region: name })}
       </p>
       <p className="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground">
         <span className="inline-flex items-center">
-          vs other regions <InfoPopover term="index" />
+          {m.heatmap.metricIndex()} <InfoPopover term="index" />
         </span>
         <span className="inline-flex items-center">
-          Spread <InfoPopover term="spread" />
+          {m.heatmap.spreadLabel()} <InfoPopover term="spread" />
         </span>
       </p>
       <DivergingLegend
-        labels={['Cheaper than other regions', 'Pricier than other regions']}
+        labels={[
+          m.heatmap.acrossLegendCheaper(),
+          m.heatmap.acrossLegendPricier(),
+        ]}
       />
       <p role="status" className="sr-only">
         {announcement}
       </p>
       <DataTable
         caption={caption}
-        label="Across regions"
+        label={m.heatmap.acrossTitle()}
         columns={columns}
         data={sortHeatRows(rows, sort)}
         getRowId={(row) => String(row.id)}
