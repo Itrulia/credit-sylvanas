@@ -17,12 +17,12 @@
     {
       "binding": "DB",
       "database_name": "credit-sylvanas-prices",
-      // placeholder until a human runs `wrangler d1 create credit-sylvanas-prices` and pastes the id here
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      // production database, created once with `wrangler d1 create credit-sylvanas-prices`
+      "database_id": "db2c7a62-868b-49d1-b828-5fc4af6b7de5",
       "migrations_dir": "migrations",
     },
   ],
-  // private raw-CSV archive. A human runs `wrangler r2 bucket create credit-sylvanas-tsm-archive` once.
+  // private raw-CSV archive: no public access, no r2.dev URL
   "r2_buckets": [
     { "binding": "ARCHIVE", "bucket_name": "credit-sylvanas-tsm-archive" },
   ],
