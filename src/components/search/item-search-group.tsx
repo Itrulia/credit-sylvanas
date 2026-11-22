@@ -24,7 +24,8 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
   const region = useRegion()
   // the region is in the label: on / and /about it is not in the URL
   const GROUP = { id: 'items', label: `Items in ${REGION_INFO[region].name}` }
-  const q = query.trim()
+  // SearchInput caps q at 64; a longer query would fail validation
+  const q = query.trim().slice(0, 64).trim()
   const [settled] = useDebouncedValue(q, { wait: DEBOUNCE_MS })
   const { data, isError, isPlaceholderData } = useQuery({
     ...searchItemsQuery({ region, q: settled }),

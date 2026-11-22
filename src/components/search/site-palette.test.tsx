@@ -253,6 +253,16 @@ describe('item search group', () => {
     expect(search).toHaveBeenCalledWith({ region: 'us', q: 'ab' })
   })
 
+  it('caps the query at the 64 characters the server fn accepts', async () => {
+    search.mockResolvedValue([])
+    setup('/us')
+    await openPalette()
+    type('a'.repeat(80))
+    await waitFor(() =>
+      expect(search).toHaveBeenCalledWith({ region: 'us', q: 'a'.repeat(64) }),
+    )
+  })
+
   it('shows Searching while pending', async () => {
     search.mockReturnValue(new Promise(() => undefined))
     setup('/us')
