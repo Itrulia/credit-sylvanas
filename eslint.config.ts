@@ -18,6 +18,7 @@ export default [
       'dist/**',
       '.wrangler/**',
       '.output/**',
+      '.claude/worktrees/**',
       'worker-configuration.d.ts',
       'src/routeTree.gen.ts',
       // shadcn CLI-managed vendored components
