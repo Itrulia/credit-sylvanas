@@ -2,7 +2,7 @@ import { env } from 'cloudflare:workers'
 import { describe, expect, it, vi } from 'vitest'
 import { resetTables } from '../test/reset.ts'
 import { seedDay } from '../test/seed.ts'
-import { importLog } from './imports.ts'
+import { importLog, publicReason } from './imports.ts'
 import { regionStatus } from './status.ts'
 
 resetTables()
@@ -60,5 +60,38 @@ describe('importLog', () => {
       expect(r.sha).toHaveLength(12)
     }
     expect(await importLog(db, 1)).toHaveLength(1)
+  })
+})
+
+describe('publicReason', () => {
+  // raw reasons can hold D1, R2 or fetch error text, which never reaches visitors
+  it.each([
+    [null, null],
+    ['not modified', 'File unchanged'],
+    ['same updatedAt', 'File unchanged'],
+    ['no such file', 'No file published'],
+    ['fetch failed: getaddrinfo ENOTFOUND 10.0.0.1', 'Download failed'],
+    ['HTTP 503', 'Download failed'],
+    ['archive failed: R2 internal error', 'Storage error'],
+    ['write failed: D1_ERROR: no such table: items', 'Storage error'],
+    [
+      'row count 10 is under half of the last import (7000)',
+      'File much smaller than usual',
+    ],
+    ['unexpected header: a,b,c', 'File format changed'],
+    ['12 of 40 rows failed validation', 'File format changed'],
+    ['something new', 'File rejected'],
+  ])('%s -> %s', (raw, label) => {
+    expect(publicReason(raw)).toBe(label)
+  })
+
+  it('is what importLog returns', async () => {
+    await db
+      .prepare(
+        `INSERT INTO imports (region, kind, source_url, fetched_at, status, reason) VALUES ('us', 'region', 'u', 1, 'failed', 'write failed: D1_ERROR: boom')`,
+      )
+      .run()
+    const [row] = await importLog(db, 1)
+    expect(row.reason).toBe('Storage error')
   })
 })

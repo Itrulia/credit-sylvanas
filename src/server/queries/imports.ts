@@ -1,6 +1,27 @@
 import '@tanstack/react-start/server-only'
 import type { ImportLogRow } from '../types.ts'
 
+// Raw reasons can carry D1, R2 or fetch error text (see errors.ts); the
+// public log only ever shows one of these fixed labels.
+const REASONS: [RegExp, string][] = [
+  [/^(not modified|same updatedAt)$/, 'File unchanged'],
+  [/^no such file$/, 'No file published'],
+  [/^(fetch failed|HTTP )/, 'Download failed'],
+  [/^(archive|write) failed/, 'Storage error'],
+  [/^row count /, 'File much smaller than usual'],
+  [
+    /^(unexpected header|no rows|no valid rows|\d+ of \d+ rows|rows carry|unparseable|implausible)/,
+    'File format changed',
+  ],
+]
+
+export function publicReason(reason: string | null): string | null {
+  if (reason === null) {
+    return null
+  }
+  return REASONS.find(([re]) => re.test(reason))?.[1] ?? 'File rejected'
+}
+
 // Metadata only: no source URL, R2 key or ETag ever leaves this query.
 export async function importLog(
   db: D1Database,
@@ -31,7 +52,7 @@ export async function importLog(
     realm: r.realm,
     rows: r.rows,
     status: r.status,
-    reason: r.reason,
+    reason: publicReason(r.reason),
     sha: r.sha,
   }))
 }
