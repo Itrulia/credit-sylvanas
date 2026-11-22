@@ -41,61 +41,65 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
           <span>Nothing moved more than 0.5% {phrase}.</span>
         </p>
       ) : (
-        <table className="w-full table-fixed border-collapse text-[0.8125rem] leading-[1.125rem]">
-          <caption className="sr-only">
-            {`Top ${k} ${REGION_INFO[region].name} items by ${by === 'price' ? 'price' : 'popularity'} ${dir > 0 ? 'increase' : 'decrease'}, ${phrase}.`}
-            {k < 10 && ` Only ${k} items moved more than 0.5%.`}
-          </caption>
-          <thead className="sr-only">
-            <tr>
-              <th scope="col">Item</th>
-              <td />
-              <th scope="col">{by === 'price' ? 'Change' : 'Popularity'}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.id} className="border-t first:border-t-0">
-                <th
-                  scope="row"
-                  className="w-[46%] py-1.5 pr-3 text-left align-middle font-normal"
-                >
-                  <ItemLink id={r.id} name={r.name} region={region} />
-                </th>
-                <td aria-hidden="true" className="py-1.5 align-middle">
-                  <div
-                    className={cn(
-                      'flex h-4 items-center border-border-strong',
-                      dir > 0
-                        ? 'justify-start border-l'
-                        : 'justify-end border-r',
-                    )}
-                  >
-                    <span
-                      data-bar
-                      className={cn(
-                        'h-3 rounded-[1px]',
-                        dir > 0 ? 'bg-up' : 'bg-down',
-                      )}
-                      style={{ width: barWidth(r.change, max) }}
-                    />
-                  </div>
-                </td>
-                <td className="w-[6.5rem] py-1.5 pl-3 text-right align-middle">
-                  <Delta
-                    value={r.change}
-                    mode={window === 'vs_hist' ? 'vsHist' : 'change'}
-                  />
-                  {by === 'sales' && (
-                    <div className="text-micro text-muted-foreground">
-                      {formatNumber(r.from, 1)} → {formatNumber(r.to, 1)} a day
-                    </div>
-                  )}
-                </td>
+        // same box as the Hottest table (DataTable); relative keeps sr-only text inside
+        <div className="relative rounded-md border px-3 py-1">
+          <table className="w-full table-fixed border-collapse text-[0.8125rem] leading-[1.125rem]">
+            <caption className="sr-only">
+              {`Top ${k} ${REGION_INFO[region].name} items by ${by === 'price' ? 'price' : 'popularity'} ${dir > 0 ? 'increase' : 'decrease'}, ${phrase}.`}
+              {k < 10 && ` Only ${k} items moved more than 0.5%.`}
+            </caption>
+            <thead className="sr-only">
+              <tr>
+                <th scope="col">Item</th>
+                <td />
+                <th scope="col">{by === 'price' ? 'Change' : 'Popularity'}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.id} className="border-t first:border-t-0">
+                  <th
+                    scope="row"
+                    className="w-[46%] py-1.5 pr-3 text-left align-middle font-normal"
+                  >
+                    <ItemLink id={r.id} name={r.name} region={region} />
+                  </th>
+                  <td aria-hidden="true" className="py-1.5 align-middle">
+                    <div
+                      className={cn(
+                        'flex h-4 items-center border-border-strong',
+                        dir > 0
+                          ? 'justify-start border-l'
+                          : 'justify-end border-r',
+                      )}
+                    >
+                      <span
+                        data-bar
+                        className={cn(
+                          'h-3 rounded-[1px]',
+                          dir > 0 ? 'bg-up' : 'bg-down',
+                        )}
+                        style={{ width: barWidth(r.change, max) }}
+                      />
+                    </div>
+                  </td>
+                  <td className="w-[6.5rem] py-1.5 pl-3 text-right align-middle">
+                    <Delta
+                      value={r.change}
+                      mode={window === 'vs_hist' ? 'vsHist' : 'change'}
+                    />
+                    {by === 'sales' && (
+                      <div className="text-micro text-muted-foreground">
+                        {formatNumber(r.from, 1)} → {formatNumber(r.to, 1)} a
+                        day
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
