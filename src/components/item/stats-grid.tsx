@@ -3,6 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { SectionBoundary } from '#/components/section-boundary'
 import { Skeleton } from '#/components/ui/skeleton'
+import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import type { StatRange } from '#/lib/search'
 import { itemHistoryQuery } from '#/server/fns/item'
@@ -15,10 +16,10 @@ import { ValueQuantityCard } from './value-quantity-card'
 const FROM = '/$region/items/$itemId'
 type Card = 'mv' | 'cmp' | 'heat' | 'sales'
 const CARDS = [
-  'Market value and quantity',
-  'Other regions',
-  'Heatmap: market value',
-  'Heatmap: sales',
+  m.item.valueTitle(),
+  m.item.compareRegionsTitle(),
+  m.item.heatmapValueTitle(),
+  m.item.heatmapSalesTitle(),
 ]
 
 export interface StatsGridProps {
@@ -32,7 +33,7 @@ export function StatsGrid({ input, realmName }: StatsGridProps) {
   return (
     <section aria-labelledby="stats-heading" className="mt-8">
       <h2 id="stats-heading" tabIndex={-1} className="text-title">
-        Statistics
+        {m.item.statsHeading()}
       </h2>
       <div className="mt-3">
         <SectionBoundary headingId="stats-heading">
@@ -97,7 +98,7 @@ function Cards({ input, realmName }: StatsGridProps) {
 function StatsSkeleton() {
   return (
     <div aria-busy="true" className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <p className="sr-only">Loading statistics…</p>
+      <p className="sr-only">{m.item.statsLoading()}</p>
       {CARDS.map((title) => (
         <div
           key={title}

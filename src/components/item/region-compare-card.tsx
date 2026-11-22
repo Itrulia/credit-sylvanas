@@ -3,6 +3,7 @@ import { REGIONS, REGION_INFO } from '#/config/regions'
 import { ChartFigure } from '#/components/chart-figure'
 import { Money } from '#/components/money'
 import { ChartContainer } from '#/components/ui/chart'
+import { m } from '#/i18n'
 import { formatDate, formatDayLong } from '#/lib/format'
 import type { Region, StatRange } from '#/lib/search'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
@@ -62,7 +63,9 @@ export function RegionCompareCard({
   onRangeChange,
 }: RegionCompareCardProps) {
   const isRealm = realm !== null && realmName !== null
-  const title = isRealm ? 'This realm vs region' : 'Other regions'
+  const title = isRealm
+    ? m.item.compareRealmTitle()
+    : m.item.compareRegionsTitle()
   const name = REGION_INFO[region].name
   const end = points.at(-1)?.day
   const own = inRange(points, range, end)
@@ -84,7 +87,7 @@ export function RegionCompareCard({
       {
         key: 'region',
         label: name,
-        legend: `${name} region`,
+        legend: m.item.regionSeries({ region: name }),
         color: 'var(--chart-1)',
         dash: '6 3',
         width: 1.5,
@@ -98,11 +101,14 @@ export function RegionCompareCard({
         <CardNote
           title={
             first
-              ? `${realmName} history starts ${formatDate(first.day)}.`
-              : `${realmName} has no scans for this item yet.`
+              ? m.item.realmHistoryStarts({
+                  realm: realmName,
+                  date: formatDate(first.day),
+                })
+              : m.item.realmNoScans({ realm: realmName })
           }
         >
-          <p>The comparison appears after the second day of realm scans.</p>
+          <p>{m.item.realmCompareHint()}</p>
         </CardNote>
       )
     }
@@ -122,7 +128,7 @@ export function RegionCompareCard({
           key: r,
           label: REGION_INFO[r].name,
           legend: current
-            ? `${REGION_INFO[r].name} (this region)`
+            ? m.item.thisRegionSeries({ region: REGION_INFO[r].name })
             : REGION_INFO[r].name,
           color: `var(--region-${r})`,
           dash: DASH[r],
@@ -142,12 +148,8 @@ export function RegionCompareCard({
     )
     if (series.length < 2) {
       empty = (
-        <CardNote
-          title={`Only ${name} has a price history for this item so far.`}
-        >
-          <p>
-            Other regions appear here once they list it on two daily updates.
-          </p>
+        <CardNote title={m.item.onlyRegionHistory({ region: name })}>
+          <p>{m.item.otherRegionsHint()}</p>
         </CardNote>
       )
     }
@@ -196,7 +198,10 @@ export function RegionCompareCard({
             <p className="text-muted-foreground">
               {[
                 own.length <= 6
-                  ? `${own.length} days of history (since ${formatDate(own[0].day)}).`
+                  ? m.item.historyNote({
+                      n: own.length,
+                      date: formatDate(own[0].day),
+                    })
                   : null,
                 rangeNote(range, points.length),
               ]
@@ -206,8 +211,11 @@ export function RegionCompareCard({
           }
           table={() => (
             <StatTable
-              caption={`${title}, market value by day`}
-              head={['Day', ...series.map((s) => s.label)]}
+              caption={m.item.tableCaption({
+                title,
+                scope: m.item.compareTableScope(),
+              })}
+              head={[m.item.dayColumn(), ...series.map((s) => s.label)]}
               rows={[...rows].reverse().map((r) => ({
                 key: r.day,
                 cells: [
@@ -221,7 +229,9 @@ export function RegionCompareCard({
           )}
         >
           <ul
-            aria-label={isRealm ? 'Series' : 'Regions'}
+            aria-label={
+              isRealm ? m.item.seriesLegend() : m.item.regionsLegend()
+            }
             className="flex flex-wrap gap-x-4 gap-y-1 text-micro"
           >
             {series.map((s) => (

@@ -5,6 +5,7 @@ import { InfoPopover } from '#/components/info-popover'
 import { Money } from '#/components/money'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
+import { m } from '#/i18n'
 import type { RegionCell } from '#/server/types'
 
 /** The item in all four regions: compact value and index vs the cross-region median. */
@@ -26,18 +27,16 @@ export function RegionStrip({
         id="regions-heading"
         className="mb-2 flex items-center gap-1 text-label"
       >
-        All regions
+        {m.item.regionsHeading()}
         <InfoPopover term="index" />
       </h2>
       <table className="w-full text-sm">
-        <caption className="sr-only">
-          Market value in each region against the other regions
-        </caption>
+        <caption className="sr-only">{m.item.regionsCaption()}</caption>
         <thead className="sr-only">
           <tr>
-            <th scope="col">Region</th>
-            <th scope="col">Market value</th>
-            <th scope="col">vs other regions</th>
+            <th scope="col">{m.item.regionColumn()}</th>
+            <th scope="col">{m.item.marketValueLabel()}</th>
+            <th scope="col">{m.item.vsOtherRegionsColumn()}</th>
           </tr>
         </thead>
         <tbody>
@@ -68,7 +67,9 @@ export function RegionStrip({
                 <Money
                   copper={r.mv}
                   variant="compact"
-                  reason={`Not listed in ${REGION_INFO[r.region].name}`}
+                  reason={m.item.notListedReason({
+                    region: REGION_INFO[r.region].name,
+                  })}
                 />
               </td>
               <td className="py-2 pl-3 text-right">

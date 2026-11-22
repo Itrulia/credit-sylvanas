@@ -19,6 +19,7 @@ import { PriceBlock, isVolatile } from '#/components/item/price-block'
 import { RealmPrices } from '#/components/item/realm-prices'
 import { RegionStrip } from '#/components/item/region-strip'
 import { StatsGrid } from '#/components/item/stats-grid'
+import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { formatDate, formatNumber } from '#/lib/format'
 import { formatMoney, moneyText } from '#/lib/money'
@@ -68,8 +69,13 @@ export const Route = createFileRoute('/$region/items/$itemId')({
     const region = params.region.toUpperCase()
     const { name, mv, spd } = loaderData
     return pageHead(
-      `${name} price · ${region} Forever AH`,
-      `${name} on the ${region} Forever auction house: market value ${moneyText(formatMoney(mv))}, sells about ${formatNumber(spd, spd < 10 ? 1 : 0)} a day. Price history updated daily.`,
+      m.item.headTitle({ name, region }),
+      m.item.headDescription({
+        name,
+        region,
+        value: moneyText(formatMoney(mv)),
+        sold: formatNumber(spd, spd < 10 ? 1 : 0),
+      }),
     )
   },
   component: ItemDetail,
@@ -105,12 +111,14 @@ function ItemDetail() {
           {itemName(item.name, item.id)}
         </h1>
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-          <span className="font-mono text-muted-foreground">#{item.id}</span>
+          <span className="font-mono text-muted-foreground">
+            {m.item.idLabel({ id: item.id })}
+          </span>
           <WowheadLink id={item.id} />
           <FavouriteButton region={region} itemId={item.id} name={item.name} />
           {isVolatile(current.mv, current.hist) && (
             <span className="inline-flex items-center">
-              <Badge variant="outline">Volatile</Badge>
+              <Badge variant="outline">{m.item.volatileBadge()}</Badge>
               <InfoPopover term="volatile" />
             </span>
           )}
@@ -125,10 +133,12 @@ function ItemDetail() {
           <Icon name="warning" className="mt-0.5 text-warning-text" />
           <p>
             <strong>
-              Not seen in {name} in the latest update (
-              {formatDate(status.lastDay ?? current.day)}).
+              {m.item.droppedTitle({
+                region: name,
+                date: formatDate(status.lastDay ?? current.day),
+              })}
             </strong>{' '}
-            Showing the last known prices from {formatDate(current.day)}.
+            {m.item.droppedBody({ date: formatDate(current.day) })}
           </p>
         </div>
       )}
@@ -137,8 +147,7 @@ function ItemDetail() {
         <div className="lg:col-span-8">
           <PriceBlock current={current} />
           <p className="mt-2 text-sm text-muted-foreground">
-            Region prices average every {name} realm. Prices on your realm may
-            differ.
+            {m.item.regionAverageNote({ region: name })}
           </p>
         </div>
         <div className="lg:col-span-4">

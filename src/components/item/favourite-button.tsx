@@ -5,6 +5,7 @@ import {
   useSavedItems,
 } from '#/lib/saved-items'
 import type { SavedItem } from '#/lib/saved-items'
+import { m } from '#/i18n'
 import { Icon } from '../icon'
 
 /** Star toggle for the item header; the favourite lives in local storage only. */
@@ -18,7 +19,7 @@ export function FavouriteButton(item: SavedItem) {
       className="inline-flex min-h-6 items-center gap-1 rounded-sm text-muted-foreground hover:text-foreground aria-pressed:text-foreground pointer-coarse:min-h-11"
     >
       <Icon name="star" />
-      Favourite
+      {m.item.favouriteButton()}
     </button>
   )
 }

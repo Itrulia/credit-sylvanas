@@ -1,6 +1,7 @@
 // Pure helpers for the item statistics cards (DESIGN §5): range filter,
 // weekday and hour bucketing, dot radius and the summary sentences.
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import {
   DAY_SECONDS,
   formatDate,
@@ -21,11 +22,11 @@ export const RANGE_OPTIONS: {
   value: StatRange
   label: string
   long: string
-}[] = [
-  { value: '7d', label: '7D', long: '7 days' },
-  { value: '30d', label: '30D', long: '30 days' },
-  { value: '90d', label: '90D', long: '90 days' },
-]
+}[] = (['7d', '30d', '90d'] as const).map((value) => ({
+  value,
+  label: m.item.rangeShort({ days: RANGE_DAYS[value] }),
+  long: m.item.rangeLong({ days: RANGE_DAYS[value] }),
+}))
 
 /** Points within the last N calendar days up to `endDay` (default: the last point). */
 export function inRange<T extends { day: number }>(
@@ -41,24 +42,15 @@ export function inRange<T extends { day: number }>(
 }
 
 export const rangeNote = (range: StatRange, daysWeHave: number) =>
-  daysWeHave < RANGE_DAYS[range]
-    ? `Showing all ${daysWeHave} days we have.`
-    : null
+  daysWeHave < RANGE_DAYS[range] ? m.item.rangeNote({ n: daysWeHave }) : null
 
 /** Monday = 0 … Sunday = 6. Day 0 (1 Jan 1970) was a Thursday. */
 export const weekdayOf = (day: number) => (((day + 3) % 7) + 7) % 7
 export const mondayOf = (day: number) => day - weekdayOf(day)
 
-export const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const WEEKDAY_PLURAL = [
-  'Mondays',
-  'Tuesdays',
-  'Wednesdays',
-  'Thursdays',
-  'Fridays',
-  'Saturdays',
-  'Sundays',
-]
+export const WEEKDAYS = Array.from({ length: 7 }, (_, weekday) =>
+  m.item.weekdayShort({ weekday }),
+)
 
 export interface DotCell {
   col: number
@@ -154,7 +146,6 @@ export function hourlyGrid(scans: readonly { t: number; mv: number }[]) {
 const FLAT = 0.005
 const money = (copper: number) => moneyText(formatMoney(copper))
 const pct = (ratio: number) => formatPct(ratio, { sign: false })
-const side = (ratio: number) => (ratio < 0 ? 'below' : 'above')
 const mean = (values: readonly number[]) =>
   values.reduce((a, b) => a + b, 0) / values.length
 
@@ -170,19 +161,22 @@ export function valueSummary(
   const n = last.day - first.day + 1
   const change = first.mv > 0 ? last.mv / first.mv - 1 : 0
   const low = points.reduce((a, b) => (b.mv < a.mv ? b : a))
-  const verb = change < 0 ? 'fell' : 'rose'
   const parts = [
     Math.abs(change) < FLAT
-      ? `Market value held steady at ${money(last.mv)} over ${n} days.`
-      : `Market value ${verb} ${pct(change)} over ${n} days, from ${money(first.mv)} to ${money(last.mv)}.`,
-    `Low ${money(low.mv)} on ${formatDay(low.day)}.`,
+      ? m.item.valueSteady({ value: money(last.mv), n })
+      : m.item.valueChanged({
+          fell: change < 0,
+          pct: pct(change),
+          n,
+          from: money(first.mv),
+          to: money(last.mv),
+        }),
+    m.item.valueLow({ value: money(low.mv), date: formatDay(low.day) }),
   ]
   const sales = points.flatMap((p) => (p.spd === undefined ? [] : [p.spd]))
   if (sales.length) {
     const avg = mean(sales)
-    parts.push(
-      `Sold about ${formatNumber(avg, avg < 10 ? 1 : 0)} a day on average.`,
-    )
+    parts.push(m.item.valueSold({ n: formatNumber(avg, avg < 10 ? 1 : 0) }))
   }
   return parts.join(' ')
 }
@@ -211,7 +205,13 @@ export function compareSummary(
   }
   const k = 1 + others.filter((o) => o.points.length >= 2).length
   const avg = ratios.length ? mean(ratios) : 0
-  return `In the last ${days} days ${REGION_INFO[region].name} averaged ${pct(avg)} ${side(avg)} the median of ${k} regions.`
+  return m.item.compareSummary({
+    days,
+    region: REGION_INFO[region].name,
+    pct: pct(avg),
+    below: avg < 0,
+    k,
+  })
 }
 
 export function realmCompareSummary(
@@ -226,7 +226,12 @@ export function realmCompareSummary(
     return r ? [p.mv / r - 1] : []
   })
   const avg = ratios.length ? mean(ratios) : 0
-  return `${realmName} averaged ${pct(avg)} ${side(avg)} the ${REGION_INFO[region].name} market value.`
+  return m.item.realmCompareSummary({
+    realm: realmName,
+    pct: pct(avg),
+    below: avg < 0,
+    region: REGION_INFO[region].name,
+  })
 }
 
 /**
@@ -242,7 +247,7 @@ export function heatmapSummary(grid: DotGrid, range: StatRange) {
   const slots = grid.cells.map((c) => ({
     label:
       grid.layout === 'hourly'
-        ? `${WEEKDAY_PLURAL[c.row]} at ${pad(c.hour ?? 0)}:00 UTC`
+        ? m.item.hourlySlotLabel({ weekday: c.row, hour: pad(c.hour ?? 0) })
         : formatDate(c.day ?? 0),
     value: c.value,
   }))
@@ -252,11 +257,18 @@ export function heatmapSummary(grid: DotGrid, range: StatRange) {
   const loR = lo.value / ref - 1
   if (Math.abs(hiR) < FLAT && Math.abs(loR) < FLAT) {
     return grid.layout === 'hourly'
-      ? 'Every slot sits within 0.5% of the median, so no time stands out.'
-      : `Every day sits within 0.5% of the ${RANGE_DAYS[range]}-day median.`
+      ? m.item.heatmapFlatHourly()
+      : m.item.heatmapFlatDaily({ days: RANGE_DAYS[range] })
   }
-  if (grid.layout === 'hourly') {
-    return `Highest on ${hi.label}, ${pct(hiR)} ${side(hiR)} the median. Lowest on ${lo.label}, ${pct(loR)} ${side(loR)}.`
+  const extremes = {
+    hi: hi.label,
+    hiPct: pct(hiR),
+    hiBelow: hiR < 0,
+    lo: lo.label,
+    loPct: pct(loR),
+    loBelow: loR < 0,
   }
-  return `Highest on ${hi.label}, ${pct(hiR)} ${side(hiR)} the ${RANGE_DAYS[range]}-day median. Lowest on ${lo.label}, ${pct(loR)} ${side(loR)}. TSM values average several days, so this does not point to a best weekday.`
+  return grid.layout === 'hourly'
+    ? m.item.heatmapHourlySummary(extremes)
+    : m.item.heatmapDailySummary({ ...extremes, days: RANGE_DAYS[range] })
 }

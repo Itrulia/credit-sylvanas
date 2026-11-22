@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { StatRange } from '#/lib/search'
 import type { IconName } from '#/lib/icons'
 import { Icon } from '#/components/icon'
+import { m } from '#/i18n'
 import {
   Select,
   SelectContent,
@@ -34,7 +35,7 @@ export function StatCard({
           onValueChange={(v) => onRangeChange(v as StatRange)}
         >
           <SelectTrigger
-            aria-label={`Range for ${title}`}
+            aria-label={m.item.rangeSelectLabel({ title })}
             className="min-w-20 pointer-coarse:data-[size=default]:h-11"
           >
             <SelectValue />

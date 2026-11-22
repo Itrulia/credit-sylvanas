@@ -3,9 +3,16 @@ import { Money } from '#/components/money'
 import { Badge } from '#/components/ui/badge'
 import type { Faction, Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
+import { m } from '#/i18n'
 import type { RealmPrice } from '#/server/types'
 
-const RULESET = { normal: 'Normal', pvp: 'PvP', rp: 'RP', 'rp-pvp': 'RP-PvP' }
+const RULESET = {
+  normal: m.item.rulesetNormal,
+  pvp: m.item.rulesetPvp,
+  rp: m.item.rulesetRp,
+  'rp-pvp': m.item.rulesetRpPvp,
+}
+const FACTION = { alliance: m.item.factionAlliance, horde: m.item.factionHorde }
 
 /** Realm prices for the configured realms; absent while realms.ts is empty. */
 export function RealmPrices({
@@ -31,30 +38,30 @@ export function RealmPrices({
   return (
     <section aria-labelledby="realms-heading" className="mt-8">
       <h2 id="realms-heading" className="text-title">
-        Realm prices
+        {m.item.realmsHeading()}
       </h2>
       <div className="relative mt-3 overflow-x-auto">
         <table className="w-full text-sm">
-          <caption className="sr-only">Realm prices for this item</caption>
+          <caption className="sr-only">{m.item.realmsCaption()}</caption>
           <thead className="ledger-rule">
             <tr>
               <th scope="col" className="py-1 text-left">
-                Realm
+                {m.item.realmColumn()}
               </th>
               <th scope="col" className="py-1 text-left">
-                Faction
+                {m.item.factionColumn()}
               </th>
               <th scope="col" className="py-1 text-left">
-                Ruleset
+                {m.item.rulesetColumn()}
               </th>
               <th scope="col" className="py-1 text-right">
-                Market value
+                {m.item.marketValueLabel()}
               </th>
               <th scope="col" className="py-1 text-right">
-                Lowest buyout
+                {m.item.lowestBuyoutLabel()}
               </th>
               <th scope="col" className="py-1 text-right">
-                Latest scan value
+                {m.item.latestScanColumn()}
               </th>
             </tr>
           </thead>
@@ -70,10 +77,12 @@ export function RealmPrices({
                   <th scope="row" className="py-2 text-left font-normal">
                     {config?.name ?? r.realm}
                   </th>
-                  <td className="py-2 capitalize">{r.faction}</td>
+                  <td className="py-2">{FACTION[r.faction]()}</td>
                   <td className="py-2">
                     {config && (
-                      <Badge variant="outline">{RULESET[config.ruleset]}</Badge>
+                      <Badge variant="outline">
+                        {RULESET[config.ruleset]()}
+                      </Badge>
                     )}
                   </td>
                   <td
@@ -86,7 +95,7 @@ export function RealmPrices({
                   </td>
                   <td className="py-2 text-right">
                     {noListings ? (
-                      'No listings'
+                      m.item.noListings()
                     ) : (
                       <Money copper={r.minBuyout} />
                     )}

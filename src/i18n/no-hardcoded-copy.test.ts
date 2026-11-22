@@ -7,17 +7,6 @@ import { expect, it } from 'vitest'
  * its text lives in src/i18n/en; the list must end empty.
  */
 const ALLOWLIST: Array<string> = [
-  'src/components/item/dot-heatmap.tsx',
-  'src/components/item/favourite-button.tsx',
-  'src/components/item/item-not-found.tsx',
-  'src/components/item/price-block.tsx',
-  'src/components/item/realm-prices.tsx',
-  'src/components/item/region-compare-card.tsx',
-  'src/components/item/region-strip.tsx',
-  'src/components/item/stat-card.tsx',
-  'src/components/item/stats-grid.tsx',
-  'src/components/item/value-quantity-card.tsx',
-  'src/routes/$region/items/$itemId.tsx',
 ]
 
 const SKIP = [

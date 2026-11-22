@@ -4,6 +4,7 @@ import { GLOSSARY } from '#/components/glossary'
 import { Delta } from '#/components/delta'
 import { InfoPopover } from '#/components/info-popover'
 import { Money } from '#/components/money'
+import { m } from '#/i18n'
 import { formatNumber, formatPct } from '#/lib/format'
 import type { ItemCurrent } from '#/server/types'
 
@@ -30,20 +31,20 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
   return (
     <section aria-labelledby="price-heading" className="ledger-rule pb-4">
       <h2 id="price-heading" className="sr-only">
-        Current price
+        {m.item.priceHeading()}
       </h2>
       {/* two lists: a <dl> allows only one wrapping div per dt/dd group */}
       <div className="flex flex-col gap-4">
         <dl className="flex flex-col gap-1">
           <dt className="flex items-center gap-1 text-label">
-            Market value
+            {m.item.marketValueLabel()}
             <InfoPopover term="marketValue" />
           </dt>
           <dd className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <Money copper={current.mv} className="text-display" />
             <Delta value={vsHist} mode="vsHist" />
             <span className="text-sm text-muted-foreground">
-              vs 60-day average
+              {m.item.vsHistLabel()}
             </span>
           </dd>
         </dl>
@@ -54,7 +55,7 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
           <Stat term="avgSalePrice">
             {noSales ? (
               <span className="text-sm text-muted-foreground">
-                No recent sales
+                {m.item.noRecentSales()}
               </span>
             ) : (
               <Money copper={current.asp} />
@@ -63,7 +64,7 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
           <Stat term="soldPerDay">
             {noSales ? (
               <span className="text-sm text-muted-foreground">
-                No recent sales
+                {m.item.noRecentSales()}
               </span>
             ) : (
               formatNumber(current.spd, current.spd < 10 ? 1 : 0)

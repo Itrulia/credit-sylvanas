@@ -3,6 +3,7 @@ import { REGION_INFO } from '#/config/regions'
 import { NotFound } from '#/components/not-found'
 import { StatePanel } from '#/components/state-panel'
 import { WowheadLink } from '#/components/wowhead-link'
+import { m } from '#/i18n'
 import { SITE } from '#/lib/seo'
 import type { Region } from '#/lib/search'
 import { itemName } from '#/lib/wowhead'
@@ -25,17 +26,17 @@ export function ItemNotFound({ region, value, result }: ItemNotFoundProps) {
   const name = REGION_INFO[region].name
   const item = result?.item
   if (!item) {
-    const title = `We don't have prices for item #${id}.`
+    const title = m.item.unknownTitle({ id })
     return (
       <div className="page-wrap py-8">
-        <title>{`Item #${id} not found · ${SITE}`}</title>
+        <title>{m.item.unknownHeadTitle({ id, site: SITE })}</title>
         <meta name="robots" content="noindex" />
         <StatePanel as="h1" icon="search" title={title}>
-          <p>It may not be tradable, or nobody has listed it yet.</p>
+          <p>{m.item.unknownBody()}</p>
           <p className="flex flex-wrap gap-3">
             <WowheadLink id={id} />
             <Link to="/$region/items" params={{ region }} className="underline">
-              Search items
+              {m.item.searchItemsLink()}
             </Link>
           </p>
         </StatePanel>
@@ -48,19 +49,21 @@ export function ItemNotFound({ region, value, result }: ItemNotFoundProps) {
   )
   return (
     <div className="page-wrap py-8">
-      <title>{`${label} isn't on the ${name} auction house · ${SITE}`}</title>
+      <title>
+        {m.item.elsewhereHeadTitle({ name: label, region: name, site: SITE })}
+      </title>
       <meta name="robots" content="noindex" />
       <StatePanel
         as="h1"
         icon="search"
-        title={`${label} isn't on the ${name} auction house.`}
+        title={m.item.elsewhereTitle({ name: label, region: name })}
       >
         {elsewhere.length > 0 && (
           <p>
-            It's listed in:{' '}
+            {m.item.elsewhereListLead()}{' '}
             {elsewhere.map((r, i) => (
               <span key={r.region}>
-                {i > 0 && ', '}
+                {i > 0 && m.item.elsewhereListSeparator()}
                 <Link
                   to="/$region/items/$itemId"
                   params={{ region: r.region, itemId: String(item.id) }}
@@ -70,7 +73,7 @@ export function ItemNotFound({ region, value, result }: ItemNotFoundProps) {
                 </Link>
               </span>
             ))}
-            .
+            {m.item.elsewhereListTail()}
           </p>
         )}
         <p>

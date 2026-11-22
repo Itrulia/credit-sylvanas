@@ -2,6 +2,7 @@ import { REGION_INFO } from '#/config/regions'
 import { ChartFigure } from '#/components/chart-figure'
 import { Delta } from '#/components/delta'
 import { Money } from '#/components/money'
+import { m } from '#/i18n'
 import { binFill, binInk, binOf } from '#/lib/bins'
 import {
   dayOf,
@@ -16,7 +17,6 @@ import { CardNote, StatCard, StatTable } from './stat-card'
 import type { DotGrid } from './stats'
 import {
   RANGE_DAYS,
-  WEEKDAYS,
   dailyGrid,
   heatmapSummary,
   hourlyGrid,
@@ -114,9 +114,9 @@ export interface HeatmapCardProps {
 }
 
 const TITLE = {
-  value: 'Heatmap: market value',
-  sales: 'Heatmap: sales',
-} as const
+  value: m.item.heatmapValueTitle,
+  sales: m.item.heatmapSalesTitle,
+}
 
 /** Cards 3 and 4: weekday heatmaps of market value and sales. */
 export function HeatmapCard({
@@ -129,6 +129,8 @@ export function HeatmapCard({
   onRangeChange,
 }: HeatmapCardProps) {
   const name = REGION_INFO[region].name
+  const title = TITLE[kind]()
+  const days = RANGE_DAYS[range]
   const shown = inRange(points, range)
   const daily = shown.map((p) => ({
     day: p.day,
@@ -149,59 +151,67 @@ export function HeatmapCard({
   const notes: string[] = []
   if (kind === 'value' && realmName && !useHourly) {
     notes.push(
-      `Hourly view for ${realmName} starts after ${MIN_DAYS} days of scans (${hourly?.days ?? 0} so far).`,
+      m.item.hourlyPending({
+        realm: realmName,
+        min: MIN_DAYS,
+        n: hourly?.days ?? 0,
+      }),
     )
   }
   if (kind === 'sales' && realmName) {
-    notes.push('Sales are only published per region.')
+    notes.push(m.item.salesRegionOnly())
   }
 
   let body
   if (!useHourly && daily.length < MIN_DAYS) {
     const firstWeekEnds = (points[0]?.day ?? 0) + MIN_DAYS - 1
     body = (
-      <CardNote title="The heatmap needs a week of daily updates.">
+      <CardNote title={m.item.heatmapNeedsWeek()}>
         <p>
-          We have {daily.length} of {MIN_DAYS} for this item in {name}.{' '}
+          {m.item.heatmapProgress({
+            n: daily.length,
+            min: MIN_DAYS,
+            region: name,
+          })}{' '}
           {points.length >= MIN_DAYS
-            ? 'Pick 30D or 90D to see more.'
-            : `The first full week ends ${formatDate(firstWeekEnds)}.`}
+            ? m.item.heatmapPickRange()
+            : m.item.heatmapFirstWeek({ date: formatDate(firstWeekEnds) })}
         </p>
       </CardNote>
     )
   } else if (kind === 'sales' && daily.every((d) => d.value === 0)) {
     body = (
-      <CardNote title="No recorded sales in this range.">
-        <p>
-          TSM saw no {name} sales for this item in the last {RANGE_DAYS[range]}{' '}
-          days.
-        </p>
+      <CardNote title={m.item.noSalesTitle()}>
+        <p>{m.item.noSalesBody({ region: name, days })}</p>
       </CardNote>
     )
   } else {
     const grid = useHourly ? hourly : dailyGrid(daily)
     const summary = heatmapSummary(grid, range)
     const caption = useHourly
-      ? `Each square is the average for that weekday and hour (UTC) on ${realmName}, from ${grid.days} days of scans.`
+      ? m.item.heatmapHourlyCaption({ realm: realmName ?? '', days: grid.days })
       : kind === 'sales'
-        ? `Each square is one day and shows how far its sales sit from the ${RANGE_DAYS[range]}-day median: redder means more sales than usual, bluer fewer.`
-        : `Each square is one day and shows how far it sits from the ${RANGE_DAYS[range]}-day median: redder above, bluer below.`
+        ? m.item.heatmapSalesCaption({ days })
+        : m.item.heatmapValueCaption({ days })
     const note = useHourly ? null : rangeNote(range, points.length)
     const fmt = (v: number) =>
       kind === 'value' ? (
         <Money copper={Math.round(v)} />
       ) : (
-        `${formatNumber(v, 1)} a day`
+        m.item.perDay({ n: formatNumber(v, 1) })
       )
     const reference = useHourly
-      ? 'the median hour'
-      : `the ${RANGE_DAYS[range]}-day median`
+      ? m.item.medianHourReference()
+      : m.item.rangeMedianReference({ days })
     // newest first; hourly slots go by weekday then hour
     const rows = useHourly
       ? grid.cells.map((c) => ({
           key: `${c.row}:${c.hour}`,
           cells: [
-            `${WEEKDAYS[c.row]} ${String(c.hour).padStart(2, '0')}:00 UTC`,
+            m.item.hourSlot({
+              weekday: c.row,
+              hour: String(c.hour).padStart(2, '0'),
+            }),
             fmt(c.value),
             <Delta
               key="d"
@@ -236,11 +246,13 @@ export function HeatmapCard({
           }
           table={() => (
             <StatTable
-              caption={`${TITLE[kind]}, ${name}`}
+              caption={m.item.tableCaption({ title, scope: name })}
               head={[
-                useHourly ? 'Weekday and hour' : 'Day',
-                kind === 'value' ? 'Market value' : 'Sold per day',
-                'vs median',
+                useHourly ? m.item.weekdayHourColumn() : m.item.dayColumn(),
+                kind === 'value'
+                  ? m.item.marketValueLabel()
+                  : m.item.soldPerDayLabel(),
+                m.item.vsMedianColumn(),
               ]}
               rows={rows}
             />
@@ -253,7 +265,7 @@ export function HeatmapCard({
   }
 
   return (
-    <StatCard title={TITLE[kind]} range={range} onRangeChange={onRangeChange}>
+    <StatCard title={title} range={range} onRangeChange={onRangeChange}>
       {body}
       {daily.length < MIN_DAYS && !useHourly && notes.length > 0 && (
         <p className="text-sm text-muted-foreground">{notes.join(' ')}</p>

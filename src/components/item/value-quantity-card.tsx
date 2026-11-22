@@ -10,6 +10,7 @@ import {
 import { ChartFigure } from '#/components/chart-figure'
 import { Money } from '#/components/money'
 import { ChartContainer } from '#/components/ui/chart'
+import { m } from '#/i18n'
 import { formatDate, formatDayLong, formatNumber } from '#/lib/format'
 import type { Region, StatRange } from '#/lib/search'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
@@ -26,7 +27,6 @@ import {
 import { CardNote, StatCard, StatTable } from './stat-card'
 import { inRange, rangeNote, valueSummary } from './stats'
 
-const TITLE = 'Market value and quantity'
 const C = {
   mv: 'var(--chart-1)',
   hist: 'var(--chart-2)',
@@ -66,29 +66,28 @@ export function ValueQuantityCard({
   const rows = inRange(all, range)
   const n = rows.length
 
+  const title = m.item.valueTitle()
   let body
   if (n <= 1) {
     const only = rows[0] as Row | undefined
     body = only ? (
-      <CardNote title={`Price history starts ${formatDate(only.day)}.`}>
+      <CardNote title={m.item.historyStarts({ date: formatDate(only.day) })}>
         <p>
-          <Money copper={only.mv} /> on {formatDayLong(only.day)}.
+          <Money copper={only.mv} />{' '}
+          {m.item.onlyPointDate({ date: formatDayLong(only.day) })}
         </p>
-        <p>
-          We save one snapshot a day, so this chart fills in over time. Check
-          back tomorrow for the first trend.
-        </p>
+        <p>{m.item.fillsInNote()}</p>
       </CardNote>
     ) : (
-      <CardNote title={`No scans for ${realmName} in this range.`} />
+      <CardNote title={m.item.noRealmScans({ realm: realmName ?? '' })} />
     )
   } else {
     const days = rows.map((r) => r.day)
     const short = n <= 6
     const notes = [
-      short ? `${n} days of history (since ${formatDate(rows[0].day)}).` : null,
+      short ? m.item.historyNote({ n, date: formatDate(rows[0].day) }) : null,
       rangeNote(range, all.length),
-      isRealm ? 'Sales are only published per region.' : null,
+      isRealm ? m.item.salesRegionOnly() : null,
     ]
     const tip = ({
       active,
@@ -109,13 +108,13 @@ export function ValueQuantityCard({
               ? [
                   {
                     key: 'mv',
-                    label: 'Realm market value',
+                    label: m.item.realmValueLabel(),
                     color: C.realm,
                     value: <Money copper={r.mv} />,
                   },
                   {
                     key: 'mb',
-                    label: 'Lowest buyout',
+                    label: m.item.lowestBuyoutLabel(),
                     color: C.mv,
                     dash: '2 3',
                     value: <Money copper={r.minBuyout ?? null} />,
@@ -124,20 +123,20 @@ export function ValueQuantityCard({
               : [
                   {
                     key: 'mv',
-                    label: 'Market value',
+                    label: m.item.marketValueLabel(),
                     color: C.mv,
                     value: <Money copper={r.mv} />,
                   },
                   {
                     key: 'hist',
-                    label: '60-day average',
+                    label: m.item.histLabel(),
                     color: C.hist,
                     dash: '4 3',
                     value: <Money copper={r.hist ?? null} />,
                   },
                   {
                     key: 'spd',
-                    label: 'Sold per day',
+                    label: m.item.soldPerDayLabel(),
                     color: C.spd,
                     value: formatNumber(r.spd ?? 0, 1),
                   },
@@ -157,11 +156,23 @@ export function ValueQuantityCard({
         }
         table={() => (
           <StatTable
-            caption={`${TITLE}, ${isRealm ? realmName : region.toUpperCase()}`}
+            caption={m.item.tableCaption({
+              title,
+              scope: isRealm ? realmName : region.toUpperCase(),
+            })}
             head={
               isRealm
-                ? ['Day', 'Realm market value', 'Lowest buyout']
-                : ['Day', 'Market value', '60-day average', 'Sold per day']
+                ? [
+                    m.item.dayColumn(),
+                    m.item.realmValueLabel(),
+                    m.item.lowestBuyoutLabel(),
+                  ]
+                : [
+                    m.item.dayColumn(),
+                    m.item.marketValueLabel(),
+                    m.item.histLabel(),
+                    m.item.soldPerDayLabel(),
+                  ]
             }
             rows={[...rows].reverse().map((r) => ({
               key: r.day,
@@ -172,7 +183,7 @@ export function ValueQuantityCard({
                     r.minBuyout ? (
                       <Money key="mb" copper={r.minBuyout} />
                     ) : (
-                      'No listings'
+                      m.item.noListings()
                     ),
                   ]
                 : [
@@ -186,8 +197,8 @@ export function ValueQuantityCard({
         )}
       >
         <div className="flex justify-between">
-          <p className="text-label">Market value</p>
-          {!isRealm && <p className="text-label">Sold per day</p>}
+          <p className="text-label">{m.item.marketValueLabel()}</p>
+          {!isRealm && <p className="text-label">{m.item.soldPerDayLabel()}</p>}
         </div>
         <ChartContainer
           config={{}}
@@ -237,7 +248,7 @@ export function ValueQuantityCard({
               <Bar
                 yAxisId="spd"
                 dataKey="spd"
-                name="Sold per day"
+                name={m.item.soldPerDayLabel()}
                 fill={C.spd}
                 isAnimationActive={false}
               />
@@ -247,22 +258,22 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="minBuyout"
-                  name="Lowest buyout"
+                  name={m.item.lowestBuyoutLabel()}
                   stroke={C.mv}
                   strokeWidth={1.5}
                   strokeDasharray="2 3"
                   dot={endDot(n, C.mv, C.mv, short)}
-                  label={endLabel(n, 'Buyout', C.mv)}
+                  label={endLabel(n, m.item.endLabelBuyout(), C.mv)}
                   isAnimationActive={false}
                 />
                 <Line
                   yAxisId="mv"
                   dataKey="mv"
-                  name="Realm market value"
+                  name={m.item.realmValueLabel()}
                   stroke={C.realm}
                   strokeWidth={2}
                   dot={endDot(n, C.realm, C.realm, short)}
-                  label={endLabel(n, 'Realm', C.realm)}
+                  label={endLabel(n, m.item.endLabelRealm(), C.realm)}
                   isAnimationActive={false}
                 />
               </>
@@ -271,22 +282,22 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="hist"
-                  name="60-day average"
+                  name={m.item.histLabel()}
                   stroke={C.hist}
                   strokeWidth={1.5}
                   strokeDasharray="4 3"
                   dot={endDot(n, C.hist, C.hist, short)}
-                  label={endLabel(n, 'Avg', C.hist)}
+                  label={endLabel(n, m.item.endLabelAvg(), C.hist)}
                   isAnimationActive={false}
                 />
                 <Line
                   yAxisId="mv"
                   dataKey="mv"
-                  name="Market value"
+                  name={m.item.marketValueLabel()}
                   stroke={C.mv}
                   strokeWidth={2}
                   dot={endDot(n, C.mv, C.tomato, short)}
-                  label={endLabel(n, 'Value', C.mv)}
+                  label={endLabel(n, m.item.endLabelValue(), C.mv)}
                   isAnimationActive={false}
                 />
               </>
@@ -298,7 +309,7 @@ export function ValueQuantityCard({
   }
 
   return (
-    <StatCard title={TITLE} range={range} onRangeChange={onRangeChange}>
+    <StatCard title={title} range={range} onRangeChange={onRangeChange}>
       {body}
     </StatCard>
   )
