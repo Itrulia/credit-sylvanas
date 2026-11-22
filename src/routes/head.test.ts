@@ -83,4 +83,14 @@ describe('root head', () => {
       meta?.find((m) => m.property === 'og:image:alt')?.content,
     ).toBeTruthy()
   })
+
+  it('links the favicons', () => {
+    expect(rootHead({}).links).toEqual(
+      expect.arrayContaining([
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+      ]),
+    )
+  })
 })

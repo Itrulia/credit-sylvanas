@@ -104,10 +104,21 @@ describe('root head', () => {
   })
 })
 
-describe('share image', () => {
+describe('share image and favicons', () => {
   it('public/og.png is a 1200x630 PNG, the size og:image declares', () => {
     const png = readFileSync('public/og.png')
     expect(png.subarray(1, 4).toString()).toBe('PNG')
     expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630])
+  })
+
+  it('ships the favicons the root head links', () => {
+    expect(read('public/favicon.svg')).toMatch(/^<svg /)
+    const ico = readFileSync('public/favicon.ico')
+    // ICO header (type 1, one image), then a 48x48 entry
+    expect([ico.readUInt16LE(2), ico.readUInt16LE(4), ico[6], ico[7]]).toEqual([
+      1, 1, 48, 48,
+    ])
+    const touch = readFileSync('public/apple-touch-icon.png')
+    expect([touch.readUInt32BE(16), touch.readUInt32BE(20)]).toEqual([180, 180])
   })
 })

@@ -60,6 +60,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         links: [
           ...canonical.links,
           { rel: 'describedby', type: 'text/plain', href: '/llms.txt' },
+          // static files: browser probes no longer run an SSR 404 render
+          { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+          { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+          { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
           ...PRELOAD_FONTS.map((href) => ({
             rel: 'preload',
             href,
