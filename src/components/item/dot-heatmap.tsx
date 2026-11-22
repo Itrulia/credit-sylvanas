@@ -3,8 +3,14 @@ import { ChartFigure } from '#/components/chart-figure'
 import { Delta } from '#/components/delta'
 import { DivergingLegend } from '#/components/diverging-legend'
 import { Money } from '#/components/money'
-import { binFill, binOf } from '#/lib/bins'
-import { dayOf, formatDate, formatDayLong, formatNumber } from '#/lib/format'
+import { binFill, binInk, binOf } from '#/lib/bins'
+import {
+  dayOf,
+  formatDate,
+  formatDayLong,
+  formatNumber,
+  formatPct,
+} from '#/lib/format'
 import type { Region, StatRange } from '#/lib/search'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
 import { CardNote, StatCard, StatTable } from './stat-card'
@@ -19,8 +25,8 @@ import {
   rangeNote,
 } from './stats'
 
-const CELL = 24
-const SQUARE = 20
+const CELL = 44
+const SQUARE = 40
 const LEFT = 32
 const TOP = 20
 const MIN_DAYS = 7
@@ -29,9 +35,6 @@ const MIN_DAYS = 7
 export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
   const width = LEFT + grid.columns.length * CELL
   const height = TOP + grid.rows.length * CELL
-  // "22 Nov" is wider than a cell, so daily columns label every other week,
-  // each label centred on its own column
-  const every = grid.layout === 'daily' && grid.columns.length > 1 ? 2 : 1
   return (
     <div className="relative overflow-x-auto">
       <svg
@@ -42,19 +45,17 @@ export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
         viewBox={`0 0 ${width} ${height}`}
         className="text-muted-foreground"
       >
-        {grid.columns.map((c, i) =>
-          i % every === 0 ? (
-            <text
-              key={c.key}
-              x={LEFT + i * CELL + CELL / 2}
-              y={TOP - 6}
-              textAnchor="middle"
-              className="fill-current text-micro"
-            >
-              {c.label}
-            </text>
-          ) : null,
-        )}
+        {grid.columns.map((c, i) => (
+          <text
+            key={c.key}
+            x={LEFT + i * CELL + CELL / 2}
+            y={TOP - 6}
+            textAnchor="middle"
+            className="fill-current text-micro"
+          >
+            {c.label}
+          </text>
+        ))}
         {grid.rows.map((r, i) => (
           <text
             key={r}
@@ -67,18 +68,34 @@ export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
         ))}
         {grid.cells.map((c) => {
           const ratio = grid.median ? c.value / grid.median - 1 : null
+          const bin = binOf(ratio)
+          const cx = LEFT + c.col * CELL + CELL / 2
+          const cy = TOP + c.row * CELL + CELL / 2
           return (
-            <rect
-              key={`${c.col}:${c.row}`}
-              x={LEFT + c.col * CELL + (CELL - SQUARE) / 2}
-              y={TOP + c.row * CELL + (CELL - SQUARE) / 2}
-              width={SQUARE}
-              height={SQUARE}
-              rx={3}
-              fill={binFill(binOf(ratio) ?? 0)}
-              stroke="var(--input)"
-              strokeWidth={1}
-            />
+            <g key={`${c.col}:${c.row}`}>
+              <rect
+                x={cx - SQUARE / 2}
+                y={cy - SQUARE / 2}
+                width={SQUARE}
+                height={SQUARE}
+                rx={3}
+                fill={binFill(bin ?? 0)}
+                stroke="var(--input)"
+                strokeWidth={1}
+              />
+              {ratio !== null && (
+                <text
+                  x={cx}
+                  y={cy}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={`var(${binInk(bin)})`}
+                  className="text-[11px] tabular-nums"
+                >
+                  {formatPct(ratio, { decimals: 0 })}
+                </text>
+              )}
+            </g>
           )
         })}
       </svg>
@@ -171,7 +188,7 @@ export function HeatmapCard({
     const summary = heatmapSummary(grid, range)
     const caption = useHourly
       ? `Each square is the average for that weekday and hour (UTC) on ${realmName}, from ${grid.days} days of scans.`
-      : `Each square is one day. Redder means further above the ${RANGE_DAYS[range]}-day median, bluer means below.`
+      : `Each square is one day and shows how far it sits from the ${RANGE_DAYS[range]}-day median: redder above, bluer below.`
     const note = useHourly ? null : rangeNote(range, points.length)
     const fmt = (v: number) =>
       kind === 'value' ? (

@@ -61,6 +61,15 @@ describe('HeatmapCard', () => {
     expect(sizes.size).toBe(1)
   })
 
+  it('prints the change vs the median inside every square', () => {
+    render(<HeatmapCard {...base} kind="value" points={points(14)} />)
+    const svg = screen.getByRole('img')
+    const pcts = [...svg.querySelectorAll('text')].filter((t) =>
+      /^(\+|−)?\d+%$/.test(String(t.textContent)),
+    )
+    expect(pcts).toHaveLength(svg.querySelectorAll('rect').length)
+  })
+
   it('centres each week label on its column', () => {
     render(<HeatmapCard {...base} kind="value" points={points(30)} />)
     const svg = screen.getByRole('img')
