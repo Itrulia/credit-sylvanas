@@ -1,5 +1,5 @@
 import handler from '@tanstack/react-start/server-entry'
-import { cachedFetch, dataVersion } from './server/edge-cache.ts'
+import { cachedFetch, pageVersion } from './server/edge-cache.ts'
 import { runScheduled } from './server/ingest/jobs.ts'
 import { withSecurityHeaders } from './server/security-headers.ts'
 import { wwwRedirect } from './server/www-redirect.ts'
@@ -12,7 +12,7 @@ export default {
           request,
           ctx,
           (canonical) => handler.fetch(canonical),
-          () => dataVersion(env.DB),
+          () => pageVersion(env.DB, env.CF_VERSION_METADATA.id),
         )),
     ),
   // awaited, not waitUntil: a rejection then marks the cron run as failed in the dashboard

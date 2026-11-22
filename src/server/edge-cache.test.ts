@@ -1,7 +1,12 @@
 import { env } from 'cloudflare:workers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { resetTables } from './test/reset.ts'
-import { cachedFetch, dataVersion, resetDataVersion } from './edge-cache.ts'
+import {
+  cachedFetch,
+  dataVersion,
+  pageVersion,
+  resetDataVersion,
+} from './edge-cache.ts'
 
 resetTables()
 beforeEach(resetDataVersion)
@@ -215,5 +220,16 @@ describe('dataVersion', () => {
     await insertImport('imported')
     expect(await dataVersion(env.DB, 59_000)).toBe(first)
     expect(await dataVersion(env.DB, 61_000)).not.toBe(first)
+  })
+})
+
+describe('pageVersion', () => {
+  it('changes with every deploy as well as every import', async () => {
+    await insertImport('imported')
+    const before = await pageVersion(env.DB, 'deploy-a', 0)
+    // cached HTML from the old deploy names asset files the new one deleted
+    expect(await pageVersion(env.DB, 'deploy-b', 0)).not.toBe(before)
+    await insertImport('imported')
+    expect(await pageVersion(env.DB, 'deploy-a', 61_000)).not.toBe(before)
   })
 })

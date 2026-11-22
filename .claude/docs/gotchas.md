@@ -187,6 +187,18 @@ unhydrated link.
 Load-bearing: no `data-wowhead` prop on `ItemLink`. Pinned by
 `src/components/item-link.test.tsx`.
 
+### The edge cache key carries the deploy id
+
+`pageVersion` in `src/server/edge-cache.ts` keys cached pages by the
+`CF_VERSION_METADATA` id plus the latest import. Keyed by the import alone,
+the deploy of 2026-11-22 kept serving HTML from the previous deploy for up to
+an hour, and that HTML loaded `/assets/index-BxaY5OWe.js`, which answered 404
+after the deploy, so the page never hydrated. Workers assets only serve the
+current deploy's files.
+
+Load-bearing: the deploy id in `pageVersion` and the `version_metadata`
+binding in `wrangler.jsonc`. Pinned by `src/server/edge-cache.test.ts`.
+
 ## Adding an entry
 
 ```markdown

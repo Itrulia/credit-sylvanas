@@ -38,6 +38,17 @@ export async function dataVersion(db: D1Database, now = Date.now()) {
   return memo.version
 }
 
+/**
+ * Cache key version: the Worker deploy plus the data. HTML cached before a
+ * deploy names hashed asset files the new deploy no longer serves (404), so
+ * a deploy must miss every old entry just like an import does.
+ */
+export const pageVersion = async (
+  db: D1Database,
+  deployId: string,
+  now = Date.now(),
+) => `${deployId}.${await dataVersion(db, now)}`
+
 export const resetDataVersion = () => {
   memo = null
 }
