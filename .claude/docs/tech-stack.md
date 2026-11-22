@@ -78,5 +78,7 @@ downloads TSM files. Build scripts for `workerd` and `sharp` are allowed in
 ## Env, secrets and deploy
 
 `.env` is committed and holds public values only. `VITE_CONTACT_EMAIL` is the only contact shown on `/impressum` and `/privacy` (prerendered); while it is empty both pages say contact details are pending and `vite.config.ts` logs a warning. Never fill it with a guessed address. Secrets go in `.env.local`,
-`.env.prod` or `.dev.vars`, all gitignored. Never run `wrangler login`,
-`wrangler deploy` or any `--remote` command; the user does that.
+`.env.prod` or `.dev.vars`, all gitignored. Deploy only from a clean
+checkout of `main` after the full gate passes there: run
+`pnpm db:migrate:remote`, then `pnpm run deploy`. Never deploy from a
+working tree with uncommitted changes, and never run `wrangler login`.
