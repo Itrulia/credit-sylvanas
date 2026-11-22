@@ -85,7 +85,8 @@ downloads TSM files. Build scripts for `workerd` and `sharp` are allowed in
 checkout of `main` after the full gate passes there: run
 `pnpm db:migrate:remote`, then `pnpm run deploy`. To run an ingest job
 outside its cron, `pnpm ingest:prod [region|realm]` posts to the Worker's
-`/__ingest` with `INGEST_TOKEN` from `.env.prod`; the same value must be set
+`/__ingest` with `INGEST_TOKEN` from `.env.local` or `.env.prod` (never
+`.env`, which is committed); the same value must be set
 as a Worker secret (`wrangler secret put INGEST_TOKEN`), and without it the
 endpoint answers 404. It prints every file's result and exits 1 when one
 failed. Don't run it while the cron runs (19:30 UTC for regions) or twice at

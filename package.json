@@ -22,7 +22,7 @@
     "db:migrate:remote": "wrangler d1 migrations apply credit-sylvanas-prices --remote",
     "db:seed": "node scripts/seed-local.ts",
     "db:synth": "node scripts/seed-synthetic.ts",
-    "ingest:prod": "node --env-file-if-exists=.env.prod scripts/ingest-prod.ts"
+    "ingest:prod": "node --env-file-if-exists=.env.local --env-file-if-exists=.env.prod scripts/ingest-prod.ts"
   },
   "dependencies": {
     "@fontsource-variable/atkinson-hyperlegible-mono": "5.3.0",
