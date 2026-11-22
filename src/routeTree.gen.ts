@@ -10,33 +10,121 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RegionRouteImport } from './routes/$region'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as RegionIndexRouteImport } from './routes/$region/index'
+import { Route as RegionHeatmapRouteImport } from './routes/$region/heatmap'
+import { Route as RegionRealmsRouteImport } from './routes/$region/realms'
+import { Route as RegionItemsIndexRouteImport } from './routes/$region/items/index'
+import { Route as RegionItemsItemIdRouteImport } from './routes/$region/items/$itemId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegionRoute = RegionRouteImport.update({
+  id: '/$region',
+  path: '/$region',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegionIndexRoute = RegionIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RegionRoute,
+} as any)
+const RegionHeatmapRoute = RegionHeatmapRouteImport.update({
+  id: '/heatmap',
+  path: '/heatmap',
+  getParentRoute: () => RegionRoute,
+} as any)
+const RegionRealmsRoute = RegionRealmsRouteImport.update({
+  id: '/realms',
+  path: '/realms',
+  getParentRoute: () => RegionRoute,
+} as any)
+const RegionItemsIndexRoute = RegionItemsIndexRouteImport.update({
+  id: '/items/',
+  path: '/items/',
+  getParentRoute: () => RegionRoute,
+} as any)
+const RegionItemsItemIdRoute = RegionItemsItemIdRouteImport.update({
+  id: '/items/$itemId',
+  path: '/items/$itemId',
+  getParentRoute: () => RegionRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$region': typeof RegionRouteWithChildren
+  '/about': typeof AboutRoute
+  '/$region/heatmap': typeof RegionHeatmapRoute
+  '/$region/realms': typeof RegionRealmsRoute
+  '/$region/': typeof RegionIndexRoute
+  '/$region/items/$itemId': typeof RegionItemsItemIdRoute
+  '/$region/items/': typeof RegionItemsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/$region/heatmap': typeof RegionHeatmapRoute
+  '/$region/realms': typeof RegionRealmsRoute
+  '/$region': typeof RegionIndexRoute
+  '/$region/items/$itemId': typeof RegionItemsItemIdRoute
+  '/$region/items': typeof RegionItemsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$region': typeof RegionRouteWithChildren
+  '/about': typeof AboutRoute
+  '/$region/heatmap': typeof RegionHeatmapRoute
+  '/$region/realms': typeof RegionRealmsRoute
+  '/$region/': typeof RegionIndexRoute
+  '/$region/items/$itemId': typeof RegionItemsItemIdRoute
+  '/$region/items/': typeof RegionItemsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/$region'
+    | '/about'
+    | '/$region/heatmap'
+    | '/$region/realms'
+    | '/$region/'
+    | '/$region/items/$itemId'
+    | '/$region/items/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/$region/heatmap'
+    | '/$region/realms'
+    | '/$region'
+    | '/$region/items/$itemId'
+    | '/$region/items'
+  id:
+    | '__root__'
+    | '/'
+    | '/$region'
+    | '/about'
+    | '/$region/heatmap'
+    | '/$region/realms'
+    | '/$region/'
+    | '/$region/items/$itemId'
+    | '/$region/items/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RegionRoute: typeof RegionRouteWithChildren
+  AboutRoute: typeof AboutRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +136,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$region': {
+      id: '/$region'
+      path: '/$region'
+      fullPath: '/$region'
+      preLoaderRoute: typeof RegionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$region/': {
+      id: '/$region/'
+      path: '/'
+      fullPath: '/$region/'
+      preLoaderRoute: typeof RegionIndexRouteImport
+      parentRoute: typeof RegionRoute
+    }
+    '/$region/heatmap': {
+      id: '/$region/heatmap'
+      path: '/heatmap'
+      fullPath: '/$region/heatmap'
+      preLoaderRoute: typeof RegionHeatmapRouteImport
+      parentRoute: typeof RegionRoute
+    }
+    '/$region/realms': {
+      id: '/$region/realms'
+      path: '/realms'
+      fullPath: '/$region/realms'
+      preLoaderRoute: typeof RegionRealmsRouteImport
+      parentRoute: typeof RegionRoute
+    }
+    '/$region/items/': {
+      id: '/$region/items/'
+      path: '/items'
+      fullPath: '/$region/items/'
+      preLoaderRoute: typeof RegionItemsIndexRouteImport
+      parentRoute: typeof RegionRoute
+    }
+    '/$region/items/$itemId': {
+      id: '/$region/items/$itemId'
+      path: '/items/$itemId'
+      fullPath: '/$region/items/$itemId'
+      preLoaderRoute: typeof RegionItemsItemIdRouteImport
+      parentRoute: typeof RegionRoute
+    }
   }
 }
 
+interface RegionRouteChildren {
+  RegionHeatmapRoute: typeof RegionHeatmapRoute
+  RegionRealmsRoute: typeof RegionRealmsRoute
+  RegionIndexRoute: typeof RegionIndexRoute
+  RegionItemsItemIdRoute: typeof RegionItemsItemIdRoute
+  RegionItemsIndexRoute: typeof RegionItemsIndexRoute
+}
+
+const RegionRouteChildren: RegionRouteChildren = {
+  RegionHeatmapRoute: RegionHeatmapRoute,
+  RegionRealmsRoute: RegionRealmsRoute,
+  RegionIndexRoute: RegionIndexRoute,
+  RegionItemsItemIdRoute: RegionItemsItemIdRoute,
+  RegionItemsIndexRoute: RegionItemsIndexRoute,
+}
+
+const RegionRouteWithChildren =
+  RegionRoute._addFileChildren(RegionRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RegionRoute: RegionRouteWithChildren,
+  AboutRoute: AboutRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
