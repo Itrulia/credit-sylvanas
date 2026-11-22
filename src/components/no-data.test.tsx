@@ -30,7 +30,7 @@ async function show(s: ReturnType<typeof status>) {
 
 it('sends people to the regions that have prices', async () => {
   expect((await show(status(['us']))).textContent).toBe('No EU prices yet')
-  expect(screen.getByRole('link', { name: 'US' })).toBeTruthy()
+  expect(screen.getByRole('link', { name: 'NA' })).toBeTruthy()
 })
 
 it('says no prices anywhere when no region has data', async () => {
@@ -38,5 +38,5 @@ it('says no prices anywhere when no region has data', async () => {
   expect(
     screen.getByText(/hasn't finished its first daily price update/),
   ).toBeTruthy()
-  expect(screen.queryByRole('link', { name: 'US' })).toBeNull()
+  expect(screen.queryByRole('link', { name: 'NA' })).toBeNull()
 })

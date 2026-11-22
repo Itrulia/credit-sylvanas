@@ -32,7 +32,7 @@ describe('CrossRegionTable', () => {
     expect(
       await screen.findByText('Cross-region comparison needs two regions.'),
     ).toBeTruthy()
-    expect(screen.getByText(/Only US has prices so far/)).toBeTruthy()
+    expect(screen.getByText(/Only NA has prices so far/)).toBeTruthy()
     expect(screen.queryByRole('table')).toBeNull()
   })
 
@@ -49,12 +49,13 @@ describe('CrossRegionTable', () => {
       await screen.findByRole('rowheader', { name: 'Arcanite Bar' })
     ).closest('tr')!
     const cells = within(first).getAllByRole('cell')
-    expect(cells[1].className).toContain('hatch')
-    expect(cells[1].textContent).toContain('Not listed in EU')
+    // columns follow REGIONS: EU, then NA
+    expect(cells[0].className).toContain('hatch')
+    expect(cells[0].textContent).toContain('Not listed in EU')
     const headers = screen
       .getAllByRole('columnheader')
       .map((th) => th.textContent)
-    expect(headers).toContain('US (this region)')
+    expect(headers).toContain('NA (this region)')
     expect(headers).toContain('EU')
   })
 
@@ -88,7 +89,7 @@ describe('CrossRegionTable', () => {
     const first = (
       await screen.findByRole('rowheader', { name: 'Arcanite Bar' })
     ).closest('tr')!
-    const us = within(first).getAllByRole('cell')[0]
+    const us = within(first).getAllByRole('cell')[1]
     expect(us.textContent).toContain('1g')
     expect(us.getAttribute('style')).toContain('--div-p2')
   })

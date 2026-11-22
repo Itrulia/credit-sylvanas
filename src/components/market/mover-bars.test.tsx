@@ -76,7 +76,7 @@ describe('MoverChart', () => {
     )
     const table = await screen.findByRole('table')
     expect(table.querySelector('caption')?.textContent).toBe(
-      'Top 2 US items by price decrease, against the 60-day average. Only 2 items moved more than 0.5%.',
+      'Top 2 NA items by price decrease, against the 60-day average. Only 2 items moved more than 0.5%.',
     )
     expect(table.querySelector('tbody .sr-only')?.textContent).toBe(
       '30.0 percent below 60-day average',

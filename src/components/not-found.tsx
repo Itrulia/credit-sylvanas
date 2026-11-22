@@ -19,7 +19,7 @@ const link = 'underline'
 // typed loosely on purpose: NotFoundRouteProps makes the router type circular
 export function NotFound({ data }: { data?: unknown }) {
   const params = useParams({ strict: false })
-  // / and unknown regions fall back to US for the next step
+  // / and unknown regions fall back to NA (code 'us') for the next step
   const region = params.region && isRegion(params.region) ? params.region : 'us'
   const name = REGION_INFO[region].name
   const missing = Missing.safeParse(data)
@@ -37,7 +37,10 @@ export function NotFound({ data }: { data?: unknown }) {
           icon="search"
           title={`There's no "${value}" region.`}
         >
-          <p>Forever auction houses exist in US, EU, KR and TW.</p>
+          <p>
+            Prices are available for{' '}
+            {REGIONS.map((r) => REGION_INFO[r].name).join(' and ')}.
+          </p>
           <ul className="flex flex-wrap gap-x-4 gap-y-2">
             {REGIONS.map((r) => (
               <li key={r}>

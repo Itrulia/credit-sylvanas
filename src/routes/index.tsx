@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { REGIONS, REGION_INFO } from '#/config/regions'
+import { DISABLED_REGIONS, REGIONS, REGION_INFO } from '#/config/regions'
 import type { RegionCode } from '#/config/regions'
 import { Credit } from '#/components/credit'
 import { Icon } from '#/components/icon'
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/')({
   head: () =>
     pageHead(
       'WoW Forever auction house prices',
-      'Daily World of Warcraft Forever auction house prices for US, EU, KR and TW, with price history. Pricing data from TradeSkillMaster.',
+      'Daily World of Warcraft Forever auction house prices for EU and NA, with price history. Pricing data from TradeSkillMaster.',
     ),
   component: Home,
 })
@@ -70,6 +70,18 @@ function Home() {
             </li>
           )
         })}
+        {DISABLED_REGIONS.map((r) => (
+          <li key={r.code}>
+            <div
+              aria-disabled="true"
+              className="flex min-h-36 cursor-not-allowed flex-col rounded-md border border-dashed p-5 pl-6 text-muted-foreground"
+            >
+              <span className="text-display">{r.name}</span>
+              <span className="mt-1 text-sm">{r.fullName}</span>
+              <span className="mt-auto pt-4 text-sm">Not available yet</span>
+            </div>
+          </li>
+        ))}
       </ul>
 
       <p className="mt-8 text-sm text-muted-foreground">

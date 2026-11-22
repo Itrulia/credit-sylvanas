@@ -38,7 +38,7 @@ describe('HeatmapCard', () => {
     expect(
       screen.getByText('The heatmap needs a week of daily updates.'),
     ).toBeTruthy()
-    expect(screen.getByText(/We have 6 of 7 for this item in US/)).toBeTruthy()
+    expect(screen.getByText(/We have 6 of 7 for this item in NA/)).toBeTruthy()
     expect(screen.queryByRole('img')).toBeNull()
   })
 

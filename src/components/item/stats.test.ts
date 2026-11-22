@@ -163,7 +163,7 @@ describe('summary sentences', () => {
       },
     ]
     expect(compareSummary(own, eu(90), 'us', 30)).toBe(
-      'In the last 30 days US averaged 10.0% above the median of 2 regions.',
+      'In the last 30 days NA averaged 10.0% above the median of 2 regions.',
     )
     expect(
       compareSummary(
@@ -173,7 +173,7 @@ describe('summary sentences', () => {
         7,
       ),
     ).toBe(
-      'In the last 7 days US averaged 15.0% below the median of 2 regions.',
+      'In the last 7 days NA averaged 15.0% below the median of 2 regions.',
     )
   })
 
@@ -187,7 +187,7 @@ describe('summary sentences', () => {
       { day: 2, mv: 100 },
     ]
     expect(realmCompareSummary(realm, region, 'Nightslayer', 'us')).toBe(
-      'Nightslayer averaged 10.0% below the US market value.',
+      'Nightslayer averaged 10.0% below the NA market value.',
     )
   })
 

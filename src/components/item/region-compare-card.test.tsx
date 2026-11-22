@@ -40,7 +40,7 @@ describe('RegionCompareCard', () => {
   it('shows the one-region empty state', () => {
     render(<RegionCompareCard {...base} points={points(10)} others={[]} />)
     expect(
-      screen.getByText('Only US has a price history for this item so far.'),
+      screen.getByText('Only NA has a price history for this item so far.'),
     ).toBeTruthy()
   })
 
@@ -52,7 +52,7 @@ describe('RegionCompareCard', () => {
         others={[{ region: 'eu', points: other(1) }]}
       />,
     )
-    expect(screen.getByText(/Only US has a price history/)).toBeTruthy()
+    expect(screen.getByText(/Only NA has a price history/)).toBeTruthy()
   })
 
   it('compares regions with a legend and a matching table', async () => {
@@ -65,7 +65,7 @@ describe('RegionCompareCard', () => {
     )
     expect(
       screen.getByText(
-        'In the last 10 days US averaged 10.0% above the median of 2 regions.',
+        'In the last 10 days NA averaged 10.0% above the median of 2 regions.',
       ),
     ).toBeTruthy()
     const legend = screen.getByRole('list', { name: 'Regions' })
@@ -73,14 +73,14 @@ describe('RegionCompareCard', () => {
       within(legend)
         .getAllByRole('listitem')
         .map((li) => li.textContent),
-    ).toEqual(['US (this region)', 'EU'])
+    ).toEqual(['EU', 'NA (this region)'])
     await userEvent.click(screen.getByRole('button', { name: 'Show as table' }))
     const table = screen.getByRole('table')
     expect(
       within(table)
         .getAllByRole('columnheader')
         .map((h) => h.textContent),
-    ).toEqual(['Day', 'US', 'EU'])
+    ).toEqual(['Day', 'EU', 'NA'])
     expect(within(table).getAllByRole('row')).toHaveLength(11)
   })
 
@@ -102,7 +102,7 @@ describe('RegionCompareCard', () => {
       screen.getByRole('heading', { name: 'This realm vs region' }),
     ).toBeTruthy()
     expect(
-      screen.getByText('Nightslayer averaged 10.0% below the US market value.'),
+      screen.getByText('Nightslayer averaged 10.0% below the NA market value.'),
     ).toBeTruthy()
   })
 

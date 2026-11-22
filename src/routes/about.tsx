@@ -22,8 +22,8 @@ function About() {
       intro={
         <p>
           {SITE} shows what items sell for on the World of Warcraft Forever
-          auction houses in the US and EU. All prices are in gold, silver and
-          copper.
+          auction houses in the EU and NA regions. All prices are in gold,
+          silver and copper.
         </p>
       }
     >

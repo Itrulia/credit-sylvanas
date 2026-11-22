@@ -89,7 +89,7 @@ it('lists imports with times, status word and short hash, no links', async () =>
   const [, first, second] = within(table).getAllByRole('row')
   expect(first.textContent).toContain('22 Nov 2026, 19:31 UTC')
   expect(first.textContent).toContain('22 Nov 2026, 04:10 UTC')
-  expect(first.textContent).toContain('US')
+  expect(first.textContent).toContain('NA')
   expect(first.textContent).toContain('14,211')
   expect(first.textContent).toContain('Imported')
   expect(first.textContent).toContain('3f9a0c1d2e4b')

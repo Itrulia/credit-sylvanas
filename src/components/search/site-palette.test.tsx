@@ -249,7 +249,7 @@ describe('item search group', () => {
     await act(() => new Promise((r) => setTimeout(r, 300)))
     expect(search).not.toHaveBeenCalled()
     type('ab')
-    await screen.findByText(/No item matches "ab" in US/)
+    await screen.findByText(/No item matches "ab" in NA/)
     expect(search).toHaveBeenCalledWith({ region: 'us', q: 'ab' })
   })
 
@@ -276,7 +276,7 @@ describe('item search group', () => {
     const router = setup('/us')
     await openPalette()
     type('zzzz')
-    await screen.findByText(/No item matches "zzzz" in US/)
+    await screen.findByText(/No item matches "zzzz" in NA/)
     press('End')
     expect(selected()).toMatch(/Search all items/)
     press('Enter')

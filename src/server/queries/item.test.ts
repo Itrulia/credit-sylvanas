@@ -20,10 +20,10 @@ describe('getItem', () => {
     expect(r.current).toMatchObject({ mv: 100, day: D - 1 })
     expect(r.lastSeenDay).toBe(D - 1)
     expect(r.regions.map((c) => [c.region, c.mv])).toEqual([
-      ['us', 100],
       ['eu', 300],
+      ['us', 100],
     ])
-    expect(r.regions[0].index).toBeCloseTo(-0.5)
+    expect(r.regions[1].index).toBeCloseTo(-0.5) // us
     expect(r.realm).toBeNull()
     expect(r.realms).toEqual([])
   })
@@ -33,10 +33,10 @@ describe('getItem', () => {
     await seedDay('us', D, [{ id: 1, mv: 100 }])
     const r = await getItem(db, { region: 'us', itemId: 1 }, NOW)
     expect(r.regions.map((c) => [c.region, c.mv])).toEqual([
-      ['us', 100],
       ['eu', null],
+      ['us', 100],
     ])
-    expect(r.regions[1].index).toBeNull()
+    expect(r.regions[0].index).toBeNull()
   })
 
   it('has no current snapshot when the region last listed it more than 90 days ago', async () => {

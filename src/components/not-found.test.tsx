@@ -53,7 +53,7 @@ it('names the missing region and lists the real ones', async () => {
       name: 'There\'s no "xx" region.',
     }),
   ).toBeTruthy()
-  expect(screen.getByText(/exist in US, EU, KR and TW/)).toBeTruthy()
+  expect(screen.getByText(/available for EU and NA\./)).toBeTruthy()
   expect(screen.getByRole('link', { name: /^EU/ }).getAttribute('href')).toBe(
     '/eu',
   )
@@ -84,7 +84,7 @@ it('offers search and the market for an unknown path', async () => {
     screen.getByRole('button', { name: /search or jump to/i }),
   ).toBeTruthy()
   expect(
-    screen.getByRole('link', { name: 'Go to US market' }).getAttribute('href'),
+    screen.getByRole('link', { name: 'Go to NA market' }).getAttribute('href'),
   ).toBe('/us')
 })
 

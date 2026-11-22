@@ -27,7 +27,7 @@ it('no results: names the query and region, then the most sold items', async () 
   )
   expect(
     await screen.findByRole('heading', {
-      name: 'No items match "zzz" in US.',
+      name: 'No items match "zzz" in NA.',
     }),
   ).toBeTruthy()
   expect(screen.getByText(/Check the spelling/)).toBeTruthy()

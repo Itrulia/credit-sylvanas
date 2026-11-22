@@ -47,6 +47,14 @@ it('switches region keeping the page and q, dropping realm and faction', async (
   expect(href).not.toContain('realm=')
   expect(href).not.toContain('faction=')
   expect(
-    screen.getByRole('link', { name: 'US' }).getAttribute('aria-current'),
+    screen.getByRole('link', { name: 'NA' }).getAttribute('aria-current'),
   ).toBe('page')
+  // EU first, then NA, then KR and TW shown but switched off
+  const names = screen.getAllByRole('listitem').map((li) => li.textContent)
+  expect(names).toEqual(['EU', 'NA', 'KR', 'TW'])
+  for (const name of ['KR', 'TW']) {
+    const off = screen.getByRole('link', { name })
+    expect(off.getAttribute('href')).toBeNull()
+    expect(off.getAttribute('aria-disabled')).toBe('true')
+  }
 })

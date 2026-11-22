@@ -70,7 +70,7 @@ describe('runIngest', () => {
     ])
     expect(fetchFn).toHaveBeenCalledTimes(2)
 
-    const [us] = await imports()
+    const [, us] = await imports()
     const key = 'forever/us/region/items/2026-11-20T08:54:05Z.csv.gz'
     expect(us).toMatchObject({
       region: 'us',
@@ -111,7 +111,7 @@ describe('runIngest', () => {
     const fetchFn = stubFetch({
       [US]: { body: 'itemId,name,price\n1,x,3\n', etag: '"bad"' },
     })
-    const [us] = await runIngest(db, archive, fetchFn, {
+    const [, us] = await runIngest(db, archive, fetchFn, {
       kind: 'region',
       now: NOW,
     })
@@ -127,8 +127,8 @@ describe('runIngest', () => {
       kind: 'region',
       now: NOW + 3_600_000,
     })
-    expect(sentEtag(fetchFn, 0)).toBeNull()
-    expect(sentEtag(fetchFn, 2)).toBe('"broken"')
+    expect(sentEtag(fetchFn, 1)).toBeNull()
+    expect(sentEtag(fetchFn, 3)).toBe('"broken"')
     const rows = await imports()
     expect(
       rows
@@ -161,18 +161,18 @@ describe('runIngest', () => {
         method === 'batch'
           ? vi.spyOn(db, 'batch').mockRejectedValueOnce(transient)
           : vi.spyOn(archive, 'put').mockRejectedValueOnce(transient)
-      const [failed] = await runIngest(db, archive, day2, {
+      const [, failed] = await runIngest(db, archive, day2, {
         kind: 'region',
         now: NOW + 86_400_000,
       })
       spy.mockRestore()
       expect(failed.status).toBe('failed')
-      const [retry] = await runIngest(db, archive, day2, {
+      const [, retry] = await runIngest(db, archive, day2, {
         kind: 'region',
         now: NOW + 90_000_000,
       })
       // the last good file's ETag, never the one that failed to store
-      expect(sentEtag(day2, 2)).toBe('"1"')
+      expect(sentEtag(day2, 3)).toBe('"1"')
       expect(retry.status).toBe('imported')
     },
   )
@@ -180,12 +180,12 @@ describe('runIngest', () => {
   it('records a 304 as skipped', async () => {
     const fetchFn = stubFetch({ [US]: { body: usCsv, etag: '"same"' } })
     await runIngest(db, archive, fetchFn, { kind: 'region', now: NOW })
-    const [second] = await runIngest(db, archive, fetchFn, {
+    const [, second] = await runIngest(db, archive, fetchFn, {
       kind: 'region',
       now: NOW + 1000,
     })
     expect(second).toMatchObject({ status: 'skipped', reason: 'not modified' })
-    expect(sentEtag(fetchFn, 2)).toBe('"same"')
+    expect(sentEtag(fetchFn, 3)).toBe('"same"')
   })
 
   it('skips an unchanged updatedAt without writing to R2', async () => {
@@ -197,7 +197,7 @@ describe('runIngest', () => {
       { kind: 'region', now: NOW },
     )
     const put = vi.spyOn(archive, 'put')
-    const [second] = await runIngest(
+    const [, second] = await runIngest(
       db,
       archive,
       stubFetch({ [US]: { body: usCsv, etag: '"b"' } }),
@@ -227,7 +227,7 @@ describe('runIngest', () => {
         now: NOW,
       },
     )
-    const [second] = await runIngest(
+    const [, second] = await runIngest(
       db,
       archive,
       stubFetch({
@@ -353,7 +353,7 @@ describe('runIngest', () => {
   it('writes a 2,500-row file in three chunks inside one batch', async () => {
     const batch = vi.spyOn(db, 'batch')
     const started = Date.now()
-    const [us] = await runIngest(
+    const [, us] = await runIngest(
       db,
       archive,
       stubFetch({
@@ -412,7 +412,7 @@ describe('runIngest', () => {
         ),
       ]),
     )
-    const [second] = await runIngest(
+    const [, second] = await runIngest(
       db,
       archive,
       stubFetch({
@@ -521,7 +521,7 @@ describe('runScheduled', () => {
       env,
       fetchFn,
     )
-    expect(results[0].status).toBe('imported')
+    expect(results.map((r) => r.status)).toEqual(['failed', 'imported'])
     expect(fetchFn).toHaveBeenCalledTimes(2)
   })
 

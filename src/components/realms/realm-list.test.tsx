@@ -34,15 +34,15 @@ function setup(realms: readonly RealmConfig[], ruleset: RealmsFilter = 'all') {
 it('shows the shipped empty state with a link to the market', async () => {
   setup([])
   expect(await screen.findByText('No realms on the books yet.')).toBeTruthy()
-  expect(screen.getByText(/Region prices cover every realm in US/)).toBeTruthy()
+  expect(screen.getByText(/Region prices cover every realm in NA/)).toBeTruthy()
   expect(
-    screen.getByRole('link', { name: 'Go to US market' }).getAttribute('href'),
+    screen.getByRole('link', { name: 'Go to NA market' }).getAttribute('href'),
   ).toBe('/us')
 })
 
 it('lists realms with a ruleset badge and a link per faction', async () => {
   setup(REALMS)
-  const list = await screen.findByRole('list', { name: 'US realms' })
+  const list = await screen.findByRole('list', { name: 'NA realms' })
   const [gilneas] = within(list).getAllByRole('listitem')
   expect(gilneas.textContent).toContain('Gilneas')
   expect(gilneas.textContent).toContain('PvP')
@@ -60,7 +60,7 @@ it('lists realms with a ruleset badge and a link per faction', async () => {
 
 it('filters by ruleset', async () => {
   setup(REALMS, 'rp')
-  const list = await screen.findByRole('list', { name: 'US realms' })
+  const list = await screen.findByRole('list', { name: 'NA realms' })
   expect(
     within(list)
       .getAllByRole('listitem')
@@ -70,7 +70,7 @@ it('filters by ruleset', async () => {
 
 it('says when a ruleset filter matches nothing and offers all types', async () => {
   setup(REALMS, 'rp-pvp')
-  expect(await screen.findByText('No RP-PvP realms added for US.')).toBeTruthy()
+  expect(await screen.findByText('No RP-PvP realms added for NA.')).toBeTruthy()
   expect(
     screen
       .getByRole('link', { name: 'Show all realm types' })

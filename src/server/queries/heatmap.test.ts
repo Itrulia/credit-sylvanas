@@ -82,7 +82,7 @@ describe('buildHeatmap', () => {
     ])
     await seedDay('eu', D, [{ id: 1, mv: 300 }])
     const r = await buildHeatmap(db, { region: 'us', n: 10 }, NOW)
-    expect(r.regionsWithData).toEqual(['us', 'eu'])
+    expect(r.regionsWithData).toEqual(['eu', 'us'])
     expect(r.rows.map((x) => x.id)).toEqual([1, 2])
     expect(r.rows[0].cells.us?.index).toBeCloseTo(-0.5)
     expect(r.rows[1].cells.eu).toBeNull()
