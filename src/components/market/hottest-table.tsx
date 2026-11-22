@@ -13,6 +13,7 @@ import { HotBy } from '#/lib/search'
 import type { Region } from '#/lib/search'
 import type { HotRow } from '#/server/types'
 
+// below md only the column the list is ranked by stays, next to price and trend
 const wide = 'hidden md:table-cell'
 const margin = 'w-10 border-r border-border-strong'
 
@@ -25,7 +26,13 @@ function Head({ label, term }: { label: string; term: GlossaryKey }) {
   )
 }
 
-function columns(region: Region, showChange: boolean): DataColumn<HotRow>[] {
+export function columns(
+  region: Region,
+  hot: HotBy,
+  showChange: boolean,
+): DataColumn<HotRow>[] {
+  const spdClass = hot === 'traded' ? undefined : wide
+  const goldClass = hot === 'gold' ? undefined : wide
   return [
     {
       id: 'rank',
@@ -89,7 +96,11 @@ function columns(region: Region, showChange: boolean): DataColumn<HotRow>[] {
       id: 'spd',
       header: () => <Head label="Sold/day" term="soldPerDay" />,
       cell: ({ row }) => formatNumber(row.original.spd, 1),
-      meta: { align: 'right', cellClassName: wide, headerClassName: wide },
+      meta: {
+        align: 'right',
+        cellClassName: spdClass,
+        headerClassName: spdClass,
+      },
     },
     {
       id: 'goldVolume',
@@ -97,7 +108,11 @@ function columns(region: Region, showChange: boolean): DataColumn<HotRow>[] {
       cell: ({ row }) => (
         <Money copper={row.original.goldVolume} variant="compact" align />
       ),
-      meta: { align: 'right', cellClassName: wide, headerClassName: wide },
+      meta: {
+        align: 'right',
+        cellClassName: goldClass,
+        headerClassName: goldClass,
+      },
     },
   ]
 }
@@ -150,7 +165,7 @@ export function HottestTable({
             caption={`Top ${rows.length} ${name} items by ${measure} per day`}
             captionHidden
             label={`Hottest ${name} items`}
-            columns={columns(region, showChange)}
+            columns={columns(region, hot, showChange)}
             data={rows}
             getRowId={(row) => String(row.id)}
           />

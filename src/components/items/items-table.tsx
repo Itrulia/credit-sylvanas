@@ -32,8 +32,8 @@ export function nextSort(
   return { sort: column, dir: column === 'name' ? 'asc' : 'desc' }
 }
 
-// Below md only Item, Market value and vs avg stay; the rest scroll in on wider screens.
-const WIDE = 'hidden md:table-cell'
+// Every column stays on phones: the table scrolls sideways under a sticky
+// Item column, so the sort column is always reachable (CONTEXT, Mobile first).
 const money = { align: 'right', sortable: true } as const
 
 function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
@@ -101,7 +101,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     {
       id: 'historical',
       header: '60-day avg',
-      meta: { ...money, headerClassName: WIDE, cellClassName: WIDE },
+      meta: money,
       cell: ({ row }) => <Money copper={row.original.hist} align />,
     },
     {
@@ -113,29 +113,19 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     {
       id: 'avgSalePrice',
       header: 'Avg sale',
-      meta: { ...money, headerClassName: WIDE, cellClassName: WIDE },
+      meta: money,
       cell: ({ row }) => <Money copper={row.original.asp} align />,
     },
     {
       id: 'soldPerDay',
       header: 'Sold/day',
-      meta: {
-        align: 'right',
-        sortable: true,
-        headerClassName: WIDE,
-        cellClassName: `${WIDE} num`,
-      },
+      meta: { align: 'right', sortable: true, cellClassName: 'num' },
       cell: ({ row }) => formatNumber(row.original.spd, 1),
     },
     {
       id: 'saleRate',
       header: 'Sale rate',
-      meta: {
-        align: 'right',
-        sortable: true,
-        headerClassName: WIDE,
-        cellClassName: `${WIDE} num`,
-      },
+      meta: { align: 'right', sortable: true, cellClassName: 'num' },
       cell: ({ row }) =>
         formatPct(row.original.saleRate, { decimals: 0, sign: false }),
     },
