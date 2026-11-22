@@ -25,6 +25,11 @@ describe('withSecurityHeaders', () => {
     const reportOnly = res.headers.get('Content-Security-Policy-Report-Only')!
     expect(reportOnly).toContain('https://wow.zamimg.com')
     expect(reportOnly).toContain('https://cloud.umami.is')
+    // both blocked on live /eu (2026-11-22): Wowhead's stylesheet, Umami's beacon
+    const directive = (name: string) =>
+      reportOnly.split('; ').find((d) => d.startsWith(`${name} `))
+    expect(directive('style-src')).toContain('https://wow.zamimg.com')
+    expect(directive('connect-src')).toContain('https://gateway.umami.is')
   })
 
   it('works on immutable responses such as cache hits and redirects', () => {

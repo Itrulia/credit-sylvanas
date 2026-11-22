@@ -6,7 +6,7 @@
   Strict-Transport-Security: max-age=31536000
   X-Frame-Options: DENY
   Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://wow.zamimg.com https://nether.wowhead.com https://cloud.umami.is; connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://nether.wowhead.com; img-src 'self' data: https://wow.zamimg.com; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://wow.zamimg.com https://nether.wowhead.com https://cloud.umami.is; connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://gateway.umami.is https://nether.wowhead.com; img-src 'self' data: https://wow.zamimg.com; style-src 'self' 'unsafe-inline' https://wow.zamimg.com; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 # content-hashed file names
 /assets/*

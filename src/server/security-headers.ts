@@ -19,9 +19,9 @@ const ENFORCED = [
 const REPORT_ONLY = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline' ${zamimg} ${nether} ${umami}`,
-  `connect-src 'self' ${umami} https://api-gateway.umami.dev ${nether}`,
+  `connect-src 'self' ${umami} https://api-gateway.umami.dev https://gateway.umami.is ${nether}`,
   `img-src 'self' data: ${zamimg}`,
-  "style-src 'self' 'unsafe-inline'",
+  `style-src 'self' 'unsafe-inline' ${zamimg}`,
   "font-src 'self'",
   ENFORCED,
 ].join('; ')
