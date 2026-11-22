@@ -10,13 +10,22 @@ describe('Money', () => {
     const { container } = render(<Money copper={12_340_507} />)
     const data = container.querySelector('data')!
     expect(data.getAttribute('value')).toBe('12340507')
-    expect(data.getAttribute('aria-label')).toBe('1234 gold 5 silver 7 copper')
-    expect(data.textContent).toBe('1,234g05s07c')
+    expect(data.hasAttribute('aria-label')).toBe(false)
+    expect(data.querySelector('.sr-only')?.textContent).toBe(
+      '1234 gold 5 silver 7 copper',
+    )
+    const visible = [...data.children].filter((c) => !c.matches('.sr-only'))
+    expect(visible.map((c) => c.textContent).join('')).toBe('1,234g05s07c')
+    expect(visible.every((c) => c.getAttribute('aria-hidden') === 'true')).toBe(
+      true,
+    )
   })
 
   it('keeps three slots when aligned', () => {
     const { container } = render(<Money copper={507} align />)
-    expect(container.querySelector('data')!.children).toHaveLength(3)
+    expect(
+      container.querySelectorAll('data > [aria-hidden="true"]'),
+    ).toHaveLength(3)
   })
 
   it('renders a dash with a reason for null', () => {

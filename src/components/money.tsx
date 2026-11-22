@@ -48,13 +48,14 @@ export function Money({
   return (
     <data
       value={copper}
-      aria-label={moneyLabel(copper)}
       className={cn(
         'num whitespace-nowrap',
         align ? 'money-grid gap-x-1' : 'inline-flex gap-1',
         className,
       )}
     >
+      {/* aria-label is prohibited on <data> (generic role), so the label is text */}
+      <span className="sr-only">{moneyLabel(copper)}</span>
       {align
         ? (['g', 's', 'c'] as const).map((unit) => {
             const part = parts.find((p) => p.unit === unit)
