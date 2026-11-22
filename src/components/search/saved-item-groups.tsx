@@ -12,15 +12,13 @@ import { itemName } from '#/lib/wowhead'
 import { m } from '#/paraglide/messages.js'
 import type { Command, DynamicGroup } from '../command-palette/command'
 import { searchCommands } from '../command-palette/search-commands'
-import { Icon } from '../icon'
-import type { IconName } from '#/lib/icons'
+import { ItemLink } from '../item-link'
 
 type Navigate = ReturnType<typeof useNavigate>
 
 export function savedItemCommand(
   item: SavedItem,
   group: string,
-  icon: IconName,
   navigate: Navigate,
 ): Command {
   return {
@@ -29,7 +27,15 @@ export function savedItemCommand(
     title: itemName(item.name, item.itemId),
     keywords: [String(item.itemId)],
     section: REGION_INFO[item.region].name,
-    icon: <Icon name={icon} />,
+    // an item link, so Wowhead puts the item's icon in front of the name
+    content: (
+      <ItemLink
+        id={item.itemId}
+        name={item.name}
+        region={item.region}
+        className="min-w-0"
+      />
+    ),
     perform: () =>
       void navigate({
         to: '/$region/items/$itemId',
@@ -53,7 +59,7 @@ export function useSavedItemGroups(query: string): DynamicGroup[] {
   const favouriteCommands = useMemo(
     () =>
       favourites.map((item) =>
-        savedItemCommand(item, m.palette_groupFavourites(), 'star', navigate),
+        savedItemCommand(item, m.palette_groupFavourites(), navigate),
       ),
     [favourites, navigate],
   )
@@ -75,7 +81,7 @@ export function useSavedItemGroups(query: string): DynamicGroup[] {
       id: 'recent',
       label: m.palette_groupRecent(),
       commands: shownRecent.map((item) =>
-        savedItemCommand(item, m.palette_groupRecent(), 'history', navigate),
+        savedItemCommand(item, m.palette_groupRecent(), navigate),
       ),
     },
     {

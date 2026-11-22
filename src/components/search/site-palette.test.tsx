@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react'
 import {
   QueryClient,
@@ -318,6 +319,12 @@ describe('saved items', () => {
     expect(groupLabels()).toEqual(['Recent', 'Navigate', 'Region'])
     expect(screen.getByRole('option', { name: /Item #2/ })).toBeTruthy()
     expect(selected()).toMatch(/Arcanite Bar/)
+    // an item link, so Wowhead puts the item's icon in front of the name
+    const link = within(
+      screen.getByRole('option', { name: /Arcanite Bar/ }),
+    ).getByRole('link', { name: 'Arcanite Bar' })
+    expect(link.getAttribute('href')).toBe('/eu/items/12360')
+    expect(link.getAttribute('data-wowhead')).toBe('item=12360&domain=forever')
     press('Enter')
     await waitFor(() => expect(location(router)).toBe('/eu/items/12360'))
   })
