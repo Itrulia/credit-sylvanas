@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const MAP_BOX = 'h-[28rem] w-full sm:aspect-[2/1] sm:h-auto'
+export const MAP_BOX = 'aspect-[3/4] w-full sm:aspect-[2/1]'
 
 /** Static, final-size placeholder while the map streams in. No shimmer. */
 export function MarketMapSkeleton() {

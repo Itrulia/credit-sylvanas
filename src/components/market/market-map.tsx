@@ -22,9 +22,13 @@ import type { MapMetric } from './market'
 import { MAP_BOX } from './market-map-skeleton'
 import { squarify } from './treemap'
 
-// layout box; tiles are placed in percent, so the map stretches to any width
+// layout boxes; tiles are placed in percent, so the map stretches to any
+// width. Phones get a portrait layout of their own (MAP_BOX is 3:4 below sm),
+// so tiles keep their shape instead of being squashed out of a 2:1 layout.
 const W = 1200
 const H = 600
+const PW = 600
+const PH = 800
 const pct = (v: number, of: number) => `${(v / of) * 100}%`
 
 // binInk as static classes Tailwind can see
@@ -88,15 +92,10 @@ export interface MarketMapProps {
 export function MarketMap({ region, metric }: MarketMapProps) {
   const { data } = useSuspenseQuery(marketMapQuery({ region }))
   const [list, setList] = useState(false)
-  const rects = useMemo(
-    () =>
-      squarify(
-        data.map((r) => r.goldVolume),
-        W,
-        H,
-      ),
-    [data],
-  )
+  const [rects, portrait] = useMemo(() => {
+    const values = data.map((r) => r.goldVolume)
+    return [squarify(values, W, H), squarify(values, PW, PH)]
+  }, [data])
   const name = REGION_INFO[region].name
   const valueOf = (r: HotRow) => (metric === 'd1' ? r.d1 : r.vsHist)
   if (data.length === 0) {
@@ -142,6 +141,7 @@ export function MarketMap({ region, metric }: MarketMapProps) {
             const value = valueOf(r)
             const bin = binOf(value)
             const rect = rects[i]
+            const tall = portrait[i]
             const label = itemName(r.name, r.id)
             const signed =
               value === null ? '—' : formatPct(value, { decimals: 0 })
@@ -153,17 +153,23 @@ export function MarketMap({ region, metric }: MarketMapProps) {
                 tabIndex={-1}
                 title={`${label}, ${signed}`}
                 className={cn(
-                  'absolute overflow-hidden border border-card no-underline [container-type:size] hover:z-10 hover:outline-2 hover:outline-foreground',
+                  'absolute top-(--pt) left-(--pl) h-(--ph) w-(--pw) overflow-hidden border border-card no-underline [container-type:size] hover:z-10 hover:outline-2 hover:outline-foreground sm:top-(--t) sm:left-(--l) sm:h-(--h) sm:w-(--w)',
                   bin === null && 'hatch',
                   inkClass(bin),
                 )}
-                style={{
-                  left: pct(rect.x, W),
-                  top: pct(rect.y, H),
-                  width: pct(rect.w, W),
-                  height: pct(rect.h, H),
-                  background: bin === null ? undefined : binFill(bin),
-                }}
+                style={
+                  {
+                    '--l': pct(rect.x, W),
+                    '--t': pct(rect.y, H),
+                    '--w': pct(rect.w, W),
+                    '--h': pct(rect.h, H),
+                    '--pl': pct(tall.x, PW),
+                    '--pt': pct(tall.y, PH),
+                    '--pw': pct(tall.w, PW),
+                    '--ph': pct(tall.h, PH),
+                    background: bin === null ? undefined : binFill(bin),
+                  } as React.CSSProperties
+                }
               >
                 <span className="hidden p-1 text-xs leading-tight font-semibold [@container(min-width:40px)_and_(min-height:18px)]:block">
                   <span className="line-clamp-2 break-words" data-tile-label="">
