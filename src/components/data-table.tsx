@@ -133,9 +133,10 @@ export function DataTable<TData extends RowData>({
                     )}
                   >
                     {header.isPlaceholder ? null : (
+                      // same height as the info button, so plain headers line up
                       <span
                         className={cn(
-                          'inline-flex items-center gap-0.5',
+                          'inline-flex min-h-6 items-center gap-0.5 pointer-coarse:min-h-11',
                           right && 'flex-row-reverse',
                         )}
                       >
