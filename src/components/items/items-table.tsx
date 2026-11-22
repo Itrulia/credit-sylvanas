@@ -74,9 +74,12 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
         return (
           <span className="inline-flex items-center gap-1">
             <ItemLink id={id} name={name} region={region} />
-            {/* no data-wowhead here: the item link already gets the icon */}
+            {/* the item link already gets the icon; Wowhead iconizes any
+                wowhead.com href, so mark this one as already processed */}
             <a
               href={wowheadItemUrl(id)}
+              data-wh-icon-added="true"
+              data-wh-rename-link="false"
               target="_blank"
               rel="noreferrer"
               aria-label={`View ${itemName(name, id)} on Wowhead (opens Wowhead)`}

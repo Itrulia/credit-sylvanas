@@ -75,13 +75,15 @@ it('renders the region columns with aria-sort and calls onSort', async () => {
   expect(
     screen.getByRole('link', { name: 'Arcanite Bar' }).getAttribute('href'),
   ).toBe('/us/items/12360')
-  expect(
-    screen
-      .getByRole('link', {
-        name: 'View Arcanite Bar on Wowhead (opens Wowhead)',
-      })
-      .getAttribute('href'),
-  ).toBe('https://www.wowhead.com/forever/item=12360')
+  const outbound = screen.getByRole('link', {
+    name: 'View Arcanite Bar on Wowhead (opens Wowhead)',
+  })
+  expect(outbound.getAttribute('href')).toBe(
+    'https://www.wowhead.com/forever/item=12360',
+  )
+  // Wowhead iconizes every wowhead.com link it finds; mark this one as done
+  expect(outbound.dataset.whIconAdded).toBe('true')
+  expect(outbound.dataset.whRenameLink).toBe('false')
   expect(screen.getByText('25%')).toBeTruthy()
   expect(screen.getByText('42.5')).toBeTruthy()
   fireEvent.click(screen.getByRole('button', { name: /Market value/ }))
