@@ -87,7 +87,8 @@ export function DataTable<TData extends RowData>({
       aria-label={`${label}, scrolls sideways`}
       aria-busy={busy || undefined}
       className={cn(
-        'overflow-x-auto rounded-md border',
+        // relative: sr-only text inside is absolute and would escape the scroller
+        'relative overflow-x-auto rounded-md border',
         busy && 'opacity-60',
         className,
       )}

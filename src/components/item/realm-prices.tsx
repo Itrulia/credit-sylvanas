@@ -33,7 +33,7 @@ export function RealmPrices({
       <h2 id="realms-heading" className="text-title">
         Realm prices
       </h2>
-      <div className="mt-3 overflow-x-auto">
+      <div className="relative mt-3 overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">Realm prices for this item</caption>
           <thead className="ledger-rule">

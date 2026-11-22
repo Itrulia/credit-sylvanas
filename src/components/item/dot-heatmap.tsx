@@ -32,7 +32,7 @@ export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
   // "22 Nov" is wider than a cell, so daily columns label every other week
   const every = grid.layout === 'daily' && grid.columns.length > 1 ? 2 : 1
   return (
-    <div className="overflow-x-auto">
+    <div className="relative overflow-x-auto">
       <svg
         role="img"
         aria-label={label}

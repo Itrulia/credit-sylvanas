@@ -85,7 +85,7 @@ function Market() {
           </p>
         )}
       </header>
-      <div className="grid gap-8 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <section aria-labelledby="hottest" className="space-y-3 lg:col-span-7">
           <h2 id="hottest" tabIndex={-1} className="text-title">
             Hottest
