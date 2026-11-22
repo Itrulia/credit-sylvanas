@@ -6,7 +6,7 @@ Prices are shown in gold, silver and copper (1 gold = 100 silver = 10,000 copper
 
 Pricing data from TradeSkillMaster (https://tradeskillmaster.com). The site has no bulk download, export or API, because TradeSkillMaster's terms do not allow republishing their data in bulk.
 
-Each item has its own page at https://credit-sylvanas.app/{region}/items/{itemId}, where region is us, eu, kr or tw and itemId is the World of Warcraft item id.
+Each item has its own page at https://credit-sylvanas.app/{region}/items/{itemId}, where region is eu or us (NA) and itemId is the World of Warcraft item id.
 
 Last reviewed 2026-11-22.
 

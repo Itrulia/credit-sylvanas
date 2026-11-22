@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { REGIONS } from '#/config/regions'
+import { DISABLED_REGIONS, REGIONS } from '#/config/regions'
 import { realmsFor } from '#/config/realms'
 import { SITE_URL } from '#/lib/seo'
 
@@ -45,6 +45,12 @@ describe('llms.txt', () => {
     expect(text).not.toMatch(/^\|/m)
     expect(text).not.toMatch(/!\[/)
     expect(text).not.toMatch(/^[ \t]+[-*] /m)
+  })
+
+  it('never names a disabled region, whose pages 404', () => {
+    for (const { code } of DISABLED_REGIONS) {
+      expect(text).not.toMatch(new RegExp(`\\b${code}\\b`))
+    }
   })
 
   it('lists 10 to 30 well-formed canonical links to routes that exist', () => {
