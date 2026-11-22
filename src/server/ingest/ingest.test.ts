@@ -132,6 +132,39 @@ describe('runIngest', () => {
     ])
   })
 
+  it.each([
+    ['write', 'batch'],
+    ['archive', 'put'],
+  ] as const)(
+    'refetches a file whose %s failed instead of sending its ETag',
+    async (_, method) => {
+      const day1 = stubFetch({
+        [US]: { body: regionFile(3, '2026-11-20T08:00:00Z'), etag: '"1"' },
+      })
+      await runIngest(db, archive, day1, { kind: 'region', now: NOW })
+      const day2 = stubFetch({
+        [US]: { body: regionFile(3, '2026-11-21T08:00:00Z'), etag: '"2"' },
+      })
+      const target = method === 'batch' ? db : archive
+      const spy = vi
+        .spyOn(target, method as never)
+        .mockRejectedValueOnce(new Error('D1_ERROR: transient') as never)
+      const [failed] = await runIngest(db, archive, day2, {
+        kind: 'region',
+        now: NOW + 86_400_000,
+      })
+      spy.mockRestore()
+      expect(failed.status).toBe('failed')
+      const [retry] = await runIngest(db, archive, day2, {
+        kind: 'region',
+        now: NOW + 90_000_000,
+      })
+      // the last good file's ETag, never the one that failed to store
+      expect(sentEtag(day2, 4)).toBe('"1"')
+      expect(retry.status).toBe('imported')
+    },
+  )
+
   it('records a 304 as skipped', async () => {
     const fetchFn = stubFetch({ [US]: { body: usCsv, etag: '"same"' } })
     await runIngest(db, archive, fetchFn, { kind: 'region', now: NOW })

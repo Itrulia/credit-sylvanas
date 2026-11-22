@@ -141,8 +141,9 @@ async function runJob(
     }
   }
 
-  // ETag from the newest row whatever its status, so a broken or unchanged
-  // file is not downloaded again on every run (TSM term 4)
+  // ETag from the newest row that has one, so a broken or unchanged file is
+  // not downloaded again on every run (TSM term 4). Archive and write
+  // failures store none: the file was fine, so the next run fetches it again.
   const lastEtag = await db
     .prepare(
       'SELECT etag FROM imports WHERE source_url = ?1 AND etag IS NOT NULL ORDER BY id DESC LIMIT 1',
@@ -207,6 +208,7 @@ async function runJob(
   } catch (e) {
     return record({
       ...meta,
+      etag: null,
       status: 'failed',
       reason: `archive failed: ${message(e)}`,
     })
@@ -263,6 +265,7 @@ async function runJob(
   } catch (e) {
     return record({
       ...meta,
+      etag: null,
       r2_key: r2Key,
       status: 'failed',
       reason: `write failed: ${message(e)}`,
