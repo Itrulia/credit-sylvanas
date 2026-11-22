@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { plural } from '#/lib/format'
+import { m } from '#/i18n'
+import { formatInt } from '#/lib/format'
 
 export function countText(total: number, q: string) {
+  const count = formatInt(total)
   return q
-    ? `${plural(total, 'item', 'items')} matching "${q}"`
-    : plural(total, 'item', 'items')
+    ? m.items.countMatchingLabel({ n: total, count, q })
+    : m.items.countLabel({ n: total, count })
 }
 
 /**

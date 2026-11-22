@@ -3,7 +3,8 @@ import { Icon } from '#/components/icon'
 import { ItemLink } from '#/components/item-link'
 import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO } from '#/config/regions'
-import { plural } from '#/lib/format'
+import { m } from '#/i18n'
+import { formatInt } from '#/lib/format'
 import type { Region } from '#/lib/search'
 import { wowheadItemUrl } from '#/lib/wowhead'
 import type { HotRow } from '#/server/types'
@@ -27,7 +28,7 @@ function MostSold({ region, rows }: { region: Region; rows: HotRow[] }) {
   }
   return (
     <div className="space-y-2 pt-2">
-      <h3 className="text-label">Most sold right now</h3>
+      <h3 className="text-label">{m.items.mostSoldHeading()}</h3>
       <ul className="space-y-1">
         {rows.map((row) => (
           <li key={row.id}>
@@ -57,7 +58,7 @@ export function ItemsEmpty({
     const last = lastPage(total)
     return (
       <StatePanel
-        title={`There is no page ${page}.`}
+        title={m.items.pastEndTitle({ page })}
         actions={
           <Link
             from="/$region/items/"
@@ -65,12 +66,16 @@ export function ItemsEmpty({
             search={(prev) => ({ ...prev, page: undefined })}
             className="inline-flex min-h-11 items-center underline"
           >
-            Back to page 1
+            {m.items.pastEndBackLink()}
           </Link>
         }
       >
         <p>
-          {countText(total, q)} fit on {plural(last, 'page', 'pages')}.
+          {m.items.pastEndBody({
+            countText: countText(total, q),
+            pages: last,
+            pageCount: formatInt(last),
+          })}
         </p>
         <MostSold region={region} rows={popular} />
       </StatePanel>
@@ -78,7 +83,7 @@ export function ItemsEmpty({
   }
   if (isNumericQuery(q)) {
     return (
-      <StatePanel title={`No item #${q} in ${name}.`}>
+      <StatePanel title={m.items.numericMissTitle({ id: q, region: name })}>
         <p>
           <a
             href={wowheadItemUrl(Number(q))}
@@ -86,20 +91,17 @@ export function ItemsEmpty({
             rel="noreferrer"
             className="inline-flex min-h-11 items-center gap-1 underline"
           >
-            Look it up on Wowhead
+            {m.items.numericMissLink()}
             <Icon name="open_in_new" />
-            <span className="sr-only">(opens Wowhead)</span>
+            <span className="sr-only">{m.items.numericMissLinkHint()}</span>
           </a>
         </p>
       </StatePanel>
     )
   }
   return (
-    <StatePanel title={`No items match "${q}" in ${name}.`}>
-      <p>
-        Check the spelling, try part of the name ("Arcanite" instead of
-        "Arcanite Bar"), or search by item ID.
-      </p>
+    <StatePanel title={m.items.noMatchTitle({ q, region: name })}>
+      <p>{m.items.noMatchHint()}</p>
       <MostSold region={region} rows={popular} />
     </StatePanel>
   )

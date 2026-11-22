@@ -3,6 +3,7 @@ import { useDebouncedCallback } from '@tanstack/react-pacer'
 import { Icon } from '#/components/icon'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
+import { m } from '#/i18n'
 import { cn } from '#/lib/utils'
 
 export interface ItemsSearchInputProps {
@@ -33,7 +34,7 @@ export function ItemsSearchInput({
   })
   return (
     <div role="search" className={cn('flex flex-col gap-1.5', className)}>
-      <Label htmlFor={id}>Search items</Label>
+      <Label htmlFor={id}>{m.items.searchLabel()}</Label>
       <div className="relative">
         <Icon
           name="search"
@@ -45,7 +46,7 @@ export function ItemsSearchInput({
           autoComplete="off"
           spellCheck={false}
           maxLength={64}
-          placeholder="Item name or ID, e.g. Arcanite Bar"
+          placeholder={m.items.searchPlaceholder()}
           value={value}
           onChange={(e) => {
             setValue(e.target.value)

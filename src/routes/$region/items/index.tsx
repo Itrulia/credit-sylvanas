@@ -9,6 +9,7 @@ import { ItemsEmpty, isNumericQuery } from '#/components/items/items-empty'
 import { ItemsSearchInput } from '#/components/items/items-search-input'
 import { ItemsTable, nextSort } from '#/components/items/items-table'
 import { Pager } from '#/components/items/pager'
+import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { ITEMS_DEFAULTS, itemsSearch } from '#/lib/search'
 import type { Region } from '#/lib/search'
@@ -45,8 +46,8 @@ export const Route = createFileRoute('/$region/items/')({
   head: ({ params }) => {
     const name = params.region.toUpperCase()
     return pageHead(
-      `Item prices · ${name} Forever AH`,
-      `Search and sort every item on the ${name} Forever auction house by market value, sale rate and daily sales.`,
+      m.items.headTitle({ region: name }),
+      m.items.headDescription({ region: name }),
     )
   },
   component: Items,
@@ -68,7 +69,7 @@ function Items() {
   return (
     <div className="page-wrap space-y-4 py-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <h1 className="text-display">Item prices</h1>
+        <h1 className="text-display">{m.items.pageTitle()}</h1>
         <ItemsSearchInput
           q={q}
           className="md:w-96"

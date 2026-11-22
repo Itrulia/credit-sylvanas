@@ -5,21 +5,22 @@ import { Icon } from '#/components/icon'
 import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatNumber, formatPct } from '#/lib/format'
 import { ItemSort } from '#/lib/search'
 import type { Region, SortDir } from '#/lib/search'
 import { itemName, wowheadItemUrl } from '#/lib/wowhead'
 import type { ListRow } from '#/server/types'
 
-const SORT_LABEL: Record<ItemSort, string> = {
-  name: 'item name',
-  marketValue: 'market value',
-  historical: '60-day average',
-  vsHist: 'market value against the 60-day average',
-  avgSalePrice: 'average sale price',
-  soldPerDay: 'units sold per day',
-  saleRate: 'sale rate',
-  goldPerDay: 'gold traded per day',
+const SORT_LABEL: Record<ItemSort, () => string> = {
+  name: m.items.sortName,
+  marketValue: m.items.sortMarketValue,
+  historical: m.items.sortHistorical,
+  vsHist: m.items.sortVsHist,
+  avgSalePrice: m.items.sortAvgSalePrice,
+  soldPerDay: m.items.sortSoldPerDay,
+  saleRate: m.items.sortSaleRate,
+  goldPerDay: m.items.sortGoldPerDay,
 }
 
 /** Clicking the active column flips it. A new column starts high to low, names A to Z. */
@@ -42,25 +43,27 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     ? [
         {
           id: 'realmMv',
-          header: 'Realm market value',
+          header: m.items.columnRealmMarketValue(),
           meta: { align: 'right' },
           cell: ({ row }) => (
             <Money
               copper={row.original.realmMv ?? null}
               align
-              reason="Not listed on this realm"
+              reason={m.items.realmNotListed()}
             />
           ),
         },
         {
           id: 'minBuyout',
-          header: 'Lowest buyout',
+          header: m.items.columnLowestBuyout(),
           meta: { align: 'right' },
           cell: ({ row }) =>
             row.original.minBuyout ? (
               <Money copper={row.original.minBuyout} align />
             ) : (
-              <span className="text-muted-foreground">No listings</span>
+              <span className="text-muted-foreground">
+                {m.items.noListings()}
+              </span>
             ),
         },
       ]
@@ -68,7 +71,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
   return [
     {
       id: 'name',
-      header: 'Item',
+      header: m.items.columnItem(),
       meta: { sortable: true, rowHeader: true },
       cell: ({ row }) => {
         const { id, name } = row.original
@@ -88,7 +91,9 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
               data-wh-rename-link="false"
               target="_blank"
               rel="noreferrer"
-              aria-label={`View ${itemName(name, id)} on Wowhead (opens Wowhead)`}
+              aria-label={m.items.wowheadLinkLabel({
+                name: itemName(name, id),
+              })}
               className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground pointer-coarse:size-11"
             >
               <Icon name="open_in_new" />
@@ -99,32 +104,32 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     },
     {
       id: 'marketValue',
-      header: 'Market value',
+      header: m.items.columnMarketValue(),
       meta: { ...money, info: 'marketValue' },
       cell: ({ row }) => <Money copper={row.original.mv} align />,
     },
     ...realm,
     {
       id: 'historical',
-      header: '60-day average',
+      header: m.items.columnHistorical(),
       meta: { ...money, info: 'historical' },
       cell: ({ row }) => <Money copper={row.original.hist} align />,
     },
     {
       id: 'vsHist',
-      header: 'vs 60-day avg',
+      header: m.items.columnVsHist(),
       meta: { align: 'right', sortable: true, info: 'vsHist' },
       cell: ({ row }) => <Delta value={row.original.vsHist} mode="vsHist" />,
     },
     {
       id: 'avgSalePrice',
-      header: 'Avg. sale price',
+      header: m.items.columnAvgSalePrice(),
       meta: { ...money, info: 'avgSalePrice' },
       cell: ({ row }) => <Money copper={row.original.asp} align />,
     },
     {
       id: 'soldPerDay',
-      header: 'Sold per day',
+      header: m.items.columnSoldPerDay(),
       meta: {
         align: 'right',
         sortable: true,
@@ -135,7 +140,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     },
     {
       id: 'saleRate',
-      header: 'Sale rate',
+      header: m.items.columnSaleRate(),
       meta: {
         align: 'right',
         sortable: true,
@@ -147,7 +152,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     },
     {
       id: 'goldPerDay',
-      header: 'Gold per day',
+      header: m.items.columnGoldPerDay(),
       meta: { ...money, info: 'goldPerDay' },
       cell: ({ row }) => (
         <Money
@@ -185,16 +190,20 @@ export function ItemsTable({
   const order =
     sort === 'name'
       ? dir === 'asc'
-        ? 'A to Z'
-        : 'Z to A'
+        ? m.items.orderAToZ()
+        : m.items.orderZToA()
       : dir === 'asc'
-        ? 'lowest first'
-        : 'highest first'
+        ? m.items.orderLowestFirst()
+        : m.items.orderHighestFirst()
   return (
     <DataTable
-      caption={`${name} items by ${SORT_LABEL[sort]}, ${order}`}
+      caption={m.items.tableCaption({
+        region: name,
+        sortLabel: SORT_LABEL[sort](),
+        order,
+      })}
       captionHidden
-      label={`${name} items`}
+      label={m.items.tableLabel({ region: name })}
       columns={columns(region, withRealm)}
       data={rows}
       getRowId={(row) => String(row.id)}
