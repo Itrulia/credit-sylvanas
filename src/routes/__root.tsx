@@ -13,7 +13,7 @@ import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
 import { WowheadTooltips } from '#/components/wowhead-tooltips'
 import { LOCALE, m } from '#/i18n'
-import { canonicalLinks } from '#/lib/seo'
+import { SITE, SITE_URL, canonicalLinks } from '#/lib/seo'
 import sansFont from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url'
 import displayFont from '@fontsource/newsreader/files/newsreader-latin-600-normal.woff2?url'
 import appCss from '../styles.css?url'
@@ -45,7 +45,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           { charSet: 'utf-8' },
           { name: 'viewport', content: 'width=device-width, initial-scale=1' },
           { name: 'color-scheme', content: 'light' },
+          // oatmilk, the page background, so the mobile browser bar blends in
+          { name: 'theme-color', content: '#EDE4D3' },
           ...canonical.meta,
+          { property: 'og:site_name', content: SITE },
+          { property: 'og:type', content: 'website' },
+          { property: 'og:image', content: `${SITE_URL}/og.png` },
+          { property: 'og:image:width', content: '1200' },
+          { property: 'og:image:height', content: '630' },
+          { property: 'og:image:alt', content: m.shell.shareImageAlt() },
+          // X ignores og:image without it
+          { name: 'twitter:card', content: 'summary_large_image' },
         ],
         links: [
           ...canonical.links,

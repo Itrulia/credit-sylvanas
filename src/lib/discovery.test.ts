@@ -103,3 +103,11 @@ describe('root head', () => {
     )
   })
 })
+
+describe('share image', () => {
+  it('public/og.png is a 1200x630 PNG, the size og:image declares', () => {
+    const png = readFileSync('public/og.png')
+    expect(png.subarray(1, 4).toString()).toBe('PNG')
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630])
+  })
+})

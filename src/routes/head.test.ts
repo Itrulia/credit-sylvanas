@@ -51,6 +51,7 @@ describe('root head', () => {
     (
       Root.options.head as (ctx: unknown) => {
         links?: Array<Partial<Record<string, string>>>
+        meta?: Array<Partial<Record<string, string>>>
       }
     )({ matches: [{ pathname: '/eu/items', search }] })
 
@@ -63,5 +64,23 @@ describe('root head', () => {
       rel: 'canonical',
       href: 'https://credit-sylvanas.app/eu/items',
     })
+  })
+
+  it('carries the site-wide share card and theme colour', () => {
+    const meta = rootHead({}).meta
+    expect(meta).toEqual(
+      expect.arrayContaining([
+        { name: 'theme-color', content: '#EDE4D3' },
+        { property: 'og:site_name', content: 'Credit Sylvanas' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:image', content: 'https://credit-sylvanas.app/og.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+      ]),
+    )
+    expect(
+      meta?.find((m) => m.property === 'og:image:alt')?.content,
+    ).toBeTruthy()
   })
 })

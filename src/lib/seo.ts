@@ -18,7 +18,14 @@ export function pageHead(title: string, description?: string, noindex = false) {
   return {
     meta: [
       { title: m.shell.docTitle({ page: title, site: SITE }) },
-      ...(description ? [{ name: 'description', content: description }] : []),
+      // bare title: og:site_name in the root head carries the site name
+      { property: 'og:title', content: title },
+      ...(description
+        ? [
+            { name: 'description', content: description },
+            { property: 'og:description', content: description },
+          ]
+        : []),
       ...(noindex ? [{ name: 'robots', content: 'noindex' }] : []),
     ],
   }

@@ -6,6 +6,9 @@ export const shell = {
     `${page} · ${site}`,
 
   skipLink: () => 'Skip to content',
+  // og:image alt text for public/og.png
+  shareImageAlt: () =>
+    'Credit Sylvanas: WoW Forever auction house prices for EU and NA, with daily updates and 90 days of price history',
 
   // header
   wordmarkLead: () => 'Credit',
