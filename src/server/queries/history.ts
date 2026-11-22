@@ -9,20 +9,20 @@ export interface HistoryArgs {
   faction?: Faction
 }
 
+const cur = `(SELECT max(day) FROM region_snapshots WHERE region = ?2)`
+
+// INDEXED BY: see gotchas.md, the planner otherwise reads the whole region block
+export const OWN_HISTORY_SQL = `SELECT day, market_value, historical, avg_sale_price, sold_per_day
+  FROM region_snapshots INDEXED BY region_snapshots_item WHERE item_id = ?1 AND region = ?2 AND day >= ${cur} - 89 ORDER BY day`
+
 /** Always the full 90-day window for one item; the cards filter ranges in render. */
 export async function itemHistory(
   db: D1Database,
   { region, itemId, realm, faction }: HistoryArgs,
   nowMs: number,
 ): Promise<ItemHistory> {
-  const cur = `(SELECT max(day) FROM region_snapshots WHERE region = ?2)`
   const statements = [
-    db
-      .prepare(
-        `SELECT day, market_value, historical, avg_sale_price, sold_per_day
-         FROM region_snapshots WHERE item_id = ?1 AND region = ?2 AND day >= ${cur} - 89 ORDER BY day`,
-      )
-      .bind(itemId, region),
+    db.prepare(OWN_HISTORY_SQL).bind(itemId, region),
     db
       .prepare(
         `SELECT region, day, market_value FROM region_snapshots

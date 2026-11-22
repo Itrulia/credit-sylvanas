@@ -29,6 +29,12 @@ const REALM_PRICE = `SELECT realm, faction, max(updated_at) AS updated_at, day, 
   FROM realm_snapshots
   WHERE region = ?1 AND realm = ?2 AND faction = ?3 AND item_id = ?4 AND updated_at >= ?5`
 
+export const CURRENT_SQL = `SELECT day, market_value, historical, avg_sale_price, sale_rate, sold_per_day, updated_at
+  FROM region_snapshots INDEXED BY region_snapshots_item
+  WHERE item_id = ?1 AND region = ?2
+    AND day >= (SELECT max(day) FROM region_snapshots WHERE region = ?2) - 89
+  ORDER BY day DESC LIMIT 1`
+
 const toRealmPrice = (r: RealmSql | undefined): RealmPrice | null =>
   r && r.updated_at != null
     ? {
@@ -62,15 +68,7 @@ export async function getItem(
     Record<string, unknown>
   >([
     db.prepare('SELECT id, name FROM items WHERE id = ?1').bind(itemId),
-    db
-      .prepare(
-        `SELECT day, market_value, historical, avg_sale_price, sale_rate, sold_per_day, updated_at
-         FROM region_snapshots
-         WHERE item_id = ?1 AND region = ?2
-           AND day >= (SELECT max(day) FROM region_snapshots WHERE region = ?2) - 89
-         ORDER BY day DESC LIMIT 1`,
-      )
-      .bind(itemId, region),
+    db.prepare(CURRENT_SQL).bind(itemId, region),
     // bare columns with max(): SQLite returns them from the max(day) row
     db
       .prepare(

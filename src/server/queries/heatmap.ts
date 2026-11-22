@@ -50,26 +50,26 @@ export async function crossRegion(
   }
 }
 
+export const DAILY_CHANGE_SQL = `WITH cur AS (SELECT max(day) d FROM region_snapshots WHERE region = ?1),
+       w AS (
+         SELECT item_id, day, market_value,
+                LAG(market_value) OVER (PARTITION BY item_id ORDER BY day) AS prev_mv,
+                LAG(day) OVER (PARTITION BY item_id ORDER BY day) AS prev_day
+         FROM region_snapshots INDEXED BY region_snapshots_item
+         WHERE region = ?1 AND item_id IN (SELECT value FROM json_each(?2))
+           AND day BETWEEN (SELECT d FROM cur) - 16 AND (SELECT d FROM cur))
+       SELECT item_id, day,
+              CASE WHEN day - prev_day <= 3
+                   THEN (market_value - prev_mv) * 1.0 / NULLIF(prev_mv, 0) END AS d1
+       FROM w WHERE day > (SELECT d FROM cur) - 14 ORDER BY item_id, day`
+
 /** d1 per item and day for the last 14 snapshot days; a step counts only within 3 days. */
 export async function dailyChange(
   db: D1Database,
   { region, ids }: { region: Region; ids: number[] },
 ): Promise<{ itemId: number; day: number; d1: number | null }[]> {
   const rows = await db
-    .prepare(
-      `WITH cur AS (SELECT max(day) d FROM region_snapshots WHERE region = ?1),
-       w AS (
-         SELECT item_id, day, market_value,
-                LAG(market_value) OVER (PARTITION BY item_id ORDER BY day) AS prev_mv,
-                LAG(day) OVER (PARTITION BY item_id ORDER BY day) AS prev_day
-         FROM region_snapshots
-         WHERE region = ?1 AND item_id IN (SELECT value FROM json_each(?2))
-           AND day BETWEEN (SELECT d FROM cur) - 16 AND (SELECT d FROM cur))
-       SELECT item_id, day,
-              CASE WHEN day - prev_day <= 3
-                   THEN (market_value - prev_mv) * 1.0 / NULLIF(prev_mv, 0) END AS d1
-       FROM w WHERE day > (SELECT d FROM cur) - 14 ORDER BY item_id, day`,
-    )
+    .prepare(DAILY_CHANGE_SQL)
     .bind(region, JSON.stringify(ids))
     .all<{ item_id: number; day: number; d1: number | null }>()
   return rows.results.map((r) => ({ itemId: r.item_id, day: r.day, d1: r.d1 }))

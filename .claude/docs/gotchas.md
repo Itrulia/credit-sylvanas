@@ -126,6 +126,17 @@ After a dependency change, `pnpm dev` can serve pre-bundled chunks from
 to client rendering. Stop dev, run `rm -rf node_modules/.vite`, start again.
 Nothing guards this.
 
+### Item-scoped snapshot reads pin `INDEXED BY region_snapshots_item`
+
+The own-history (`queries/history.ts`), current (`queries/item.ts`) and
+daily-change (`queries/heatmap.ts`) reads name the item index. D1 has no
+`sqlite_stat1`, so the planner picked the `(region, day, item_id)` primary key
+and read all of a region's 90 days (about 700k EU rows, 326 ms locally) to
+return 90 rows, on every item view and hover preload (2026-11-22).
+
+Load-bearing: the `INDEXED BY` clauses. Pinned by
+`src/server/queries/plan.test.ts`.
+
 ## Adding an entry
 
 ```markdown

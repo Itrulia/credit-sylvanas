@@ -2,7 +2,7 @@ import '@tanstack/react-start/server-only'
 import type { Region } from '../../lib/search.ts'
 import type { RegionStatus } from '../types.ts'
 
-const REGIONS_SQL = `SELECT DISTINCT region FROM imports WHERE kind = 'region' AND status = 'imported' ORDER BY region`
+export const REGIONS_SQL = `SELECT DISTINCT region FROM imports WHERE kind = 'region' AND status = 'imported' ORDER BY region`
 
 // Reads imports only (a few thousand rows), never the snapshot tables.
 export async function regionStatus(
