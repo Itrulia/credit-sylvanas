@@ -40,6 +40,8 @@ function listStore(key: string, cap: number) {
   // undefined forces a re-parse; the cache keeps the snapshot stable
   let raw: string | null | undefined
   let cached = EMPTY
+  // set once a write fails: getItem may still answer with the old value
+  let memoryOnly = false
   const notify = () => listeners.forEach((listener) => listener())
   const onStorage = (event: StorageEvent) => {
     if (event.key === key || event.key === null) {
@@ -49,6 +51,9 @@ function listStore(key: string, cap: number) {
 
   return {
     read(): SavedItem[] {
+      if (memoryOnly) {
+        return cached
+      }
       let next: string | null
       try {
         next = localStorage.getItem(key)
@@ -63,12 +68,14 @@ function listStore(key: string, cap: number) {
     },
     write(items: SavedItem[]) {
       cached = items.slice(0, cap)
-      try {
-        raw = JSON.stringify(cached)
-        localStorage.setItem(key, raw)
-      } catch {
-        // blocked storage (private mode): keep the list for this page session
-        raw = undefined
+      if (!memoryOnly) {
+        try {
+          raw = JSON.stringify(cached)
+          localStorage.setItem(key, raw)
+        } catch {
+          // full or blocked storage: keep the list for this page session
+          memoryOnly = true
+        }
       }
       notify()
     },
@@ -90,7 +97,7 @@ function listStore(key: string, cap: number) {
 export type SavedItemStore = ReturnType<typeof listStore>
 
 export const recentItems = listStore('recent-items', 3)
-export const favouriteItems = listStore('favourite-items', 50)
+export const favouriteItems = listStore('favourite-items', 500)
 
 export const isFavourite = (items: SavedItem[], item: SavedItem) =>
   items.some((saved) => same(saved, item))

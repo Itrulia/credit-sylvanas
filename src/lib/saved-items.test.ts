@@ -75,6 +75,21 @@ describe('recent items', () => {
     expect(() => rememberRecent(item(1))).not.toThrow()
     expect(recentItems.read()).toEqual([item(1)])
   })
+
+  it('keeps working in memory when only writes fail (storage full, old Safari private mode)', async () => {
+    vi.resetModules()
+    const fresh = await import('./saved-items')
+    localStorage.setItem('recent-items', JSON.stringify([item(9)]))
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError')
+    })
+    fresh.rememberRecent(item(1))
+    expect(fresh.recentItems.read()).toEqual([item(1), item(9)])
+    fresh.toggleFavourite(item(1))
+    expect(fresh.favouriteItems.read()).toEqual([item(1)])
+    window.dispatchEvent(new StorageEvent('storage', { key: 'recent-items' }))
+    expect(fresh.recentItems.read()).toEqual([item(1), item(9)])
+  })
 })
 
 describe('favourites', () => {
@@ -88,13 +103,14 @@ describe('favourites', () => {
     expect(isFavourite(favouriteItems.read(), item(1))).toBe(false)
   })
 
-  it('caps favourites at 50, dropping the oldest', () => {
-    for (let id = 1; id <= 51; id++) {
+  it('keeps 500 favourites, far above real use, and only then drops the oldest', () => {
+    for (let id = 1; id <= 501; id++) {
       toggleFavourite(item(id))
     }
     const stored = favouriteItems.read()
-    expect(stored).toHaveLength(50)
-    expect(stored[0]).toEqual(item(51))
+    expect(stored).toHaveLength(500)
+    expect(stored[0]).toEqual(item(501))
+    expect(isFavourite(stored, item(2))).toBe(true)
     expect(isFavourite(stored, item(1))).toBe(false)
   })
 })
