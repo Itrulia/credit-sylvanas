@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { ClientOnly } from '@tanstack/react-router'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatInt } from '#/lib/format'
 import type { IconName } from '#/lib/icons'
 import { importLogQuery } from '#/server/fns/imports'
@@ -19,17 +20,17 @@ const STATUS: Record<
   { label: string; icon: IconName; className: string }
 > = {
   imported: {
-    label: 'Imported',
+    label: m.legal.dataLogStatusImported(),
     icon: 'check',
     className: 'text-success-text',
   },
   skipped: {
-    label: 'Skipped',
+    label: m.legal.dataLogStatusSkipped(),
     icon: 'info',
     className: 'text-muted-foreground',
   },
   failed: {
-    label: 'Failed',
+    label: m.legal.dataLogStatusFailed(),
     icon: 'error',
     className: 'text-destructive-text',
   },
@@ -40,12 +41,12 @@ const missing = <span className="text-muted-foreground">—</span>
 const COLUMNS: DataColumn<ImportLogRow>[] = [
   {
     id: 'fetched',
-    header: 'Fetched',
+    header: m.legal.dataLogFetched(),
     cell: ({ row }) => <DateTime unix={row.original.fetchedAt} />,
   },
   {
     id: 'scan',
-    header: 'TSM scan',
+    header: m.legal.dataLogScan(),
     cell: ({ row }) =>
       row.original.updatedAt === null ? (
         missing
@@ -55,14 +56,16 @@ const COLUMNS: DataColumn<ImportLogRow>[] = [
   },
   {
     id: 'source',
-    header: 'Region',
-    cell: ({ row }) =>
-      REGION_INFO[row.original.region].name +
-      (row.original.realm ? ` · ${row.original.realm}` : ''),
+    header: m.legal.dataLogRegion(),
+    cell: ({ row }) => {
+      const region = REGION_INFO[row.original.region].name
+      const { realm } = row.original
+      return realm ? m.legal.dataLogRegionRealm({ region, realm }) : region
+    },
   },
   {
     id: 'rows',
-    header: 'Rows',
+    header: m.legal.dataLogRows(),
     meta: { align: 'right' },
     cell: ({ row }) => (
       <span className="num">{formatInt(row.original.rows)}</span>
@@ -70,7 +73,7 @@ const COLUMNS: DataColumn<ImportLogRow>[] = [
   },
   {
     id: 'status',
-    header: 'Status',
+    header: m.legal.dataLogStatus(),
     cell: ({ row }) => {
       const status = STATUS[row.original.status]
       return (
@@ -83,12 +86,12 @@ const COLUMNS: DataColumn<ImportLogRow>[] = [
   },
   {
     id: 'reason',
-    header: 'Reason',
+    header: m.legal.dataLogReason(),
     cell: ({ row }) => row.original.reason ?? missing,
   },
   {
     id: 'sha',
-    header: 'Fingerprint',
+    header: m.legal.dataLogFingerprint(),
     cell: ({ row }) =>
       row.original.sha ? (
         <span className="font-mono">{row.original.sha}</span>
@@ -101,7 +104,7 @@ const COLUMNS: DataColumn<ImportLogRow>[] = [
 function DataLogSkeleton() {
   return (
     <div aria-busy="true" className="flex flex-col gap-2 rounded-md border p-3">
-      <span className="sr-only">Loading the data log…</span>
+      <span className="sr-only">{m.legal.dataLogLoading()}</span>
       {Array.from({ length: 8 }, (_, i) => (
         <div key={i} className="h-5 rounded-sm bg-muted" />
       ))}
@@ -121,15 +124,15 @@ function DataLogTable() {
   }
   if (!data.length) {
     return (
-      <StatePanel as="h3" icon="info" title="No imports yet.">
-        <p>The first daily price update hasn't run.</p>
+      <StatePanel as="h3" icon="info" title={m.legal.dataLogEmptyTitle()}>
+        <p>{m.legal.dataLogEmptyText()}</p>
       </StatePanel>
     )
   }
   return (
     <DataTable
-      caption="Recent price imports"
-      label="Recent price imports"
+      caption={m.legal.dataLogCaption()}
+      label={m.legal.dataLogCaption()}
       columns={COLUMNS}
       data={data}
       getRowId={(row) =>

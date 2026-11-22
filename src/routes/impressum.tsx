@@ -2,14 +2,15 @@ import { createFileRoute } from '@tanstack/react-router'
 import { ContactEmail } from '#/components/contact-email'
 import { Credit } from '#/components/credit'
 import { ProsePage, ProseSection } from '#/components/prose-page'
+import { m } from '#/i18n'
 import { SITE, pageHead } from '#/lib/seo'
 
 export const Route = createFileRoute('/impressum')({
   ssr: true,
   head: () =>
     pageHead(
-      'Impressum',
-      `Who runs ${SITE}, how to reach us, and the trademark and link notes.`,
+      m.legal.impressumHeadTitle(),
+      m.legal.impressumHeadDescription({ site: SITE }),
     ),
   component: Impressum,
 })
@@ -17,49 +18,32 @@ export const Route = createFileRoute('/impressum')({
 function Impressum() {
   return (
     <ProsePage
-      title="Impressum"
-      intro={
-        <p>
-          {SITE} is a non-commercial fan project. It has no paid features and no
-          ads.
-        </p>
-      }
+      title={m.legal.impressumTitle()}
+      intro={<p>{m.legal.impressumIntro({ site: SITE })}</p>}
     >
-      <ProseSection title="Operator">
-        <p>{SITE}, a non-commercial fan project.</p>
+      <ProseSection title={m.legal.impressumOperatorTitle()}>
+        <p>{m.legal.impressumOperator({ site: SITE })}</p>
         <p>
-          Email: <ContactEmail />
+          {m.legal.emailLabel()} <ContactEmail />
         </p>
       </ProseSection>
 
-      <ProseSection title="Data source">
+      <ProseSection title={m.legal.impressumSourceTitle()}>
         <p>
-          <Credit />. TradeSkillMaster publishes the files we read. We don't
-          change the prices, but we can't promise they are complete or current.
+          <Credit />. {m.legal.impressumSourceText()}
         </p>
       </ProseSection>
 
-      <ProseSection title="Not affiliated">
-        <p>
-          {SITE} is not affiliated with or endorsed by TradeSkillMaster,
-          Blizzard Entertainment or Wowhead.
-        </p>
+      <ProseSection title={m.legal.impressumNotAffiliatedTitle()}>
+        <p>{m.legal.impressumNotAffiliatedText({ site: SITE })}</p>
       </ProseSection>
 
-      <ProseSection title="Trademarks">
-        <p>
-          World of Warcraft and Blizzard Entertainment are trademarks or
-          registered trademarks of Blizzard Entertainment, Inc. Other names
-          belong to their owners.
-        </p>
+      <ProseSection title={m.legal.impressumTrademarksTitle()}>
+        <p>{m.legal.impressumTrademarksText()}</p>
       </ProseSection>
 
-      <ProseSection title="Links to other sites">
-        <p>
-          We link to TradeSkillMaster and Wowhead. Their owners are responsible
-          for what those pages say. If we learn that a page we link to breaks
-          the law, we remove the link.
-        </p>
+      <ProseSection title={m.legal.impressumLinksTitle()}>
+        <p>{m.legal.impressumLinksText()}</p>
       </ProseSection>
     </ProsePage>
   )
