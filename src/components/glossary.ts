@@ -1,65 +1,67 @@
-// Copy from DESIGN §7. Each label has an info popover; the full sentence goes on About.
+import { m } from '#/i18n'
+
+// Copy from DESIGN §7, in m.shell. Each label has an info popover; the full sentence goes on About.
 export const GLOSSARY = {
   marketValue: {
-    label: 'Market value',
-    text: 'What this usually sells for right now, based on auction listings over the last couple of weeks.',
+    label: m.shell.glossaryMarketValueLabel(),
+    text: m.shell.glossaryMarketValueText(),
   },
   historical: {
-    label: '60-day average',
-    text: 'Market value averaged over about 60 days. Compare it with market value to spot spikes and dips.',
+    label: m.shell.glossaryHistoricalLabel(),
+    text: m.shell.glossaryHistoricalText(),
   },
   avgSalePrice: {
-    label: 'Avg. sale price',
-    text: 'What buyers actually paid on average when this item sold.',
+    label: m.shell.glossaryAvgSalePriceLabel(),
+    text: m.shell.glossaryAvgSalePriceText(),
   },
   saleRate: {
-    label: 'Sale rate',
-    text: 'Share of listings that sell. 25% means about 1 in 4 auctions finds a buyer.',
+    label: m.shell.glossarySaleRateLabel(),
+    text: m.shell.glossarySaleRateText(),
   },
   // the per-realm vs region-total wording still needs a human check against the TSM docs before launch
   soldPerDay: {
-    label: 'Sold per day',
-    text: 'Average units sold per day across the region.',
+    label: m.shell.glossarySoldPerDayLabel(),
+    text: m.shell.glossarySoldPerDayText(),
   },
   minBuyout: {
-    label: 'Lowest buyout',
-    text: 'Cheapest buyout on this realm at the last scan.',
+    label: m.shell.glossaryMinBuyoutLabel(),
+    text: m.shell.glossaryMinBuyoutText(),
   },
   recent: {
-    label: 'Latest scan value',
-    text: 'Market value from the most recent scan only. Reacts fast but can be noisy.',
+    label: m.shell.glossaryRecentLabel(),
+    text: m.shell.glossaryRecentText(),
   },
   goldPerDay: {
-    label: 'Gold per day',
-    text: 'Sold per day times average sale price.',
+    label: m.shell.glossaryGoldPerDayLabel(),
+    text: m.shell.glossaryGoldPerDayText(),
   },
   vsHist: {
-    label: 'vs 60-day avg',
-    text: "How today's market value compares with the 60-day average. +20% means 20% pricier than usual.",
+    label: m.shell.glossaryVsHistLabel(),
+    text: m.shell.glossaryVsHistText(),
   },
   change: {
-    label: 'Change',
-    text: 'Market value change since the previous daily update.',
+    label: m.shell.glossaryChangeLabel(),
+    text: m.shell.glossaryChangeText(),
   },
   popularity: {
-    label: 'Popularity',
-    text: 'Change in units sold per day. Only items that sold at least one a day before the change count.',
+    label: m.shell.glossaryPopularityLabel(),
+    text: m.shell.glossaryPopularityText(),
   },
   rising: {
-    label: 'Rising with demand',
-    text: "Market value at least 5% above 7 days ago, and today's sold per day at least 1.25 times the item's average over the previous 30 days. The item needs 14 days of data in those 30 and about 1g traded a day to count.",
+    label: m.shell.glossaryRisingLabel(),
+    text: m.shell.glossaryRisingText(),
   },
   index: {
-    label: 'vs other regions',
-    text: "How this region's market value compares with the median of the regions that list the item (US, EU, KR and TW). +20% means 20% pricier than the typical region.",
+    label: m.shell.glossaryIndexLabel(),
+    text: m.shell.glossaryIndexText(),
   },
   volatile: {
-    label: 'Volatile',
-    text: 'Market value is under a fifth or over five times the 60-day average. Prices like that often swing back, so check recent sales before you buy or sell.',
+    label: m.shell.glossaryVolatileLabel(),
+    text: m.shell.glossaryVolatileText(),
   },
   spread: {
-    label: 'Spread',
-    text: 'Gap between the cheapest and priciest region, as a share of the median. A high spread means the same item costs very different amounts by region.',
+    label: m.shell.glossarySpreadLabel(),
+    text: m.shell.glossarySpreadText(),
   },
 } as const
 

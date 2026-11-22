@@ -1,3 +1,5 @@
+import { m } from '#/i18n'
+
 export const SITE = 'Credit Sylvanas'
 export const SITE_URL = 'https://credit-sylvanas.app'
 
@@ -14,7 +16,7 @@ export function canonicalLinks(pathname: string) {
 export function pageHead(title: string, description?: string, noindex = false) {
   return {
     meta: [
-      { title: `${title} · ${SITE}` },
+      { title: m.shell.docTitle({ page: title, site: SITE }) },
       ...(description ? [{ name: 'description', content: description }] : []),
       ...(noindex ? [{ name: 'robots', content: 'noindex' }] : []),
     ],

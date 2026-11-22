@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { formatPct } from '#/lib/format'
 import { cn } from '#/lib/utils'
 
@@ -22,32 +23,39 @@ function srText(
   dir: -1 | 0 | 1,
   reference: string,
 ) {
-  const pct = `${formatPct(value, { sign: false }).replace('%', '')} percent`
+  const pct = formatPct(value, { sign: false }).replace('%', '')
   if (mode === 'change') {
-    return dir === 0 ? 'unchanged' : `${dir > 0 ? 'up' : 'down'} ${pct}`
+    return dir === 0
+      ? m.shell.deltaUnchanged()
+      : (dir > 0 ? m.shell.deltaUp : m.shell.deltaDown)({ value: pct })
   }
   if (mode === 'vsHist') {
     return dir === 0
-      ? 'about the same as the 60-day average'
-      : `${pct} ${dir > 0 ? 'above' : 'below'} 60-day average`
+      ? m.shell.deltaHistSame()
+      : (dir > 0 ? m.shell.deltaAboveHist : m.shell.deltaBelowHist)({
+          value: pct,
+        })
   }
   return dir === 0
-    ? `about the same as ${reference}`
-    : `${pct} ${dir > 0 ? 'above' : 'below'} ${reference}`
+    ? m.shell.deltaRefSame({ reference })
+    : (dir > 0 ? m.shell.deltaAboveRef : m.shell.deltaBelowRef)({
+        value: pct,
+        reference,
+      })
 }
 
 export function Delta({
   value,
   mode = 'change',
   compact,
-  reference = 'the cross-region median',
+  reference = m.shell.deltaDefaultReference(),
   className,
 }: DeltaProps) {
   if (value === null || !Number.isFinite(value)) {
     return (
       <span className={cn('num text-muted-foreground', className)}>
         <span aria-hidden="true">—</span>
-        <span className="sr-only">Not enough history yet</span>
+        <span className="sr-only">{m.shell.deltaNoHistory()}</span>
       </span>
     )
   }

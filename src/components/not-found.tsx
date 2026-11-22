@@ -2,6 +2,7 @@ import { Link, useParams } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { z } from 'zod'
 import { REGIONS, REGION_INFO, isRegion } from '#/config/regions'
+import { LOCALE, m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { SITE } from '#/lib/seo'
 import { CommandPaletteTrigger } from './command-palette/command-palette-trigger'
@@ -29,17 +30,22 @@ export function NotFound({ data }: { data?: unknown }) {
 
   return (
     <div className="page-wrap py-8">
-      <title>{`Page not found · ${SITE}`}</title>
+      <title>
+        {m.shell.docTitle({ page: m.shell.notFoundDocPage(), site: SITE })}
+      </title>
       <meta name="robots" content="noindex" />
       {kind === 'region' ? (
         <StatePanel
           as="h1"
           icon="search"
-          title={`There's no "${value}" region.`}
+          title={m.shell.notFoundRegionTitle({ value })}
         >
           <p>
-            Prices are available for{' '}
-            {REGIONS.map((r) => REGION_INFO[r].name).join(' and ')}.
+            {m.shell.notFoundRegionList({
+              regions: new Intl.ListFormat(LOCALE).format(
+                REGIONS.map((r) => REGION_INFO[r].name),
+              ),
+            })}
           </p>
           <ul className="flex flex-wrap gap-x-4 gap-y-2">
             {REGIONS.map((r) => (
@@ -59,11 +65,11 @@ export function NotFound({ data }: { data?: unknown }) {
         <StatePanel
           as="h1"
           icon="search"
-          title={`We don't track "${value}" yet.`}
+          title={m.shell.notFoundRealmTitle({ value })}
         >
           <p>
             <Link to="/$region" params={{ region }} className={link}>
-              See {name} region prices
+              {m.shell.notFoundRealmLink({ region: name })}
             </Link>
           </p>
         </StatePanel>
@@ -71,13 +77,13 @@ export function NotFound({ data }: { data?: unknown }) {
         <StatePanel
           as="h1"
           icon="search"
-          title="Page not found."
+          title={m.shell.notFoundTitle()}
           actions={<CommandPaletteTrigger className="h-11 sm:w-80" />}
         >
-          <p>That page doesn't exist. Try searching for an item instead.</p>
+          <p>{m.shell.notFoundBody()}</p>
           <p>
             <Link to="/$region" params={{ region }} className={link}>
-              Go to {name} market
+              {m.shell.notFoundMarketLink({ region: name })}
             </Link>
           </p>
         </StatePanel>

@@ -1,6 +1,7 @@
 import { useRouter } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { SITE } from '#/lib/seo'
 import { StatePanel } from './state-panel'
@@ -19,17 +20,21 @@ export function ErrorPage({ error }: ErrorComponentProps) {
   }, [error])
   return (
     <div className="page-wrap py-8">
-      <title>{`Something broke · ${SITE}`}</title>
+      <title>
+        {m.shell.docTitle({ page: m.shell.errorDocPage(), site: SITE })}
+      </title>
       <meta name="robots" content="noindex" />
       <StatePanel
         as="h1"
         icon="error"
-        title="Something broke on our side."
+        title={m.shell.errorTitle()}
         actions={
-          <Button onClick={() => void router.invalidate()}>Try again</Button>
+          <Button onClick={() => void router.invalidate()}>
+            {m.shell.retry()}
+          </Button>
         }
       >
-        <p>We've logged the error. Try again, or come back in a few minutes.</p>
+        <p>{m.shell.errorBody()}</p>
       </StatePanel>
     </div>
   )

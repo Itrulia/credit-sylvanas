@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { DISABLED_REGIONS, REGIONS, REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import type { Region } from '#/lib/search'
 import { track } from '#/lib/analytics'
 import { cn } from '#/lib/utils'
@@ -17,7 +18,7 @@ export function RegionNav({
   className?: string
 }) {
   return (
-    <nav aria-label="Region" className={className}>
+    <nav aria-label={m.shell.regionNavLabel()} className={className}>
       <ul className="flex rounded-md border border-input p-0.5">
         {REGIONS.map((region) => (
           <li key={region}>
@@ -52,7 +53,7 @@ export function RegionNav({
             <span
               role="link"
               aria-disabled="true"
-              title={`${r.fullName}: coming later`}
+              title={m.shell.regionComingLater({ region: r.fullName })}
               className="inline-flex h-8 min-w-10 cursor-not-allowed items-center justify-center rounded-sm px-2 text-xs font-semibold text-muted-foreground/50 pointer-coarse:h-11"
             >
               {r.name}

@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { BINS, BIN_LABELS, binFill } from '#/lib/bins'
 import { cn } from '#/lib/utils'
 
@@ -30,7 +31,7 @@ export function DivergingLegend({ labels, className }: DivergingLegendProps) {
         ))}
         <li className="inline-flex items-center gap-1">
           <span aria-hidden="true" className={cn(swatch, 'hatch')} />
-          No data
+          {m.shell.noData()}
         </li>
       </ul>
     </div>

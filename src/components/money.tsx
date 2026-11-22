@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import type { CoinUnit, MoneyPart, MoneyVariant } from '#/lib/money'
 import { formatMoney, moneyLabel } from '#/lib/money'
 import { cn } from '#/lib/utils'
@@ -33,7 +34,7 @@ export function Money({
   copper,
   variant = 'full',
   align,
-  reason = 'No data',
+  reason = m.shell.noData(),
   className,
 }: MoneyProps) {
   if (copper === null) {

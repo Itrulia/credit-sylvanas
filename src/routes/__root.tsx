@@ -12,6 +12,7 @@ import { SitePalette } from '#/components/search/site-palette'
 import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
 import { WowheadTooltips } from '#/components/wowhead-tooltips'
+import { LOCALE, m } from '#/i18n'
 import { canonicalLinks } from '#/lib/seo'
 import sansFont from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url'
 import displayFont from '@fontsource/newsreader/files/newsreader-latin-600-normal.woff2?url'
@@ -60,7 +61,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang={LOCALE}>
       <head>
         <HeadContent />
       </head>
@@ -70,7 +71,7 @@ function RootDocument({ children }: { children: ReactNode }) {
             href="#main"
             className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-card focus:px-3 focus:py-2"
           >
-            Skip to content
+            {m.shell.skipLink()}
           </a>
           <SiteHeader />
           <main id="main" tabIndex={-1} className="outline-none">

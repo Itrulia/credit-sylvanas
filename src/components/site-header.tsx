@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { m } from '#/i18n'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import { CommandPaletteTrigger } from './command-palette/command-palette-trigger'
@@ -10,10 +11,10 @@ import { useCurrentRegion, useRegion } from './search/site-commands'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet'
 
 const NAV = [
-  { label: 'Market', to: '/$region' },
-  { label: 'Items', to: '/$region/items' },
-  { label: 'Heatmaps', to: '/$region/heatmap' },
-  { label: 'Realms', to: '/$region/realms' },
+  { label: m.shell.navMarket, to: '/$region' },
+  { label: m.shell.navItems, to: '/$region/items' },
+  { label: m.shell.navHeatmaps, to: '/$region/heatmap' },
+  { label: m.shell.navRealms, to: '/$region/realms' },
 ] as const
 
 const navLink =
@@ -31,7 +32,7 @@ function MainNav({
   onNavigate?: () => void
 }) {
   return (
-    <nav aria-label="Main">
+    <nav aria-label={m.shell.mainNavLabel()}>
       <ul className={cn('flex', vertical ? 'flex-col gap-1' : 'gap-1')}>
         {NAV.map((item) => (
           <li key={item.to}>
@@ -46,7 +47,7 @@ function MainNav({
               activeProps={{ className: navActive, 'aria-current': 'page' }}
               onClick={onNavigate}
             >
-              {item.label}
+              {item.label()}
             </Link>
           </li>
         ))}
@@ -61,9 +62,9 @@ function Wordmark() {
       to="/"
       className="text-display !text-[1.25rem] !leading-6 whitespace-nowrap text-primary no-underline"
     >
-      Credit{' '}
+      {m.shell.wordmarkLead()}{' '}
       <span className="underline decoration-brand-tomato decoration-[3px] underline-offset-4">
-        Sylvanas
+        {m.shell.wordmarkAccent()}
       </span>
     </Link>
   )
@@ -90,7 +91,7 @@ export function SiteHeader() {
           )}
           <button
             type="button"
-            aria-label="Search"
+            aria-label={m.shell.searchLabel()}
             onClick={open}
             className="inline-flex size-9 items-center justify-center rounded-md hover:bg-accent md:hidden pointer-coarse:size-11"
           >
@@ -98,7 +99,7 @@ export function SiteHeader() {
           </button>
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger
-              aria-label="Open menu"
+              aria-label={m.shell.menuOpenLabel()}
               className="inline-flex size-9 items-center justify-center rounded-md hover:bg-accent lg:hidden pointer-coarse:size-11"
             >
               <Icon name="menu" size={20} />
@@ -108,7 +109,7 @@ export function SiteHeader() {
               aria-describedby={undefined}
               className="gap-4 p-4"
             >
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle>{m.shell.menuTitle()}</SheetTitle>
               <MainNav
                 region={region}
                 vertical

@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { cn } from '#/lib/utils'
 
 export const TSM_URL = 'https://tradeskillmaster.com'
@@ -6,13 +7,12 @@ export const TSM_URL = 'https://tradeskillmaster.com'
 export function Credit({ className }: { className?: string }) {
   return (
     <span className={className}>
-      Pricing data from{' '}
+      {m.shell.creditLead()}{' '}
       <a href={TSM_URL} className={cn('underline')} rel="noreferrer">
-        TradeSkillMaster
+        {m.shell.creditLink()}
       </a>
     </span>
   )
 }
 
-export const NOT_AFFILIATED =
-  'Credit Sylvanas is a fan project. It is not affiliated with or endorsed by TradeSkillMaster or Blizzard Entertainment. World of Warcraft is a trademark of Blizzard Entertainment, Inc.'
+export const NOT_AFFILIATED = m.shell.notAffiliated()

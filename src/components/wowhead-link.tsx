@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { m } from '#/i18n'
 import { wowheadData, wowheadItemUrl } from '#/lib/wowhead'
 import { track } from '#/lib/analytics'
 import { cn } from '#/lib/utils'
@@ -6,7 +7,7 @@ import { Icon } from './icon'
 
 export function WowheadLink({
   id,
-  children = 'View on Wowhead',
+  children = m.shell.wowheadView(),
   className,
 }: {
   id: number
@@ -24,7 +25,7 @@ export function WowheadLink({
     >
       <span>{children}</span>
       <Icon name="open_in_new" />
-      <span className="sr-only">(opens Wowhead)</span>
+      <span className="sr-only">{m.shell.wowheadOpens()}</span>
     </a>
   )
 }

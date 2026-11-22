@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import type { Region } from '#/lib/search'
 import { SITE } from '#/lib/seo'
 import type { RegionStatus } from '#/server/types'
@@ -16,19 +17,16 @@ export function NoData({ region, status }: NoDataProps) {
   const name = REGION_INFO[region].name
   const others = status.regionsWithData.filter((r) => r !== region)
   const devHint = import.meta.env.DEV && (
-    <p className="text-muted-foreground">
-      Dev only: run pnpm db:seed to load local data.
-    </p>
+    <p className="text-muted-foreground">{m.shell.noDataDevHint()}</p>
   )
   if (status.regionsWithData.length === 0) {
     return (
       <div className="page-wrap py-8">
-        <title>{`No prices yet · ${SITE}`}</title>
-        <StatePanel as="h1" icon="info" title="No prices yet">
-          <p>
-            This site hasn't finished its first daily price update. Prices
-            appear here after it runs.
-          </p>
+        <title>
+          {m.shell.docTitle({ page: m.shell.noDataTitle(), site: SITE })}
+        </title>
+        <StatePanel as="h1" icon="info" title={m.shell.noDataTitle()}>
+          <p>{m.shell.noDataBody()}</p>
           {devHint}
         </StatePanel>
       </div>
@@ -36,12 +34,25 @@ export function NoData({ region, status }: NoDataProps) {
   }
   return (
     <div className="page-wrap py-8">
-      <title>{`No ${name} prices yet · ${SITE}`}</title>
-      <StatePanel as="h1" icon="info" title={`No ${name} prices yet`}>
+      <title>
+        {m.shell.docTitle({
+          page: m.shell.noDataRegionTitle({ region: name }),
+          site: SITE,
+        })}
+      </title>
+      <StatePanel
+        as="h1"
+        icon="info"
+        title={m.shell.noDataRegionTitle({ region: name })}
+      >
         <p>
-          We haven't saved a price update for {name}. Last successful import:{' '}
-          {status.fetchedAt ? <DateTime unix={status.fetchedAt} /> : 'none yet'}
-          . Try another region in the meantime.
+          {m.shell.noDataRegionLead({ region: name })}{' '}
+          {status.fetchedAt ? (
+            <DateTime unix={status.fetchedAt} />
+          ) : (
+            m.shell.noDataNoneYet()
+          )}
+          {m.shell.noDataRegionTail()}
         </p>
         {others.length > 0 && (
           <ul className="flex gap-3">

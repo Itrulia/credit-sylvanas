@@ -7,15 +7,6 @@ import { expect, it } from 'vitest'
  * its text lives in src/i18n/en; the list must end empty.
  */
 const ALLOWLIST: Array<string> = [
-  'src/components/contact-email.tsx',
-  'src/components/context-bar.tsx',
-  'src/components/credit.tsx',
-  'src/components/data-table.tsx',
-  'src/components/delta.tsx',
-  'src/components/diverging-legend.tsx',
-  'src/components/error-page.tsx',
-  'src/components/freshness.tsx',
-  'src/components/info-popover.tsx',
   'src/components/item/dot-heatmap.tsx',
   'src/components/item/favourite-button.tsx',
   'src/components/item/item-not-found.tsx',
@@ -26,16 +17,7 @@ const ALLOWLIST: Array<string> = [
   'src/components/item/stat-card.tsx',
   'src/components/item/stats-grid.tsx',
   'src/components/item/value-quantity-card.tsx',
-  'src/components/no-data.tsx',
-  'src/components/not-found.tsx',
-  'src/components/region-nav.tsx',
-  'src/components/section-boundary.tsx',
-  'src/components/site-footer.tsx',
-  'src/components/site-header.tsx',
-  'src/components/stale-banner.tsx',
-  'src/components/wowhead-link.tsx',
   'src/routes/$region/items/$itemId.tsx',
-  'src/routes/__root.tsx',
 ]
 
 const SKIP = [

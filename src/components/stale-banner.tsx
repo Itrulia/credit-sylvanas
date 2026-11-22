@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { formatDateTime } from '#/lib/format'
 import { Icon } from './icon'
 
@@ -15,9 +16,8 @@ export function StaleBanner({ updatedAt }: { updatedAt: number }) {
     >
       <Icon name="warning" className="mt-0.5 text-warning-text" />
       <p>
-        <strong>Prices may be out of date.</strong> Last update:{' '}
-        {formatDateTime(updatedAt)}. We're showing the last good data until the
-        next update arrives.
+        <strong>{m.shell.staleTitle()}</strong>{' '}
+        {m.shell.staleBody({ date: formatDateTime(updatedAt) })}
       </p>
     </div>
   )

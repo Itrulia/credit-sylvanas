@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { m } from '#/i18n'
 import { Credit, NOT_AFFILIATED } from './credit'
 
 export function SiteFooter() {
@@ -14,17 +15,17 @@ export function SiteFooter() {
         <ul className="flex flex-wrap gap-x-4 gap-y-1">
           <li>
             <Link to="/about" className="underline">
-              About and data sources
+              {m.shell.footerAbout()}
             </Link>
           </li>
           <li>
             <Link to="/privacy" className="underline">
-              Privacy
+              {m.shell.footerPrivacy()}
             </Link>
           </li>
           <li>
             <Link to="/impressum" className="underline">
-              Impressum
+              {m.shell.footerImpressum()}
             </Link>
           </li>
         </ul>

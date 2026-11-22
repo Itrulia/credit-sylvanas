@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { formatDateTime, isoFromUnix } from '#/lib/format'
 import { cn } from '#/lib/utils'
 import { Credit } from './credit'
@@ -19,10 +20,11 @@ export function Freshness({ updatedAt, fetchedAt, className }: FreshnessProps) {
       <Credit />
       {updatedAt !== null && (
         <>
-          {' · '}Prices from TSM scan <DateTime unix={updatedAt} />
+          {' · '}
+          {m.shell.freshnessScanLead()} <DateTime unix={updatedAt} />
           {fetchedAt !== null && (
             <>
-              , imported <DateTime unix={fetchedAt} />
+              {m.shell.freshnessImportedLead()} <DateTime unix={fetchedAt} />
             </>
           )}
         </>

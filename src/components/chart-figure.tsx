@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ClientOnly } from '@tanstack/react-router'
+import { m } from '#/i18n'
 import { Icon } from './icon'
 import { Skeleton } from './ui/skeleton'
 
@@ -59,7 +60,7 @@ export function ChartFigure({
             className="inline-flex min-h-6 items-center gap-1 text-sm underline pointer-coarse:min-h-11"
           >
             <Icon name={open ? 'expand_less' : 'expand_more'} />
-            {open ? 'Hide table' : 'Show as table'}
+            {open ? m.shell.chartHideTable() : m.shell.chartShowTable()}
           </button>
           {/* hidden, the table is not in the DOM, so it adds no tab stops */}
           <div id={tableId}>{open && table()}</div>
