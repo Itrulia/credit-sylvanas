@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import {
   Link,
   createFileRoute,
@@ -10,8 +9,7 @@ import { Credit } from '#/components/credit'
 import { DivergingLegend } from '#/components/diverging-legend'
 import { Freshness } from '#/components/freshness'
 import { CrossRegionTable } from '#/components/heatmap/cross-region-table'
-import { DailyChangeSkeleton } from '#/components/heatmap/daily-change-skeleton'
-import { DailyChangeTable } from '#/components/heatmap/daily-change-table'
+import { DailyChangeSection } from '#/components/heatmap/daily-change-section'
 import { HeatmapControls } from '#/components/heatmap/heatmap-controls'
 import { MomentumGrid } from '#/components/heatmap/momentum-grid'
 import { SectionBoundary } from '#/components/section-boundary'
@@ -19,7 +17,6 @@ import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO } from '#/config/regions'
 import { track } from '#/lib/analytics'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
-import type { HeatmapN, Region } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
 import { dailyChangeQuery, heatmapQuery } from '#/server/fns/heatmap'
 import { regionStatusQuery } from '#/server/fns/status'
@@ -123,9 +120,7 @@ function Heatmaps() {
             </p>
             <DivergingLegend labels={['Fell', 'Rose']} />
             <SectionBoundary headingId="day-by-day">
-              <Suspense fallback={<DailyChangeSkeleton n={n} />}>
-                <DailyChange region={region} n={n} busy={busy} />
-              </Suspense>
+              <DailyChangeSection region={region} n={n} busy={busy} />
             </SectionBoundary>
           </section>
         </>
@@ -136,17 +131,4 @@ function Heatmaps() {
       </p>
     </div>
   )
-}
-
-function DailyChange({
-  region,
-  n,
-  busy,
-}: {
-  region: Region
-  n: HeatmapN
-  busy: boolean
-}) {
-  const { data } = useSuspenseQuery(dailyChangeQuery({ region, n }))
-  return <DailyChangeTable region={region} data={data} busy={busy} />
 }
