@@ -8,16 +8,15 @@ import {
 } from './heat'
 
 describe('heatCell', () => {
-  it('fills by bin with binInk text in both themes', () => {
+  it('fills by bin with binInk text', () => {
     const strong = heatCell(0.4)
     expect(strong.style).toEqual({ background: 'var(--div-p4)' })
     expect(strong.className).toContain('heat-cell')
     expect(strong.className).toContain('text-card')
-    expect(strong.className).toContain('dark:text-background')
     const mild = heatCell(-0.03)
     expect(mild.style).toEqual({ background: 'var(--div-n1)' })
     expect(mild.className).toContain('text-foreground')
-    expect(mild.className).toContain('dark:text-foreground')
+    expect(`${strong.className} ${mild.className}`).not.toContain('dark:')
   })
 
   it('hatches a missing value', () => {

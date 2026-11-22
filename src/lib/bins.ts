@@ -27,14 +27,9 @@ const TOKEN: Record<Bin, string> = {
 export const binToken = (bin: Bin) => `--div-${TOKEN[bin]}`
 export const binFill = (bin: Bin) => `var(${binToken(bin)})`
 
-export type Theme = 'light' | 'dark'
-
 /** Text colour token that stays >= 4.5:1 on each bin fill. */
-export function binInk(bin: Bin | null, theme: Theme): string {
-  if (bin === null || Math.abs(bin) < 3) {
-    return '--foreground'
-  }
-  return theme === 'light' ? '--card' : '--background'
+export function binInk(bin: Bin | null): string {
+  return bin === null || Math.abs(bin) < 3 ? '--foreground' : '--card'
 }
 
 const MINUS = '−'

@@ -3,8 +3,6 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 import { REGIONS, REGION_INFO, isRegion } from '#/config/regions'
 import { realmsFor } from '#/config/realms'
 import type { Faction, Region } from '#/lib/search'
-import { setTheme } from '#/lib/theme'
-import type { ThemeMode } from '#/lib/theme'
 import type { Command } from '../command-palette/command'
 import { Icon } from '../icon'
 
@@ -35,23 +33,13 @@ const PAGES = [
   },
 ] as const
 
-const THEMES: {
-  mode: ThemeMode
-  title: string
-  icon?: 'light_mode' | 'dark_mode'
-}[] = [
-  { mode: 'light', title: 'Light', icon: 'light_mode' },
-  { mode: 'dark', title: 'Dark', icon: 'dark_mode' },
-  { mode: 'system', title: 'System' },
-]
-
 const FACTIONS: Faction[] = ['alliance', 'horde']
 
 // search updaters below get loose types: the palette sits above every route
 type LooseSearch = Record<string, unknown>
 type LooseParams = Record<string, string>
 
-/** Navigate, Region, Realm (only once realms.ts has entries) and Theme. */
+/** Navigate, Region and Realm (only once realms.ts has entries). */
 export function useSiteCommands(): Command[] {
   const navigate = useNavigate()
   const current = useCurrentRegion()
@@ -146,15 +134,6 @@ export function useSiteCommands(): Command[] {
         ]
       : []
 
-    const themes: Command[] = THEMES.map((theme) => ({
-      id: `theme-${theme.mode}`,
-      group: 'Theme',
-      title: theme.title,
-      keywords: ['theme', 'mode', 'colour'],
-      icon: theme.icon ? <Icon name={theme.icon} /> : undefined,
-      perform: () => setTheme(theme.mode),
-    }))
-
-    return [...pages, ...regions, ...realmCommands, ...themes]
+    return [...pages, ...regions, ...realmCommands]
   }, [current, navigate, region])
 }

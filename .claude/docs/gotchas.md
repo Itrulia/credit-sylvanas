@@ -102,8 +102,8 @@ These come from a production TanStack Start migration in another repo.
   the title in exactly one place per route (`head()`), with no default in the
   shell.
 - Inline scripts in `head().scripts` re-run on every client navigation. Use
-  `ScriptOnce` from `@tanstack/react-router` for one-shot bootstraps such as
-  the theme snippet that runs before paint.
+  `ScriptOnce` from `@tanstack/react-router` for one-shot bootstraps that
+  must run before paint.
 - `new URL('./x', import.meta.url)` for assets turns into a `file://` path
   under SSR. Import the asset so Vite rewrites the URL.
 

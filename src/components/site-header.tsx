@@ -7,7 +7,6 @@ import { CommandPaletteTrigger } from './command-palette/command-palette-trigger
 import { useCommandPalette } from './command-palette/command-palette-provider'
 import { Icon } from './icon'
 import { RegionNav } from './region-nav'
-import { ThemeToggle } from './theme-toggle'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet'
 
 const NAV = [
@@ -100,7 +99,6 @@ export function SiteHeader() {
           >
             <Icon name="search" size={20} />
           </button>
-          <ThemeToggle />
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger
               aria-label="Open menu"

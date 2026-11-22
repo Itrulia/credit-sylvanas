@@ -8,12 +8,6 @@ import { cn } from '#/lib/utils'
 const INK: Record<string, string> = {
   '--foreground': 'text-foreground',
   '--card': 'text-card',
-  '--background': 'text-background',
-}
-const DARK_INK: Record<string, string> = {
-  '--foreground': 'dark:text-foreground',
-  '--card': 'dark:text-card',
-  '--background': 'dark:text-background',
 }
 
 /** Fill and text colour for one heatmap cell: the bin of `ratio`, hatch when null. */
@@ -26,11 +20,7 @@ export function heatCell(ratio: number | null): {
     return { className: 'heat-cell hatch text-foreground' }
   }
   return {
-    className: cn(
-      'heat-cell',
-      INK[binInk(bin, 'light')],
-      DARK_INK[binInk(bin, 'dark')],
-    ),
+    className: cn('heat-cell', INK[binInk(bin)]),
     style: { background: binFill(bin) },
   }
 }

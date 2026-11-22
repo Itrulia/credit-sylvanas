@@ -23,7 +23,9 @@ Prettier (no semicolons, single quotes, trailing commas) settle disputes.
   fn's `queryOptions`), never `fetch` in an effect. URL state lives in search
   params. Debounce with TanStack Pacer, shortcuts with TanStack Hotkeys.
 - Build UI from `#/components/ui` (shadcn) and the theme tokens in
-  `src/styles.css`. No hard-coded colours; light and dark both have to work.
+  `src/styles.css`. No hard-coded colours. There is one light theme: never
+  write a `dark:` class, since Tailwind v4 maps it to the OS dark setting
+  (`src/lib/light-only.test.ts` fails on one).
 - Tomato (`--brand-tomato`) stays within 5 to 15% of a screen: primary CTA,
   active-nav marker, one highlighted mark, hot/new badges. Price direction
   uses the muted `--up` (rust) and `--down` (harbor blue), never tomato

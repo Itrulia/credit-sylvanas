@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 // Ported from the wepublish editor palette. The core knows nothing about
-// routes or items: commands close over whatever they need (navigate, setTheme).
+// routes or items: commands close over whatever they need (navigate, a region).
 export interface CommandContext {
   close: () => void
 }

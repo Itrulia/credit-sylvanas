@@ -37,7 +37,6 @@ import { SitePalette } from './site-palette'
 
 const search =
   vi.fn<(input: { region: string; q: string }) => Promise<SearchRow[]>>()
-const setTheme = vi.fn()
 
 vi.mock('#/server/fns/items', () => ({
   searchItemsQuery: (input: { region: string; q: string }) =>
@@ -45,9 +44,6 @@ vi.mock('#/server/fns/items', () => ({
       queryKey: ['searchItems', input],
       queryFn: () => search(input),
     }),
-}))
-vi.mock('#/lib/theme', () => ({
-  setTheme: (mode: string) => setTheme(mode),
 }))
 
 const ARCANITE: SearchRow = {
@@ -138,7 +134,6 @@ const selected = () =>
 beforeEach(() => {
   HotkeyManager.resetInstance()
   search.mockReset()
-  setTheme.mockReset()
 })
 
 afterEach(() => {
@@ -147,7 +142,7 @@ afterEach(() => {
 })
 
 describe('site commands', () => {
-  it('lists Navigate, Region and Theme groups, without Realm while realms.ts is empty', async () => {
+  it('lists Navigate and Region groups, without Realm while realms.ts is empty', async () => {
     setup('/us')
     await openPalette()
     const groups = screen
@@ -157,7 +152,7 @@ describe('site commands', () => {
           document.getElementById(g.getAttribute('aria-labelledby')!)
             ?.textContent,
       )
-    expect(groups).toEqual(['Navigate', 'Region', 'Theme'])
+    expect(groups).toEqual(['Navigate', 'Region'])
     expect(screen.queryByRole('option', { name: /^realms$/i })).toBeNull()
     expect(screen.getByRole('option', { name: 'About' })).toBeTruthy()
   })
@@ -200,14 +195,6 @@ describe('site commands', () => {
     type('switch to tw')
     press('Enter')
     await waitFor(() => expect(location(router)).toBe('/tw'))
-  })
-
-  it('sets the theme', async () => {
-    setup('/about')
-    await openPalette()
-    type('dark')
-    press('Enter')
-    expect(setTheme).toHaveBeenCalledWith('dark')
   })
 
   it('returns focus to the trigger on Escape', async () => {

@@ -20,8 +20,7 @@ function block(selector: string): Record<string, string> {
   return out
 }
 
-const root = block(':root')
-const themes = { light: root, dark: { ...root, ...block('.dark') } }
+const ROOT = block(':root')
 
 const clamp = (x: number) => Math.min(1, Math.max(0, x))
 const gamma = (x: number) =>
@@ -105,7 +104,7 @@ const TEXT = [
 ]
 const STATUS = ['success', 'warning', 'info', 'destructive']
 
-const shared: Pair[] = [
+const PAIRS: Pair[] = [
   ...TEXT.flatMap((t) => SURFACES.map((s): Pair => [t, s, 4.5])),
   ...['primary', 'primary-hover', 'primary-active'].map((f): Pair => [
     'primary-foreground',
@@ -148,16 +147,10 @@ const shared: Pair[] = [
   ),
   ['brand-tomato', 'card', 3],
 ]
-const PAIRS = {
-  light: shared,
-  dark: [...shared, ['brand-tomato', 'background', 3] as Pair],
-}
+describe('contrast', () => {
+  const c = (n: string) => color(ROOT, n)
 
-describe.each(['light', 'dark'] as const)('%s theme contrast', (theme) => {
-  const vars = themes[theme]
-  const c = (n: string) => color(vars, n)
-
-  it.each(PAIRS[theme])('--%s on --%s >= %s', (fg, bg, min) => {
+  it.each(PAIRS)('--%s on --%s >= %s', (fg, bg, min) => {
     expect(ratio(c(fg), c(bg))).toBeGreaterThanOrEqual(min)
   })
 
@@ -167,7 +160,7 @@ describe.each(['light', 'dark'] as const)('%s theme contrast', (theme) => {
   })
 
   it.each(BINS)('binInk on bin %s >= 4.5', (bin) => {
-    const ink = binInk(bin, theme).slice(2)
+    const ink = binInk(bin).slice(2)
     const fill = binToken(bin).slice(2)
     expect(ratio(c(ink), c(fill))).toBeGreaterThanOrEqual(4.5)
   })

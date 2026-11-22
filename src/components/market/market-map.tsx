@@ -27,11 +27,9 @@ const W = 1200
 const H = 600
 const pct = (v: number, of: number) => `${(v / of) * 100}%`
 
-// binInk per theme, as static classes Tailwind can see
+// binInk as static classes Tailwind can see
 const inkClass = (bin: Bin | null) =>
-  binInk(bin, 'light') === '--foreground'
-    ? 'text-foreground'
-    : 'text-card dark:text-background'
+  binInk(bin) === '--foreground' ? 'text-foreground' : 'text-card'
 
 function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
   return [

@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import {
   HeadContent,
   Scripts,
-  ScriptOnce,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
@@ -13,7 +12,6 @@ import { SiteHeader } from '#/components/site-header'
 import { WowheadTooltips } from '#/components/wowhead-tooltips'
 import { ICON_FONT_HREF, TEXT_FONTS_HREF } from '#/lib/icons'
 import { canonicalLinks } from '#/lib/seo'
-import { THEME_SCRIPT } from '#/lib/theme'
 import appCss from '../styles.css?url'
 
 // import.meta.env.DEV is replaced at build time, so the import below is dropped from production
@@ -29,6 +27,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         meta: [
           { charSet: 'utf-8' },
           { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+          { name: 'color-scheme', content: 'light' },
           ...canonical.meta,
         ],
         links: [
@@ -52,10 +51,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    // the theme script changes the class before hydration
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
-        <ScriptOnce>{THEME_SCRIPT}</ScriptOnce>
         <HeadContent />
       </head>
       <body>

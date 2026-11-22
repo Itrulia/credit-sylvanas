@@ -24,10 +24,8 @@ describe('binOf', () => {
 })
 
 describe('binInk', () => {
-  it('covers all 9 bins in both themes', () => {
-    const light = BINS.map((b) => binInk(b, 'light'))
-    const dark = BINS.map((b) => binInk(b, 'dark'))
-    expect(light).toEqual([
+  it('covers all 9 bins', () => {
+    expect(BINS.map((b) => binInk(b))).toEqual([
       '--card',
       '--card',
       '--foreground',
@@ -38,18 +36,6 @@ describe('binInk', () => {
       '--card',
       '--card',
     ])
-    expect(dark).toEqual([
-      '--background',
-      '--background',
-      '--foreground',
-      '--foreground',
-      '--foreground',
-      '--foreground',
-      '--foreground',
-      '--background',
-      '--background',
-    ])
-    expect(binInk(null, 'light')).toBe('--foreground')
-    expect(binInk(null, 'dark')).toBe('--foreground')
+    expect(binInk(null)).toBe('--foreground')
   })
 })
