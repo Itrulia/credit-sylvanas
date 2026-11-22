@@ -1,6 +1,7 @@
+// edited: lucide → <Icon>, semantic tokens (DESIGN §4)
 import * as React from "react"
-import { cn } from "cn"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { cn } from "#/lib/utils"
+import { Icon } from "#/components/icon"
 import { Select as SelectPrimitive } from "radix-ui"
 
 function Select({
@@ -41,7 +42,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
+        <Icon name="expand_more" className="opacity-50" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -116,7 +117,7 @@ function SelectItem({
         className="absolute right-2 flex size-3.5 items-center justify-center"
       >
         <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <Icon name="check" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -150,7 +151,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <ChevronUpIcon className="size-4" />
+      <Icon name="expand_less" />
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -168,7 +169,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <ChevronDownIcon className="size-4" />
+      <Icon name="expand_more" />
     </SelectPrimitive.ScrollDownButton>
   )
 }
