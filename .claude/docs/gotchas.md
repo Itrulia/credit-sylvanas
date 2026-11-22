@@ -147,6 +147,20 @@ the build wrote `about/index.html`, and the Workers asset layer answered
 
 Load-bearing: the `autoSubfolderIndex: false` line. Nothing guards this.
 
+### www and plain HTTP need zone settings, not Worker code
+
+Static files and prerendered pages skip the Worker, so `wwwRedirect` and any
+protocol check in `src/server.ts` never run for them. On 2026-11-22
+`https://www.credit-sylvanas.app/` and `/about` answered 200, and
+`http://credit-sylvanas.app/` answered 200 over plain HTTP. The fix lives in
+the Cloudflare dashboard: a Single Redirect rule (host
+`www.credit-sylvanas.app`, 301 to `https://credit-sylvanas.app` plus the path,
+query kept) and "Always Use HTTPS". `run_worker_first` would send every asset
+through the Worker instead.
+
+Load-bearing: keep `wwwRedirect` as the fallback for Worker paths. Nothing
+guards the zone settings.
+
 ## Adding an entry
 
 ```markdown
