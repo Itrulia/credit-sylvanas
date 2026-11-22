@@ -77,7 +77,12 @@ export type ItemSort = z.infer<typeof ItemSort>
 export const SortDir = z.enum(['asc', 'desc'])
 export type SortDir = z.infer<typeof SortDir>
 export const itemsSearch = z.object({
-  q: z.string().trim().max(64).default('').catch(''),
+  // the router parses a hand-typed ?q=999999 as a number
+  q: z
+    .union([z.string(), z.number().transform(String)])
+    .pipe(z.string().trim().max(64))
+    .default('')
+    .catch(''),
   sort: ItemSort.default('soldPerDay').catch('soldPerDay'),
   dir: SortDir.default('desc').catch('desc'),
   page: z.number().int().min(1).default(1).catch(1),

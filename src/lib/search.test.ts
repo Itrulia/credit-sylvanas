@@ -49,6 +49,8 @@ describe('search schemas', () => {
       page: 1,
     })
     expect(itemsSearch.parse({ q: '  bar  ' }).q).toBe('bar')
+    // the router parses a hand-typed ?q=999999 as a number
+    expect(itemsSearch.parse({ q: 999999 }).q).toBe('999999')
   })
 
   it('realms ruleset falls back to all', () => {
