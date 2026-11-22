@@ -7,8 +7,6 @@ import { expect, it } from 'vitest'
  * its text lives in src/i18n/en; the list must end empty.
  */
 const ALLOWLIST: Array<string> = [
-  'src/components/command-palette/command-palette-trigger.tsx',
-  'src/components/command-palette/command-palette.tsx',
   'src/components/contact-email.tsx',
   'src/components/context-bar.tsx',
   'src/components/credit.tsx',
@@ -30,16 +28,13 @@ const ALLOWLIST: Array<string> = [
   'src/components/item/value-quantity-card.tsx',
   'src/components/no-data.tsx',
   'src/components/not-found.tsx',
-  'src/components/realms/realm-list.tsx',
   'src/components/region-nav.tsx',
-  'src/components/search/item-search-group.tsx',
   'src/components/section-boundary.tsx',
   'src/components/site-footer.tsx',
   'src/components/site-header.tsx',
   'src/components/stale-banner.tsx',
   'src/components/wowhead-link.tsx',
   'src/routes/$region/items/$itemId.tsx',
-  'src/routes/$region/realms.tsx',
   'src/routes/__root.tsx',
 ]
 

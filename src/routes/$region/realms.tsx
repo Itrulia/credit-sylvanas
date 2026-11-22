@@ -5,6 +5,7 @@ import type { RealmsFilter } from '#/components/realms/realm-list'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
 import { RulesetFilter, realmsSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
+import { m } from '#/i18n'
 
 export const Route = createFileRoute('/$region/realms')({
   ssr: true,
@@ -13,8 +14,8 @@ export const Route = createFileRoute('/$region/realms')({
   head: ({ params }) => {
     const name = params.region.toUpperCase()
     return pageHead(
-      `Realms · ${name} Forever AH`,
-      `Pick a ${name} Forever realm to see realm prices.`,
+      m.realms.headTitle({ region: name }),
+      m.realms.headDescription({ region: name }),
     )
   },
   component: Realms,
@@ -28,13 +29,13 @@ function Realms() {
   return (
     <div className="page-wrap space-y-6 py-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="text-display">Realms</h1>
+        <h1 className="text-display">{m.realms.pageTitle()}</h1>
         {/* a filter over nothing is noise: no ruleset control while realms.ts is empty */}
         {realms.length > 0 && (
           <ToggleGroup
             type="single"
             variant="outline"
-            aria-label="Ruleset"
+            aria-label={m.realms.rulesetLabel()}
             value={ruleset}
             onValueChange={(value) => {
               // radix sends '' when the pressed item is clicked again

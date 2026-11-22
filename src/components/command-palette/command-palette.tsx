@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { cn } from '#/lib/utils'
+import { m } from '#/i18n'
 import { Icon } from '../icon'
 import { Dialog, DialogContent, DialogTitle } from '../ui/dialog'
 import type { CommandMatch } from './command'
@@ -89,8 +90,8 @@ export function CommandPalette() {
   const announcement = !trimmedQuery
     ? ''
     : displayed.length
-      ? `${displayed.length} ${displayed.length === 1 ? 'result' : 'results'}`
-      : `No results for ${trimmedQuery}`
+      ? m.palette.resultCount({ n: displayed.length })
+      : m.palette.noResultsStatus({ query: trimmedQuery })
 
   // reset when the dialog opens, without an effect
   const [wasOpen, setWasOpen] = useState(isOpen)
@@ -169,7 +170,7 @@ export function CommandPalette() {
         }}
         className="top-[11vh] flex max-h-[min(70vh,560px)] translate-y-0 flex-col gap-0 overflow-hidden p-0 shadow-pop sm:max-w-[640px]"
       >
-        <DialogTitle className="sr-only">Search or jump to</DialogTitle>
+        <DialogTitle className="sr-only">{m.palette.dialogTitle()}</DialogTitle>
         <div className="grid grid-cols-[auto_1fr] items-center gap-3 border-b px-4 py-3">
           <Icon name="search" size={20} className="text-muted-foreground" />
           <input
@@ -181,10 +182,10 @@ export function CommandPalette() {
             aria-activedescendant={
               displayed.length ? rowId(safeIndex) : undefined
             }
-            aria-label="Search items or jump to a page"
+            aria-label={m.palette.inputLabel()}
             autoComplete="off"
             spellCheck={false}
-            placeholder="Item name or ID, e.g. Arcanite Bar"
+            placeholder={m.palette.inputPlaceholder()}
             value={query}
             onChange={(event) => {
               setQuery(event.target.value)
@@ -199,7 +200,11 @@ export function CommandPalette() {
           ref={resultsRef}
           className="overflow-y-auto overscroll-contain p-1.5"
         >
-          <div id={LIST_ID} role="listbox" aria-label="Results">
+          <div
+            id={LIST_ID}
+            role="listbox"
+            aria-label={m.palette.resultsLabel()}
+          >
             {groups.map((group) => (
               <div
                 key={group.id}
@@ -256,7 +261,7 @@ export function CommandPalette() {
             !displayed.length &&
             !groups.some((g) => g.status) && (
               <p className="px-4 py-7 text-center text-sm text-muted-foreground">
-                No results for{' '}
+                {m.palette.noResultsLead()}
                 <strong className="text-foreground">{trimmedQuery}</strong>
               </p>
             )}
@@ -268,13 +273,13 @@ export function CommandPalette() {
 
         <div className="flex flex-wrap gap-4 border-t px-4 py-2.5 text-micro text-muted-foreground">
           <span>
-            <kbd>↑</kbd> <kbd>↓</kbd> to move
+            <kbd>↑</kbd> <kbd>↓</kbd> {m.palette.hintMove()}
           </span>
           <span>
-            <kbd>Enter</kbd> to open
+            <kbd>{m.palette.keyEnter()}</kbd> {m.palette.hintOpen()}
           </span>
           <span>
-            <kbd>Esc</kbd> to close
+            <kbd>{m.palette.keyEsc()}</kbd> {m.palette.hintClose()}
           </span>
         </div>
       </DialogContent>

@@ -6,6 +6,7 @@ import { REGION_INFO } from '#/config/regions'
 import { formatNumber } from '#/lib/format'
 import { itemName } from '#/lib/wowhead'
 import { searchItemsQuery } from '#/server/fns/items'
+import { m } from '#/i18n'
 import type { DynamicGroup } from '../command-palette/command'
 import { Icon } from '../icon'
 import { ItemLink } from '../item-link'
@@ -23,7 +24,10 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
   const navigate = useNavigate()
   const region = useRegion()
   // the region is in the label: on / and /about it is not in the URL
-  const GROUP = { id: 'items', label: `Items in ${REGION_INFO[region].name}` }
+  const GROUP = {
+    id: 'items',
+    label: m.palette.groupItems({ region: REGION_INFO[region].name }),
+  }
   // SearchInput caps q at 64; a longer query would fail validation
   const q = query.trim().slice(0, 64).trim()
   const [settled] = useDebouncedValue(q, { wait: DEBOUNCE_MS })
@@ -44,25 +48,28 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
     return []
   }
   if (isError) {
-    return [{ ...GROUP, commands: [], status: 'Item search failed' }]
+    return [{ ...GROUP, commands: [], status: m.palette.itemSearchFailed() }]
   }
   if (
     !data ||
     (isPlaceholderData && !data.length) ||
     (settled !== q && !data.length)
   ) {
-    return [{ ...GROUP, commands: [], status: 'Searching…' }]
+    return [{ ...GROUP, commands: [], status: m.palette.itemSearching() }]
   }
   if (!data.length) {
     return [
       {
         ...GROUP,
-        status: `No item matches "${q}" in ${REGION_INFO[region].name}.`,
+        status: m.palette.itemNoMatch({
+          q,
+          region: REGION_INFO[region].name,
+        }),
         commands: [
           {
             id: 'items-search-all',
             group: GROUP.label,
-            title: 'Search all items',
+            title: m.palette.itemSearchAll(),
             icon: <Icon name="search" />,
             perform: () =>
               void navigate({
@@ -97,7 +104,9 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
                 className="text-foreground"
               />
               {row.spd !== null && (
-                <span>{formatNumber(row.spd, 1)} sold/day</span>
+                <span>
+                  {m.palette.itemSoldPerDay({ n: formatNumber(row.spd, 1) })}
+                </span>
               )}
             </span>
           </span>

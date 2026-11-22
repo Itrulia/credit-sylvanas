@@ -9,6 +9,7 @@ import {
 } from '#/lib/saved-items'
 import type { SavedItem } from '#/lib/saved-items'
 import { itemName } from '#/lib/wowhead'
+import { m } from '#/i18n'
 import type { Command, DynamicGroup } from '../command-palette/command'
 import { searchCommands } from '../command-palette/search-commands'
 import { Icon } from '../icon'
@@ -52,7 +53,7 @@ export function useSavedItemGroups(query: string): DynamicGroup[] {
   const favouriteCommands = useMemo(
     () =>
       favourites.map((item) =>
-        savedItemCommand(item, 'Favourites', 'star', navigate),
+        savedItemCommand(item, m.palette.groupFavourites(), 'star', navigate),
       ),
     [favourites, navigate],
   )
@@ -60,7 +61,7 @@ export function useSavedItemGroups(query: string): DynamicGroup[] {
     const commands = searchCommands(favouriteCommands, query).map(
       (match) => match.command,
     )
-    return [{ id: 'favourites', label: 'Favourites', commands }]
+    return [{ id: 'favourites', label: m.palette.groupFavourites(), commands }]
   }
   const shownRecent = recent.filter(
     (item) =>
@@ -72,11 +73,15 @@ export function useSavedItemGroups(query: string): DynamicGroup[] {
   return [
     {
       id: 'recent',
-      label: 'Recent',
+      label: m.palette.groupRecent(),
       commands: shownRecent.map((item) =>
-        savedItemCommand(item, 'Recent', 'history', navigate),
+        savedItemCommand(item, m.palette.groupRecent(), 'history', navigate),
       ),
     },
-    { id: 'favourites', label: 'Favourites', commands: shownFavourites },
+    {
+      id: 'favourites',
+      label: m.palette.groupFavourites(),
+      commands: shownFavourites,
+    },
   ]
 }
