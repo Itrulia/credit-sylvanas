@@ -107,6 +107,25 @@ These come from a production TanStack Start migration in another repo.
 - `new URL('./x', import.meta.url)` for assets turns into a `file://` path
   under SSR. Import the asset so Vite rewrites the URL.
 
+### Dev serves stale HTML after `pnpm db:synth`
+
+The edge cache (`src/server/edge-cache.ts`) keys pages by the latest
+`imported` import id, and `pnpm dev` runs it too. `db:synth` adds rows for
+older days but no newer import, so the version stays the same and dev keeps
+answering the old cached HTML. Restart `pnpm dev`, or stop it and delete
+`.wrangler/state/v3/cache`. Never delete that folder while dev is running.
+
+Load-bearing: the version key is what makes production skip stale pages after
+an ingest. Don't drop it to fix dev. Nothing guards this.
+
+### A stale Vite optimize cache loads two copies of React
+
+After a dependency change, `pnpm dev` can serve pre-bundled chunks from
+`node_modules/.vite` next to fresh ones. Two Reacts then fail hooks with
+"Cannot read properties of null (reading 'useContext')", and SSR falls back
+to client rendering. Stop dev, run `rm -rf node_modules/.vite`, start again.
+Nothing guards this.
+
 ## Adding an entry
 
 ```markdown
