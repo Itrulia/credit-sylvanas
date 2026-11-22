@@ -6,6 +6,7 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
+import { PageviewTracker } from '#/components/pageview-tracker'
 import { SitePalette } from '#/components/search/site-palette'
 import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
@@ -76,6 +77,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           <SiteFooter />
         </SitePalette>
         <WowheadTooltips />
+        <PageviewTracker />
         <Suspense>
           <Devtools />
         </Suspense>

@@ -17,6 +17,7 @@ import { MomentumGrid } from '#/components/heatmap/momentum-grid'
 import { SectionBoundary } from '#/components/section-boundary'
 import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO } from '#/config/regions'
+import { track } from '#/lib/analytics'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
 import type { HeatmapN, Region } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
@@ -73,12 +74,13 @@ function Heatmaps() {
         onN={(next) =>
           navigate({ search: (prev) => ({ ...prev, n: next }), replace: true })
         }
-        onMetric={(next) =>
-          navigate({
+        onMetric={(next) => {
+          track('heatmap_metric_change', { metric: next })
+          void navigate({
             search: (prev) => ({ ...prev, metric: next }),
             replace: true,
           })
-        }
+        }}
       />
 
       {data.rows.length === 0 ? (
@@ -102,13 +104,14 @@ function Heatmaps() {
             sort={sort}
             metric={metric}
             busy={busy}
-            onSort={(next) =>
-              navigate({
+            onSort={(next) => {
+              track('table_sort', { column: next })
+              void navigate({
                 search: (prev) => ({ ...prev, sort: next }),
                 replace: true,
                 resetScroll: false,
               })
-            }
+            }}
           />
           <MomentumGrid region={region} rows={data.rows} busy={busy} />
           <section aria-labelledby="day-by-day" className="space-y-3">

@@ -50,7 +50,8 @@ interface RenderGroup {
 }
 
 export function CommandPalette() {
-  const { isOpen, close, commands, useDynamicGroups } = useCommandPalette()
+  const { isOpen, close, commands, useDynamicGroups, onRun } =
+    useCommandPalette()
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -124,6 +125,7 @@ export function CommandPalette() {
       return
     }
     close()
+    onRun?.(match.command)
     match.command.perform({ close })
   }
 

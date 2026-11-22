@@ -1,6 +1,7 @@
 import { useRouter } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { track } from '#/lib/analytics'
 import { SITE } from '#/lib/seo'
 import { StatePanel } from './state-panel'
 import { Button } from './ui/button'
@@ -14,6 +15,7 @@ export function ErrorPage({ error }: ErrorComponentProps) {
   }
   useEffect(() => {
     console.error(error)
+    track('error_page', { status: 500 })
   }, [error])
   return (
     <div className="page-wrap py-8">

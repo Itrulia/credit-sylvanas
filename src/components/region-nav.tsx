@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { REGIONS, REGION_INFO } from '#/config/regions'
 import type { Region } from '#/lib/search'
+import { track } from '#/lib/analytics'
 import { cn } from '#/lib/utils'
 
 /**
@@ -28,6 +29,11 @@ export function RegionNav({
                 realm: undefined,
                 faction: undefined,
               })}
+              onClick={() => {
+                if (region !== current) {
+                  track('region_switch', { region })
+                }
+              }}
               aria-current={region === current ? 'page' : undefined}
               title={REGION_INFO[region].fullName}
               className={cn(

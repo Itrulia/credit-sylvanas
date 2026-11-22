@@ -11,7 +11,7 @@ A single package. Planned layout; update this file when it changes.
 - `src/components/ui/`: shadcn components, managed by the CLI.
 - `src/components/command-palette/`: Generic Mod+K palette ported from wepublish (fuzzy match, search, grouping, provider, trigger). Site commands and the item search group live in `src/components/search/`.
 - `src/components/`: App components built from `ui/`.
-- `src/lib/`: Isomorphic helpers: `search.ts` (route search schemas), `money.ts`, `format.ts`, `bins.ts`, `median.ts`, `heatmap.ts`, `icons.ts`, `wowhead.ts`, `errors.ts`, `seo.ts`. Nothing here may import from `src/server`.
+- `src/lib/`: Isomorphic helpers: `search.ts` (route search schemas), `money.ts`, `format.ts`, `bins.ts`, `median.ts`, `heatmap.ts`, `icons.ts`, `wowhead.ts`, `errors.ts`, `seo.ts`, and `analytics/` (typed `track(event, props)` over a closed event union plus `trackPageview()`; adapters `umami.ts`, used only in production builds with a website id, and `noop.ts`; app code never touches `window.umami`). Pageviews come from `components/pageview-tracker.tsx`, once per pathname, with Umami auto-track off. Nothing here may import from `src/server`.
 - `src/config/regions.ts`: region codes and names.
 - Fonts are self-hosted, never Google at runtime: Fontsource packages for Newsreader 600 and Atkinson Hyperlegible Next and Mono (variable), imported in `src/styles.css`; the icon font lives in `public/fonts`.
 - `src/styles.css`: Tailwind and the tokens of the one light theme (no dark mode, see CONTEXT). Brand colours: oatmilk `#EDE4D3`, forest `#1D4A35`, tomato `#F2462E`.

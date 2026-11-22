@@ -1,6 +1,8 @@
 import { Link, useParams } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { z } from 'zod'
 import { REGIONS, REGION_INFO, isRegion } from '#/config/regions'
+import { track } from '#/lib/analytics'
 import { SITE } from '#/lib/seo'
 import { CommandPaletteTrigger } from './command-palette/command-palette-trigger'
 import { StatePanel } from './state-panel'
@@ -23,6 +25,7 @@ export function NotFound({ data }: { data?: unknown }) {
   const missing = Missing.safeParse(data)
   const kind = missing.success ? missing.data.kind : null
   const value = missing.success ? missing.data.value : ''
+  useEffect(() => track('error_page', { status: 404 }), [])
 
   return (
     <div className="page-wrap py-8">

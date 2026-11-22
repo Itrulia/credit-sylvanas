@@ -3,6 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { SectionBoundary } from '#/components/section-boundary'
 import { Skeleton } from '#/components/ui/skeleton'
+import { track } from '#/lib/analytics'
 import type { StatRange } from '#/lib/search'
 import { itemHistoryQuery } from '#/server/fns/item'
 import type { ItemInput } from '#/server/fns/inputs'
@@ -12,7 +13,7 @@ import { RegionCompareCard } from './region-compare-card'
 import { ValueQuantityCard } from './value-quantity-card'
 
 const FROM = '/$region/items/$itemId'
-type RangeKey = 'mvRange' | 'cmpRange' | 'heatRange' | 'salesRange'
+type Card = 'mv' | 'cmp' | 'heat' | 'sales'
 const CARDS = [
   'Market value and quantity',
   'Other regions',
@@ -49,12 +50,14 @@ function Cards({ input, realmName }: StatsGridProps) {
   const search = useSearch({ from: FROM })
   const navigate = useNavigate({ from: FROM })
   // ranges filter the 90-day payload in render: a change never refetches
-  const setter = (key: RangeKey) => (range: StatRange) =>
+  const setter = (card: Card) => (range: StatRange) => {
+    track('stats_range_change', { card, range })
     void navigate({
-      search: (prev) => ({ ...prev, [key]: range }),
+      search: (prev) => ({ ...prev, [`${card}Range`]: range }),
       replace: true,
       resetScroll: false,
     })
+  }
   const realm = realmName ? data.realm : null
   const shared = { realm, realmName, region: input.region }
   return (
@@ -63,28 +66,28 @@ function Cards({ input, realmName }: StatsGridProps) {
         {...shared}
         points={data.points}
         range={search.mvRange}
-        onRangeChange={setter('mvRange')}
+        onRangeChange={setter('mv')}
       />
       <RegionCompareCard
         {...shared}
         points={data.points}
         others={data.others}
         range={search.cmpRange}
-        onRangeChange={setter('cmpRange')}
+        onRangeChange={setter('cmp')}
       />
       <HeatmapCard
         {...shared}
         kind="value"
         points={data.points}
         range={search.heatRange}
-        onRangeChange={setter('heatRange')}
+        onRangeChange={setter('heat')}
       />
       <HeatmapCard
         {...shared}
         kind="sales"
         points={data.points}
         range={search.salesRange}
-        onRangeChange={setter('salesRange')}
+        onRangeChange={setter('sales')}
       />
     </div>
   )

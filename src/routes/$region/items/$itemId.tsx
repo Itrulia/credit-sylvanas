@@ -4,6 +4,7 @@ import {
   stripSearchParams,
 } from '@tanstack/react-router'
 import type { NotFoundRouteProps } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { REGION_INFO } from '#/config/regions'
 import { findRealm } from '#/config/realms'
@@ -16,6 +17,7 @@ import { PriceBlock, isVolatile } from '#/components/item/price-block'
 import { RealmPrices } from '#/components/item/realm-prices'
 import { RegionStrip } from '#/components/item/region-strip'
 import { StatsGrid } from '#/components/item/stats-grid'
+import { track } from '#/lib/analytics'
 import { formatDate, formatNumber } from '#/lib/format'
 import { formatMoney, moneyText } from '#/lib/money'
 import { ITEM_DEFAULTS, ItemIdParam, itemSearch } from '#/lib/search'
@@ -77,6 +79,7 @@ function ItemDetail() {
   const input = { region, itemId, ...deps }
   const { data } = useSuspenseQuery(itemQuery(input))
   const { data: status } = useSuspenseQuery(regionStatusQuery({ region }))
+  useEffect(() => track('item_view', { itemId, region }), [itemId, region])
   if (!data.item || !data.current) {
     return null
   }

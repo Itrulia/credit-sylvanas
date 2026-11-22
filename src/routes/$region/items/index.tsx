@@ -9,6 +9,7 @@ import { ItemsEmpty, isNumericQuery } from '#/components/items/items-empty'
 import { ItemsSearchInput } from '#/components/items/items-search-input'
 import { ItemsTable, nextSort } from '#/components/items/items-table'
 import { Pager } from '#/components/items/pager'
+import { track } from '#/lib/analytics'
 import { ITEMS_DEFAULTS, itemsSearch } from '#/lib/search'
 import type { Region } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
@@ -101,15 +102,16 @@ function Items() {
             dir={dir}
             busy={busy}
             withRealm={Boolean(realm && faction)}
-            onSort={(column) =>
-              navigate({
+            onSort={(column) => {
+              track('table_sort', { column })
+              void navigate({
                 search: (prev) => ({
                   ...prev,
                   ...nextSort({ sort, dir }, column),
                   page: undefined,
                 }),
               })
-            }
+            }}
           />
           <Pager page={page} total={data.total} />
         </>

@@ -22,6 +22,7 @@ export interface CommandPaletteValue {
   commands: Command[]
   /** called as a hook inside the palette with the current query */
   useDynamicGroups: (query: string) => DynamicGroup[]
+  onRun?: (command: Command) => void
 }
 
 const CommandPaletteContext = createContext<CommandPaletteValue>({
@@ -38,19 +39,30 @@ export interface CommandPaletteProviderProps {
   /** must be a stable hook (same function every render) */
   useDynamicGroups?: (query: string) => DynamicGroup[]
   enabled?: boolean
+  onOpen?: () => void
+  /** before a command's perform, e.g. for analytics */
+  onRun?: (command: Command) => void
 }
 
 export function CommandPaletteProvider({
   commands,
   useDynamicGroups = useNoGroups,
   enabled = true,
+  onOpen,
+  onRun,
   children,
 }: PropsWithChildren<CommandPaletteProviderProps>) {
   const [isOpen, setIsOpen] = useState(false)
 
-  const open = useCallback(() => setIsOpen(true), [])
+  const open = useCallback(() => {
+    setIsOpen(true)
+    onOpen?.()
+  }, [onOpen])
   const close = useCallback(() => setIsOpen(false), [])
-  const toggle = useCallback(() => setIsOpen((current) => !current), [])
+  const toggle = useCallback(
+    () => (isOpen ? close() : open()),
+    [close, isOpen, open],
+  )
 
   useHotkey(
     COMMAND_PALETTE_HOTKEY,
@@ -70,8 +82,8 @@ export function CommandPaletteProvider({
   )
 
   const value = useMemo(
-    () => ({ isOpen, open, close, toggle, commands, useDynamicGroups }),
-    [close, commands, isOpen, open, toggle, useDynamicGroups],
+    () => ({ isOpen, open, close, toggle, commands, useDynamicGroups, onRun }),
+    [close, commands, isOpen, onRun, open, toggle, useDynamicGroups],
   )
 
   return (
