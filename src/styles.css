@@ -1,6 +1,19 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 @import 'tw-animate-css';
+/* self-hosted so no visitor IP reaches Google. Text swaps, icons block */
+@import '@fontsource/newsreader/600.css';
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+@import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
+
+/* built by scripts/fetch-icon-font.ts from ICON_NAMES */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block; /* no flash of the "search" ligature word */
+  src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
+}
 
 :root {
   color-scheme: light; /* stops browsers auto-darkening controls and scrollbars */
@@ -116,9 +129,10 @@
 @theme inline {
   --font-display: 'Newsreader', ui-serif, Georgia, serif;
   --font-sans:
-    'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+    'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono:
-    'Atkinson Hyperlegible Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    'Atkinson Hyperlegible Mono Variable', ui-monospace, 'SF Mono', Menlo,
+    monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -214,7 +228,7 @@
     font-family: var(--font-sans);
     font-size: 0.875rem;
     line-height: 1.45;
-    font-synthesis-style: none; /* only 400 has a real italic: never fake an oblique */
+    font-synthesis-style: none; /* no italic face is loaded: never fake an oblique */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -233,7 +247,7 @@
   a:hover {
     text-decoration-color: currentColor;
   }
-  /* slashed-zero is a no-op on Google Fonts (zero is stripped); kept for a future self-host */
+  /* slashed-zero does nothing on a font without the zero feature */
   .num,
   td,
   th,

@@ -10,9 +10,17 @@ import { SitePalette } from '#/components/search/site-palette'
 import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
 import { WowheadTooltips } from '#/components/wowhead-tooltips'
-import { ICON_FONT_HREF, TEXT_FONTS_HREF } from '#/lib/icons'
 import { canonicalLinks } from '#/lib/seo'
+import sansFont from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url'
+import displayFont from '@fontsource/newsreader/files/newsreader-latin-600-normal.woff2?url'
 import appCss from '../styles.css?url'
+
+// above-the-fold faces: body text, the wordmark and the header icons
+const PRELOAD_FONTS = [
+  sansFont,
+  displayFont,
+  '/fonts/material-symbols-outlined.woff2',
+]
 
 // import.meta.env.DEV is replaced at build time, so the import below is dropped from production
 const Devtools = import.meta.env.DEV
@@ -32,15 +40,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         ],
         links: [
           ...canonical.links,
-          { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-          {
-            rel: 'preconnect',
-            href: 'https://fonts.gstatic.com',
-            crossOrigin: 'anonymous',
-          },
-          // text fonts swap, icons block (no flash of the "search" ligature word): separate stylesheets
-          { rel: 'stylesheet', href: TEXT_FONTS_HREF },
-          { rel: 'stylesheet', href: ICON_FONT_HREF },
+          ...PRELOAD_FONTS.map((href) => ({
+            rel: 'preload',
+            href,
+            as: 'font',
+            type: 'font/woff2',
+            crossOrigin: 'anonymous' as const,
+          })),
           { rel: 'stylesheet', href: appCss },
         ],
       }

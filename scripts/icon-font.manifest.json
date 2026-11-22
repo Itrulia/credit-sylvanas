@@ -1,0 +1,21 @@
+{
+  "file": "material-symbols-outlined.woff2",
+  "axes": "opsz,wght,FILL@20..48,100..700,0..1",
+  "iconNames": [
+    "arrow_downward",
+    "arrow_upward",
+    "check",
+    "chevron_left",
+    "chevron_right",
+    "close",
+    "error",
+    "expand_less",
+    "expand_more",
+    "info",
+    "menu",
+    "open_in_new",
+    "search",
+    "unfold_more",
+    "warning"
+  ]
+}
