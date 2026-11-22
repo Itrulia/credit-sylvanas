@@ -29,8 +29,8 @@ function Home() {
           WoW Forever auction house prices
         </h1>
         <p className="mt-3 max-w-prose text-lg text-muted-foreground">
-          Pick a region to see what items sell for today, what's moving and how
-          prices changed over the last 90 days.
+          Pick a region to see what items sell for today and how their prices
+          changed over the last 90 days.
         </p>
       </div>
 

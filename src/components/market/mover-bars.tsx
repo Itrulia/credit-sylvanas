@@ -115,7 +115,7 @@ const INTRO: Record<MoverBy, Partial<Record<MoverMetric, string>>> = {
 
 const WINDOW_LABEL: Record<MoverMetric, string> = {
   vs_hist: 'vs 60-day avg',
-  d1: 'Since yesterday',
+  d1: 'Last update',
   d7: '7 days',
 }
 
@@ -152,7 +152,7 @@ export function MoverBars({
     reasons.vs_hist = 'TSM has no 60-day sales average.'
   }
   if (!available.d1) {
-    reasons.d1 = `Since yesterday: available after the second daily update${secondDay}.`
+    reasons.d1 = `Last update: available after the second daily update${secondDay}.`
   }
   if (!available.d7) {
     reasons.d7 = `7 days: available from ${available.d7From !== null ? formatDate(available.d7From) : 'the eighth daily update'} (${days} of 7 days so far).`
@@ -162,32 +162,36 @@ export function MoverBars({
     <div className="space-y-4">
       <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
         <div className="space-y-1">
-          <p id={`${id}-by`} className="text-label flex items-center gap-1">
-            Measure <InfoPopover term="popularity" />
+          <p id={`${id}-by`} className="text-label flex min-h-6 items-center">
+            Measure
           </p>
-          <ToggleGroup
-            type="single"
-            variant="outline"
-            size="sm"
-            value={by}
-            aria-labelledby={`${id}-by`}
-            onValueChange={(v) => {
-              const next = MoverBy.safeParse(v)
-              if (next.success) {
-                void navigate({
-                  search: (prev) => ({ ...prev, by: next.data }),
-                  resetScroll: false,
-                })
-              }
-            }}
-          >
-            <ToggleGroupItem value="price" className={toggle}>
-              Price
-            </ToggleGroupItem>
-            <ToggleGroupItem value="sales" className={toggle}>
-              Popularity
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <div className="flex items-center gap-1">
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              size="sm"
+              value={by}
+              aria-labelledby={`${id}-by`}
+              onValueChange={(v) => {
+                const next = MoverBy.safeParse(v)
+                if (next.success) {
+                  void navigate({
+                    search: (prev) => ({ ...prev, by: next.data }),
+                    resetScroll: false,
+                  })
+                }
+              }}
+            >
+              <ToggleGroupItem value="price" className={toggle}>
+                Price
+              </ToggleGroupItem>
+              <ToggleGroupItem value="sales" className={toggle}>
+                Popularity
+              </ToggleGroupItem>
+            </ToggleGroup>
+            {/* defines the Popularity option, so it sits next to it */}
+            <InfoPopover term="popularity" />
+          </div>
         </div>
         <div className="space-y-1">
           <p id={`${id}-win`} className="text-label flex min-h-6 items-center">

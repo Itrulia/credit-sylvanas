@@ -37,7 +37,7 @@ export const Route = createFileRoute('/$region/heatmap')({
     const name = params.region.toUpperCase()
     return pageHead(
       `Heatmaps · ${name} Forever AH`,
-      `See where the top ${name} Forever auction house items are pricier or cheaper: across regions, against their 60-day average, and day by day. Pricing data from TradeSkillMaster.`,
+      `See where the top ${name} Forever auction house items cost more or less than in other regions and than their 60-day average. Pricing data from TradeSkillMaster.`,
     )
   },
   component: Heatmaps,

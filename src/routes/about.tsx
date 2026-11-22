@@ -41,8 +41,8 @@ function About() {
       <ProseSection title="Where the data comes from">
         <p>
           Every price comes from the public data files that TradeSkillMaster
-          publishes. Region prices update once a day and realm prices every few
-          hours. We download each file once per update.
+          publishes. Region prices update once a day. We download each file
+          once per update.
         </p>
         <p>
           We keep every daily snapshot, so price history grows from the day we
@@ -93,8 +93,8 @@ function About() {
             Track.
           </li>
           <li>
-            Wowhead's tooltip script adds item icons and tooltips on pages that
-            list items. It doesn't load on this page, the home page or the legal
+            Wowhead's tooltip script adds item icons and tooltips. It loads on
+            every price page, but not on this page, the home page or the legal
             pages.
           </li>
         </ul>

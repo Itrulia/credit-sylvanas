@@ -31,7 +31,7 @@ class Boundary extends Component<BoundaryProps, { failed: boolean }> {
           <Icon name="error" />
           These prices didn't load.
         </p>
-        <p>That's a problem on our side, not your connection.</p>
+        <p>Try again in a moment.</p>
         <Button
           variant="secondary"
           onClick={() => {

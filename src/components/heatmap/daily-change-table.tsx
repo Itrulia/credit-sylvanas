@@ -36,7 +36,7 @@ export function DailyChangeTable({
       >
         <p>
           We've saved {data.days} of 7 daily updates for {name}. Until then, the
-          heatmaps above use TSM's 60-day average, which works from day one.
+          60-day heatmap above works from day one.
         </p>
       </StatePanel>
     )

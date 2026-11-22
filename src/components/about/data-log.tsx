@@ -88,7 +88,7 @@ const COLUMNS: DataColumn<ImportLogRow>[] = [
   },
   {
     id: 'sha',
-    header: 'Hash',
+    header: 'Fingerprint',
     cell: ({ row }) =>
       row.original.sha ? (
         <span className="font-mono">{row.original.sha}</span>
