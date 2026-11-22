@@ -2,7 +2,8 @@ import { Link, useParams } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { z } from 'zod'
 import { REGIONS, REGION_INFO, isRegion } from '#/config/regions'
-import { LOCALE, m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
+import { getLocale } from '#/paraglide/runtime.js'
 import { track } from '#/lib/analytics'
 import { SITE } from '#/lib/seo'
 import { CommandPaletteTrigger } from './command-palette/command-palette-trigger'
@@ -31,18 +32,18 @@ export function NotFound({ data }: { data?: unknown }) {
   return (
     <div className="page-wrap py-8">
       <title>
-        {m.shell.docTitle({ page: m.shell.notFoundDocPage(), site: SITE })}
+        {m.shell_docTitle({ page: m.shell_notFoundDocPage(), site: SITE })}
       </title>
       <meta name="robots" content="noindex" />
       {kind === 'region' ? (
         <StatePanel
           as="h1"
           icon="search"
-          title={m.shell.notFoundRegionTitle({ value })}
+          title={m.shell_notFoundRegionTitle({ value })}
         >
           <p>
-            {m.shell.notFoundRegionList({
-              regions: new Intl.ListFormat(LOCALE).format(
+            {m.shell_notFoundRegionList({
+              regions: new Intl.ListFormat(getLocale()).format(
                 REGIONS.map((r) => REGION_INFO[r].name),
               ),
             })}
@@ -65,11 +66,11 @@ export function NotFound({ data }: { data?: unknown }) {
         <StatePanel
           as="h1"
           icon="search"
-          title={m.shell.notFoundRealmTitle({ value })}
+          title={m.shell_notFoundRealmTitle({ value })}
         >
           <p>
             <Link to="/$region" params={{ region }} className={link}>
-              {m.shell.notFoundRealmLink({ region: name })}
+              {m.shell_notFoundRealmLink({ region: name })}
             </Link>
           </p>
         </StatePanel>
@@ -77,13 +78,13 @@ export function NotFound({ data }: { data?: unknown }) {
         <StatePanel
           as="h1"
           icon="search"
-          title={m.shell.notFoundTitle()}
+          title={m.shell_notFoundTitle()}
           actions={<CommandPaletteTrigger className="h-11 sm:w-80" />}
         >
-          <p>{m.shell.notFoundBody()}</p>
+          <p>{m.shell_notFoundBody()}</p>
           <p>
             <Link to="/$region" params={{ region }} className={link}>
-              {m.shell.notFoundMarketLink({ region: name })}
+              {m.shell_notFoundMarketLink({ region: name })}
             </Link>
           </p>
         </StatePanel>

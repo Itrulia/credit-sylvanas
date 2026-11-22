@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { GlossaryKey } from './glossary'
 import { GLOSSARY } from './glossary'
 import { Icon } from './icon'
@@ -10,7 +10,7 @@ export function InfoPopover({ term }: { term: GlossaryKey }) {
   return (
     <Popover>
       <PopoverTrigger
-        aria-label={m.shell.infoLabel({ term: label })}
+        aria-label={m.shell_infoLabel({ term: label })}
         className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground pointer-coarse:size-11"
       >
         <Icon name="info" />

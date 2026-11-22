@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { Credit, NOT_AFFILIATED } from './credit'
 
 export function SiteFooter() {
@@ -15,17 +15,17 @@ export function SiteFooter() {
         <ul className="flex flex-wrap gap-x-4 gap-y-1">
           <li>
             <Link to="/about" className="underline">
-              {m.shell.footerAbout()}
+              {m.shell_footerAbout()}
             </Link>
           </li>
           <li>
             <Link to="/privacy" className="underline">
-              {m.shell.footerPrivacy()}
+              {m.shell_footerPrivacy()}
             </Link>
           </li>
           <li>
             <Link to="/impressum" className="underline">
-              {m.shell.footerImpressum()}
+              {m.shell_footerImpressum()}
             </Link>
           </li>
         </ul>

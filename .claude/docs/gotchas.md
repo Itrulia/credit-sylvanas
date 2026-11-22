@@ -161,6 +161,20 @@ through the Worker instead.
 Load-bearing: keep `wwwRedirect` as the fallback for Worker paths. Nothing
 guards the zone settings.
 
+### Paraglide output must exist before tsc, vitest and eslint
+
+`src/paraglide/` is generated and gitignored. `pnpm test`, `pnpm typecheck`
+and `pnpm lint` run `pnpm i18n` first; on a fresh checkout a bare
+`pnpm exec tsc` or `pnpm vitest run <path>` fails with `Cannot find module
+'#/paraglide/messages.js'` until `pnpm i18n` (or a build) has run. After
+editing `messages/en.json`, rerun `pnpm i18n` so types and tests see the
+change. The CLI flags in the `i18n` script must match the Vite plugin options.
+
+Load-bearing: `outputStructure: 'message-modules'` (and
+`--output-structure message-modules`). Each message is its own module with
+plain imports, so vitest runs it without the Vite plugin and the client
+bundle only gets the messages it uses. Nothing guards this.
+
 ## Adding an entry
 
 ```markdown

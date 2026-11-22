@@ -6,7 +6,7 @@ import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
 import { RulesetFilter, realmsSearch } from '#/lib/search'
 import { REGION_INFO, regionLabel } from '#/config/regions'
 import { pageHead } from '#/lib/seo'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 
 export const Route = createFileRoute('/$region/realms')({
   ssr: true,
@@ -15,8 +15,8 @@ export const Route = createFileRoute('/$region/realms')({
   head: ({ params }) => {
     const name = regionLabel(params.region)
     return pageHead(
-      m.realms.headTitle({ region: name }),
-      m.realms.headDescription({ region: name }),
+      m.realms_headTitle({ region: name }),
+      m.realms_headDescription({ region: name }),
       // an empty state is thin content: keep it out of the index until realms exist
       !REALMS.some((r) => r.region === params.region),
     )
@@ -33,14 +33,14 @@ function Realms() {
     <div className="page-wrap space-y-6 py-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-display">
-          {m.realms.pageTitle({ region: REGION_INFO[region].name })}
+          {m.realms_pageTitle({ region: REGION_INFO[region].name })}
         </h1>
         {/* a filter over nothing is noise: no ruleset control while realms.ts is empty */}
         {realms.length > 0 && (
           <ToggleGroup
             type="single"
             variant="outline"
-            aria-label={m.realms.rulesetLabel()}
+            aria-label={m.realms_rulesetLabel()}
             value={ruleset}
             onValueChange={(value) => {
               // radix sends '' when the pressed item is clicked again

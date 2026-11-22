@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 
 export const SITE = 'Credit Sylvanas'
 export const SITE_URL = 'https://credit-sylvanas.app'
@@ -17,7 +17,7 @@ export function canonicalLinks(pathname: string, page?: number) {
 export function pageHead(title: string, description?: string, noindex = false) {
   return {
     meta: [
-      { title: m.shell.docTitle({ page: title, site: SITE }) },
+      { title: m.shell_docTitle({ page: title, site: SITE }) },
       // bare title: og:site_name in the root head carries the site name
       { property: 'og:title', content: title },
       ...(description

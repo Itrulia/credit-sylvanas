@@ -17,14 +17,19 @@ Prettier (no semicolons, single quotes, trailing commas) settle disputes.
 
 ## UI copy
 
-UI copy lives in `src/i18n/en/<area>.ts` and is read through
-`m.<area>.<key>()` from `#/i18n`. Never write user-facing text inline.
-Messages return plain strings; counts go through `plural()`, and a sentence
-with a link is split into parts the component composes around `<Link>`.
-`src/i18n/no-hardcoded-copy.test.ts` enforces it for JSX only, so text built
+UI copy lives in `messages/en.json` (Paraglide, flat `area_camelKey` ids)
+and is read through `m.area_key()` from `#/paraglide/messages.js`. Never
+write user-facing text inline. Messages take plain values and hold no logic:
+counts, lookups and either/or wording are `plural` or select variants in the
+JSON (wrapped in an array, `"nPlural=one"`, `"side=below"`, `"*"` as the
+fallback). A select compares strings, so pass `'below'`, never a boolean.
+Numbers and dates are formatted in `src/lib/format.ts` with Intl and
+`baseLocale` from `#/paraglide/runtime.js`. A sentence with a link is split
+into parts the component composes around `<Link>`.
+`src/lib/no-hardcoded-copy.test.ts` enforces it for JSX only, so text built
 in `.ts` helpers (head titles, sr-only labels, search keywords) needs the same
 care. A term shown in several places gets one key: TSM metric names are the
-`m.shell.glossary*Label` keys, factions and rulesets live in `m.realms`.
+`m.shell_glossary*Label` keys, factions and rulesets live under `realms_`.
 
 ## React
 

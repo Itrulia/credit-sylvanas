@@ -8,7 +8,7 @@ import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatNumber } from '#/lib/format'
 import { HotBy } from '#/lib/search'
 import type { Region } from '#/lib/search'
@@ -40,7 +40,7 @@ export function columns(
       header: () => (
         <>
           <span aria-hidden="true">#</span>
-          <span className="sr-only">{m.market.rankHeader()}</span>
+          <span className="sr-only">{m.market_rankHeader()}</span>
         </>
       ),
       cell: ({ row }) => (
@@ -58,7 +58,7 @@ export function columns(
     },
     {
       id: 'item',
-      header: m.market.itemHeader(),
+      header: m.market_itemHeader(),
       cell: ({ row }) => (
         <ItemLink
           id={row.original.id}
@@ -72,7 +72,7 @@ export function columns(
     {
       id: 'mv',
       header: () => (
-        <Head label={m.shell.glossaryMarketValueLabel()} term="marketValue" />
+        <Head label={m.shell_glossaryMarketValueLabel()} term="marketValue" />
       ),
       cell: ({ row }) => (
         <Money copper={row.original.mv} variant="compact" align />
@@ -81,7 +81,7 @@ export function columns(
     },
     {
       id: 'vsHist',
-      header: () => <Head label={m.market.vsHistHeader()} term="vsHist" />,
+      header: () => <Head label={m.market_vsHistHeader()} term="vsHist" />,
       cell: ({ row }) => <Delta value={row.original.vsHist} mode="vsHist" />,
       meta: { align: 'right' },
     },
@@ -90,7 +90,7 @@ export function columns(
           {
             id: 'd1',
             header: () => (
-              <Head label={m.market.changeHeader()} term="change" />
+              <Head label={m.market_changeHeader()} term="change" />
             ),
             cell: ({ row }) => <Delta value={row.original.d1} />,
             meta: { align: 'right' },
@@ -100,7 +100,7 @@ export function columns(
     {
       id: 'spd',
       header: () => (
-        <Head label={m.market.soldPerDayHeader()} term="soldPerDay" />
+        <Head label={m.market_soldPerDayHeader()} term="soldPerDay" />
       ),
       cell: ({ row }) => formatNumber(row.original.spd, 1),
       meta: {
@@ -112,7 +112,7 @@ export function columns(
     {
       id: 'goldVolume',
       header: () => (
-        <Head label={m.market.goldPerDayHeader()} term="goldPerDay" />
+        <Head label={m.market_goldPerDayHeader()} term="goldPerDay" />
       ),
       cell: ({ row }) => (
         <Money copper={row.original.goldVolume} variant="compact" align />
@@ -157,28 +157,28 @@ export function HottestTable({
     >
       <TabsList
         className="pointer-coarse:h-11!"
-        aria-label={m.market.rankByLabel()}
+        aria-label={m.market_rankByLabel()}
       >
-        <TabsTrigger value="gold">{m.market.hottestTabGold()}</TabsTrigger>
-        <TabsTrigger value="traded">{m.market.hottestTabSold()}</TabsTrigger>
+        <TabsTrigger value="gold">{m.market_hottestTabGold()}</TabsTrigger>
+        <TabsTrigger value="traded">{m.market_hottestTabSold()}</TabsTrigger>
       </TabsList>
       <TabsContent value={hot} className="space-y-3">
         <p className="text-sm">
-          {m.market.hottestRanked({ region: name, hot })}
+          {m.market_hottestRanked({ region: name, hot })}
         </p>
         {rows.length === 0 ? (
           <p className="rounded-md border border-dashed p-4 text-sm">
-            {m.market.hottestEmpty({ region: name })}
+            {m.market_hottestEmpty({ region: name })}
           </p>
         ) : (
           <DataTable
-            caption={m.market.hottestCaption({
+            caption={m.market_hottestCaption({
               n: rows.length,
               region: name,
               hot,
             })}
             captionHidden
-            label={m.market.hottestLabel({ region: name })}
+            label={m.market_hottestLabel({ region: name })}
             columns={columns(region, hot, showChange)}
             data={rows}
             getRowId={(row) => String(row.id)}
@@ -190,7 +190,7 @@ export function HottestTable({
           search={{ sort: hot === 'gold' ? 'goldPerDay' : 'soldPerDay' }}
           className="inline-flex min-h-6 items-center gap-1 text-sm font-medium underline pointer-coarse:min-h-11"
         >
-          {m.market.seeAllItems()}
+          {m.market_seeAllItems()}
         </Link>
       </TabsContent>
     </Tabs>

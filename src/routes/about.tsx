@@ -3,15 +3,15 @@ import { DATA_LOG_HEADING_ID, DataLog } from '#/components/about/data-log'
 import { Credit, NOT_AFFILIATED } from '#/components/credit'
 import { GLOSSARY } from '#/components/glossary'
 import { ProsePage, ProseSection } from '#/components/prose-page'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { SITE, pageHead } from '#/lib/seo'
 
 export const Route = createFileRoute('/about')({
   ssr: true,
   head: () =>
     pageHead(
-      m.legal.aboutHeadTitle(),
-      m.legal.aboutHeadDescription({ site: SITE }),
+      m.legal_aboutHeadTitle(),
+      m.legal_aboutHeadDescription({ site: SITE }),
     ),
   component: About,
 })
@@ -19,10 +19,10 @@ export const Route = createFileRoute('/about')({
 function About() {
   return (
     <ProsePage
-      title={m.legal.aboutTitle()}
-      intro={<p>{m.legal.aboutIntro({ site: SITE })}</p>}
+      title={m.legal_aboutTitle()}
+      intro={<p>{m.legal_aboutIntro({ site: SITE })}</p>}
     >
-      <ProseSection title={m.legal.aboutNumbersTitle()}>
+      <ProseSection title={m.legal_aboutNumbersTitle()}>
         <dl className="space-y-4">
           {Object.values(GLOSSARY).map((entry) => (
             <div key={entry.label}>
@@ -33,43 +33,43 @@ function About() {
         </dl>
       </ProseSection>
 
-      <ProseSection title={m.legal.aboutSourceTitle()}>
-        <p>{m.legal.aboutSourceFiles()}</p>
-        <p>{m.legal.aboutSourceHistory()}</p>
+      <ProseSection title={m.legal_aboutSourceTitle()}>
+        <p>{m.legal_aboutSourceFiles()}</p>
+        <p>{m.legal_aboutSourceHistory()}</p>
       </ProseSection>
 
       <ProseSection
         id={DATA_LOG_HEADING_ID}
-        title={m.legal.aboutDataLogTitle()}
+        title={m.legal_aboutDataLogTitle()}
       >
-        <p>{m.legal.aboutDataLogText()}</p>
+        <p>{m.legal_aboutDataLogText()}</p>
         <DataLog />
       </ProseSection>
 
-      <ProseSection title={m.legal.aboutCreditTitle()}>
+      <ProseSection title={m.legal_aboutCreditTitle()}>
         <p>
           <Credit />.
         </p>
         <p>{NOT_AFFILIATED}</p>
       </ProseSection>
 
-      <ProseSection title={m.legal.aboutNoApiTitle()}>
-        <p>{m.legal.aboutNoApiText()}</p>
+      <ProseSection title={m.legal_aboutNoApiTitle()}>
+        <p>{m.legal_aboutNoApiText()}</p>
       </ProseSection>
 
-      <ProseSection title={m.legal.aboutPrivacyTitle()}>
-        <p>{m.legal.aboutPrivacyText()}</p>
+      <ProseSection title={m.legal_aboutPrivacyTitle()}>
+        <p>{m.legal_aboutPrivacyText()}</p>
         <ul className="list-disc space-y-1 pl-5">
-          <li>{m.legal.aboutPrivacyCloudflare()}</li>
-          <li>{m.legal.aboutPrivacyUmami()}</li>
-          <li>{m.legal.aboutPrivacyWowhead()}</li>
+          <li>{m.legal_aboutPrivacyCloudflare()}</li>
+          <li>{m.legal_aboutPrivacyUmami()}</li>
+          <li>{m.legal_aboutPrivacyWowhead()}</li>
         </ul>
         <p>
-          {m.legal.aboutPrivacyMoreLead()}{' '}
+          {m.legal_aboutPrivacyMoreLead()}{' '}
           <Link to="/privacy" className="underline">
-            {m.legal.aboutPrivacyMoreLink()}
+            {m.legal_aboutPrivacyMoreLink()}
           </Link>{' '}
-          {m.legal.aboutPrivacyMoreTail()}
+          {m.legal_aboutPrivacyMoreTail()}
         </p>
       </ProseSection>
     </ProsePage>

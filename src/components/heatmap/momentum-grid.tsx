@@ -2,7 +2,7 @@ import { Delta } from '#/components/delta'
 import { DivergingLegend } from '#/components/diverging-legend'
 import { ItemLink } from '#/components/item-link'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import type { HeatRow } from '#/server/types'
@@ -21,15 +21,15 @@ export function MomentumGrid({ region, rows, busy }: MomentumGridProps) {
   return (
     <section aria-labelledby={HEADING_ID} className="space-y-3">
       <h2 id={HEADING_ID} className="text-title">
-        {m.heatmap.momentumTitle()}
+        {m.heatmap_momentumTitle()}
       </h2>
       <p className="max-w-prose text-sm">
-        {m.heatmap.momentumIntro({ region: REGION_INFO[region].name })}
+        {m.heatmap_momentumIntro({ region: REGION_INFO[region].name })}
       </p>
       <DivergingLegend
         labels={[
-          m.heatmap.momentumLegendCheaper(),
-          m.heatmap.momentumLegendPricier(),
+          m.heatmap_momentumLegendCheaper(),
+          m.heatmap_momentumLegendPricier(),
         ]}
       />
       <figure

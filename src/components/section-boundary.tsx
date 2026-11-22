@@ -2,7 +2,7 @@ import { Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 import { useQueryErrorResetBoundary } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { Icon } from './icon'
 import { Button } from './ui/button'
 
@@ -30,9 +30,9 @@ class Boundary extends Component<BoundaryProps, { failed: boolean }> {
       <div className="flex flex-col items-start gap-2 rounded-md border border-destructive-border bg-destructive-subtle p-4 text-sm">
         <p className="flex items-center gap-2 font-semibold text-destructive-text">
           <Icon name="error" />
-          {m.shell.sectionErrorTitle()}
+          {m.shell_sectionErrorTitle()}
         </p>
-        <p>{m.shell.sectionErrorBody()}</p>
+        <p>{m.shell_sectionErrorBody()}</p>
         <Button
           variant="secondary"
           onClick={() => {
@@ -40,7 +40,7 @@ class Boundary extends Component<BoundaryProps, { failed: boolean }> {
             this.props.onRetry()
           }}
         >
-          {m.shell.retry()}
+          {m.shell_retry()}
         </Button>
       </div>
     )

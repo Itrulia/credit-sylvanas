@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { wowheadData, wowheadItemUrl } from '#/lib/wowhead'
 import { track } from '#/lib/analytics'
 import { cn } from '#/lib/utils'
@@ -7,7 +7,7 @@ import { Icon } from './icon'
 
 export function WowheadLink({
   id,
-  children = m.shell.wowheadView(),
+  children = m.shell_wowheadView(),
   className,
 }: {
   id: number
@@ -25,7 +25,7 @@ export function WowheadLink({
     >
       <span>{children}</span>
       <Icon name="open_in_new" />
-      <span className="sr-only">{m.shell.wowheadOpens()}</span>
+      <span className="sr-only">{m.shell_wowheadOpens()}</span>
     </a>
   )
 }

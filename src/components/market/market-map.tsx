@@ -9,7 +9,7 @@ import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { Button } from '#/components/ui/button'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { binFill, binInk, binOf } from '#/lib/bins'
 import type { Bin } from '#/lib/bins'
 import { formatPct } from '#/lib/format'
@@ -40,7 +40,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
   return [
     {
       id: 'item',
-      header: m.market.itemHeader(),
+      header: m.market_itemHeader(),
       cell: ({ row }) => (
         <ItemLink
           id={row.original.id}
@@ -52,7 +52,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     },
     {
       id: 'goldVolume',
-      header: m.market.goldPerDayHeader(),
+      header: m.market_goldPerDayHeader(),
       cell: ({ row }) => (
         <Money copper={row.original.goldVolume} variant="compact" align />
       ),
@@ -60,7 +60,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     },
     {
       id: 'mv',
-      header: m.shell.glossaryMarketValueLabel(),
+      header: m.shell_glossaryMarketValueLabel(),
       cell: ({ row }) => (
         <Money copper={row.original.mv} variant="compact" align />
       ),
@@ -69,13 +69,13 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     metric === 'd1'
       ? {
           id: 'd1',
-          header: m.market.changeHeader(),
+          header: m.market_changeHeader(),
           cell: ({ row }) => <Delta value={row.original.d1} />,
           meta: { align: 'right' },
         }
       : {
           id: 'vsHist',
-          header: m.market.vsHistHeader(),
+          header: m.market_vsHistHeader(),
           cell: ({ row }) => (
             <Delta value={row.original.vsHist} mode="vsHist" />
           ),
@@ -102,14 +102,14 @@ export function MarketMap({ region, metric }: MarketMapProps) {
   if (data.length === 0) {
     return (
       <p className="rounded-md border border-dashed p-4 text-sm">
-        {m.market.mapEmpty({ region: name })}
+        {m.market_mapEmpty({ region: name })}
       </p>
     )
   }
   return (
     <div className="space-y-3">
       <p className="text-sm">
-        {metric === 'd1' ? m.market.mapIntroD1() : m.market.mapIntroVsHist()}
+        {metric === 'd1' ? m.market_mapIntroD1() : m.market_mapIntroVsHist()}
       </p>
       <Button
         variant="outline"
@@ -118,12 +118,12 @@ export function MarketMap({ region, metric }: MarketMapProps) {
         onClick={() => setList((v) => !v)}
         className="pointer-coarse:h-11"
       >
-        {m.market.listView()}
+        {m.market_listView()}
       </Button>
       {list ? (
         <DataTable
-          caption={m.market.mapListCaption({ n: data.length, region: name })}
-          label={m.market.mapListLabel({ region: name })}
+          caption={m.market_mapListCaption({ n: data.length, region: name })}
+          label={m.market_mapListLabel({ region: name })}
           columns={listColumns(region, metric)}
           data={data}
           getRowId={(row) => String(row.id)}
@@ -148,7 +148,7 @@ export function MarketMap({ region, metric }: MarketMapProps) {
                 to="/$region/items/$itemId"
                 params={{ region, itemId: String(r.id) }}
                 tabIndex={-1}
-                title={m.market.mapTileTitle({ name: label, change: signed })}
+                title={m.market_mapTileTitle({ name: label, change: signed })}
                 className={cn(
                   'absolute top-(--pt) left-(--pl) h-(--ph) w-(--pw) overflow-hidden border border-card no-underline [container-type:size] hover:z-10 hover:outline-2 hover:outline-foreground sm:top-(--t) sm:left-(--l) sm:h-(--h) sm:w-(--w)',
                   bin === null && 'hatch',
@@ -184,8 +184,8 @@ export function MarketMap({ region, metric }: MarketMapProps) {
       <DivergingLegend
         labels={
           metric === 'd1'
-            ? [m.market.mapLegendFell(), m.market.mapLegendRose()]
-            : [m.market.mapLegendCheaper(), m.market.mapLegendPricier()]
+            ? [m.market_mapLegendFell(), m.market_mapLegendRose()]
+            : [m.market_mapLegendCheaper(), m.market_mapLegendPricier()]
         }
       />
     </div>

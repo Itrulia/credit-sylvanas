@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { binOf } from '#/lib/bins'
 import type { MoverBy, MoverMetric, Region } from '#/lib/search'
 import type { MoversInput } from '#/server/fns/inputs'
@@ -57,6 +57,6 @@ export function mapSummary(values: (number | null)[], metric: MapMetric) {
   const down = bins.filter((b) => b !== null && b < 0).length
   const counts = { n: values.length, up, down }
   return metric === 'd1'
-    ? m.market.mapSummaryD1(counts)
-    : m.market.mapSummaryVsHist(counts)
+    ? m.market_mapSummaryD1(counts)
+    : m.market_mapSummaryVsHist(counts)
 }

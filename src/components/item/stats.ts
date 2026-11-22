@@ -1,7 +1,7 @@
 // Pure helpers for the item statistics cards (DESIGN §5): range filter,
 // weekday and hour bucketing, dot radius and the summary sentences.
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import {
   DAY_SECONDS,
   formatDate,
@@ -24,8 +24,8 @@ export const RANGE_OPTIONS: {
   long: string
 }[] = (['7d', '30d', '90d'] as const).map((value) => ({
   value,
-  label: m.item.rangeShort({ days: RANGE_DAYS[value] }),
-  long: m.item.rangeLong({ days: RANGE_DAYS[value] }),
+  label: m.item_rangeShort({ days: RANGE_DAYS[value] }),
+  long: m.item_rangeLong({ days: RANGE_DAYS[value] }),
 }))
 
 /** Points within the last N calendar days up to `endDay` (default: the last point). */
@@ -42,14 +42,14 @@ export function inRange<T extends { day: number }>(
 }
 
 export const rangeNote = (range: StatRange, daysWeHave: number) =>
-  daysWeHave < RANGE_DAYS[range] ? m.item.rangeNote({ n: daysWeHave }) : null
+  daysWeHave < RANGE_DAYS[range] ? m.item_rangeNote({ n: daysWeHave }) : null
 
 /** Monday = 0 … Sunday = 6. Day 0 (1 Jan 1970) was a Thursday. */
 export const weekdayOf = (day: number) => (((day + 3) % 7) + 7) % 7
 export const mondayOf = (day: number) => day - weekdayOf(day)
 
 export const WEEKDAYS = Array.from({ length: 7 }, (_, weekday) =>
-  m.item.weekdayShort({ weekday }),
+  m.item_weekdayShort({ weekday }),
 )
 
 export interface DotCell {
@@ -145,6 +145,8 @@ export function hourlyGrid(scans: readonly { t: number; mv: number }[]) {
 // within +-0.5% counts as flat, as in <Delta>
 const FLAT = 0.005
 const money = (copper: number) => moneyText(formatMoney(copper))
+// the selector the summary messages read
+const side = (ratio: number) => (ratio < 0 ? 'below' : 'above')
 const pct = (ratio: number) => formatPct(ratio, { sign: false })
 const mean = (values: readonly number[]) =>
   values.reduce((a, b) => a + b, 0) / values.length
@@ -163,20 +165,20 @@ export function valueSummary(
   const low = points.reduce((a, b) => (b.mv < a.mv ? b : a))
   const parts = [
     Math.abs(change) < FLAT
-      ? m.item.valueSteady({ value: money(last.mv), n })
-      : m.item.valueChanged({
-          fell: change < 0,
+      ? m.item_valueSteady({ value: money(last.mv), n })
+      : m.item_valueChanged({
+          direction: change < 0 ? 'fell' : 'rose',
           pct: pct(change),
           n,
           from: money(first.mv),
           to: money(last.mv),
         }),
-    m.item.valueLow({ value: money(low.mv), date: formatDay(low.day) }),
+    m.item_valueLow({ value: money(low.mv), date: formatDay(low.day) }),
   ]
   const sales = points.flatMap((p) => (p.spd === undefined ? [] : [p.spd]))
   if (sales.length) {
     const avg = mean(sales)
-    parts.push(m.item.valueSold({ n: formatNumber(avg, avg < 10 ? 1 : 0) }))
+    parts.push(m.item_valueSold({ n: formatNumber(avg, avg < 10 ? 1 : 0) }))
   }
   return parts.join(' ')
 }
@@ -205,11 +207,11 @@ export function compareSummary(
   }
   const k = 1 + others.filter((o) => o.points.length >= 2).length
   const avg = ratios.length ? mean(ratios) : 0
-  return m.item.compareSummary({
+  return m.item_compareSummary({
     days,
     region: REGION_INFO[region].name,
     pct: pct(avg),
-    below: avg < 0,
+    side: side(avg),
     k,
   })
 }
@@ -226,10 +228,10 @@ export function realmCompareSummary(
     return r ? [p.mv / r - 1] : []
   })
   const avg = ratios.length ? mean(ratios) : 0
-  return m.item.realmCompareSummary({
+  return m.item_realmCompareSummary({
     realm: realmName,
     pct: pct(avg),
-    below: avg < 0,
+    side: side(avg),
     region: REGION_INFO[region].name,
   })
 }
@@ -247,7 +249,7 @@ export function heatmapSummary(grid: DotGrid, range: StatRange) {
   const slots = grid.cells.map((c) => ({
     label:
       grid.layout === 'hourly'
-        ? m.item.hourlySlotLabel({ weekday: c.row, hour: pad(c.hour ?? 0) })
+        ? m.item_hourlySlotLabel({ weekday: c.row, hour: pad(c.hour ?? 0) })
         : formatDate(c.day ?? 0),
     value: c.value,
   }))
@@ -257,18 +259,18 @@ export function heatmapSummary(grid: DotGrid, range: StatRange) {
   const loR = lo.value / ref - 1
   if (Math.abs(hiR) < FLAT && Math.abs(loR) < FLAT) {
     return grid.layout === 'hourly'
-      ? m.item.heatmapFlatHourly()
-      : m.item.heatmapFlatDaily({ days: RANGE_DAYS[range] })
+      ? m.item_heatmapFlatHourly()
+      : m.item_heatmapFlatDaily({ days: RANGE_DAYS[range] })
   }
   const extremes = {
     hi: hi.label,
     hiPct: pct(hiR),
-    hiBelow: hiR < 0,
+    hiSide: side(hiR),
     lo: lo.label,
     loPct: pct(loR),
-    loBelow: loR < 0,
+    loSide: side(loR),
   }
   return grid.layout === 'hourly'
-    ? m.item.heatmapHourlySummary(extremes)
-    : m.item.heatmapDailySummary({ ...extremes, days: RANGE_DAYS[range] })
+    ? m.item_heatmapHourlySummary(extremes)
+    : m.item_heatmapDailySummary({ ...extremes, days: RANGE_DAYS[range] })
 }

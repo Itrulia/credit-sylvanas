@@ -7,7 +7,7 @@ import { InfoPopover } from '#/components/info-popover'
 import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatDate, formatNumber } from '#/lib/format'
 import type { Region } from '#/lib/search'
 import { risingQuery } from '#/server/fns/market'
@@ -19,7 +19,7 @@ const NEED = 14
 const columns = (region: Region): DataColumn<RisingRow>[] => [
   {
     id: 'item',
-    header: m.market.itemHeader(),
+    header: m.market_itemHeader(),
     cell: ({ row }) => (
       <ItemLink
         id={row.original.id}
@@ -32,7 +32,7 @@ const columns = (region: Region): DataColumn<RisingRow>[] => [
   },
   {
     id: 'mv',
-    header: m.shell.glossaryMarketValueLabel(),
+    header: m.shell_glossaryMarketValueLabel(),
     cell: ({ row }) => (
       <Money copper={row.original.mv} variant="compact" align />
     ),
@@ -40,18 +40,18 @@ const columns = (region: Region): DataColumn<RisingRow>[] => [
   },
   {
     id: 'change',
-    header: m.market.risingChangeHeader(),
+    header: m.market_risingChangeHeader(),
     cell: ({ row }) => <Delta value={row.original.change} />,
     meta: { align: 'right' },
   },
   {
     id: 'spd',
-    header: m.market.soldPerDayHeader(),
+    header: m.market_soldPerDayHeader(),
     cell: ({ row }) => (
       <>
         {formatNumber(row.original.spd, 1)}
         <div className="text-micro text-muted-foreground">
-          {m.market.risingLift({ lift: formatNumber(row.original.lift, 1) })}
+          {m.market_risingLift({ lift: formatNumber(row.original.lift, 1) })}
         </div>
       </>
     ),
@@ -72,13 +72,13 @@ export function RisingTable({ region, rows, days, lastDay }: RisingTableProps) {
   return (
     <div className="space-y-3">
       <p className="text-sm">
-        {m.market.risingIntro()} <InfoPopover term="rising" />
+        {m.market_risingIntro()} <InfoPopover term="rising" />
       </p>
       {rows.length > 0 ? (
         <DataTable
-          caption={m.market.risingCaption({ n: rows.length, region: name })}
+          caption={m.market_risingCaption({ n: rows.length, region: name })}
           captionHidden
-          label={m.market.risingLabel({ region: name })}
+          label={m.market_risingLabel({ region: name })}
           columns={columns(region)}
           data={rows}
           getRowId={(row) => String(row.id)}
@@ -87,19 +87,19 @@ export function RisingTable({ region, rows, days, lastDay }: RisingTableProps) {
         <div className="rounded-md border border-dashed p-4 text-sm">
           <p className="font-semibold">
             {lastDay !== null
-              ? m.market.risingStartsOn({
+              ? m.market_risingStartsOn({
                   date: formatDate(lastDay + NEED - days),
                   days,
                   need: NEED,
                 })
-              : m.market.risingStartsLater({ days, need: NEED })}
+              : m.market_risingStartsLater({ days, need: NEED })}
           </p>
-          <p>{m.market.risingNeed({ need: NEED })}</p>
+          <p>{m.market_risingNeed({ need: NEED })}</p>
         </div>
       ) : (
         <p className="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm">
           <Icon name="info" className="mt-0.5 text-muted-foreground" />
-          <span>{m.market.risingEmpty({ region: name })}</span>
+          <span>{m.market_risingEmpty({ region: name })}</span>
         </p>
       )}
     </div>

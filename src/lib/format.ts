@@ -1,14 +1,14 @@
-import { m } from '#/i18n'
-import { LOCALE } from '#/i18n/locale'
+import { m } from '#/paraglide/messages.js'
+import { baseLocale } from '#/paraglide/runtime.js'
 
 // The site locale, never the viewer's, so server and client render the same string.
-const nf = new Intl.NumberFormat(LOCALE)
+const nf = new Intl.NumberFormat(baseLocale)
 const MINUS = '−'
 
 export const DAY_SECONDS = 86_400
 
 export const formatNumber = (n: number, maxFractionDigits = 0) =>
-  new Intl.NumberFormat(LOCALE, {
+  new Intl.NumberFormat(baseLocale, {
     maximumFractionDigits: maxFractionDigits,
   }).format(n)
 
@@ -26,7 +26,7 @@ export function formatPct(
   return `${prefix}${rounded}%`
 }
 
-const dateParts = new Intl.DateTimeFormat(LOCALE, {
+const dateParts = new Intl.DateTimeFormat(baseLocale, {
   timeZone: 'UTC',
   weekday: 'short',
   day: 'numeric',
@@ -53,7 +53,7 @@ function partsOf(ms: number) {
 
 /** Unix seconds -> "22 Nov 2026, 04:10 UTC". */
 export function formatDateTime(unixSeconds: number) {
-  return m.format.dateTime(partsOf(unixSeconds * 1000))
+  return m.format_dateTime(partsOf(unixSeconds * 1000))
 }
 
 /** Day number (days since epoch, UTC) -> "22 Nov". */

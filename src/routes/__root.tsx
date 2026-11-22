@@ -12,7 +12,8 @@ import { SitePalette } from '#/components/search/site-palette'
 import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
 import { WowheadTooltips } from '#/components/wowhead-tooltips'
-import { LOCALE, m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
+import { getLocale } from '#/paraglide/runtime.js'
 import { SITE, SITE_URL, canonicalLinks } from '#/lib/seo'
 import sansFont from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url'
 import displayFont from '@fontsource/newsreader/files/newsreader-latin-600-normal.woff2?url'
@@ -53,7 +54,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           { property: 'og:image', content: `${SITE_URL}/og.png` },
           { property: 'og:image:width', content: '1200' },
           { property: 'og:image:height', content: '630' },
-          { property: 'og:image:alt', content: m.shell.shareImageAlt() },
+          { property: 'og:image:alt', content: m.shell_shareImageAlt() },
           // X ignores og:image without it
           { name: 'twitter:card', content: 'summary_large_image' },
         ],
@@ -81,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang={LOCALE}>
+    <html lang={getLocale()}>
       <head>
         <HeadContent />
       </head>
@@ -91,7 +92,7 @@ function RootDocument({ children }: { children: ReactNode }) {
             href="#main"
             className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-card focus:px-3 focus:py-2"
           >
-            {m.shell.skipLink()}
+            {m.shell_skipLink()}
           </a>
           <SiteHeader />
           <main id="main" tabIndex={-1} className="outline-none">

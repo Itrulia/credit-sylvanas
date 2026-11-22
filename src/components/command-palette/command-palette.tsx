@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { cn } from '#/lib/utils'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { Icon } from '../icon'
 import { Dialog, DialogContent, DialogTitle } from '../ui/dialog'
 import type { CommandMatch } from './command'
@@ -90,8 +90,8 @@ export function CommandPalette() {
   const announcement = !trimmedQuery
     ? ''
     : displayed.length
-      ? m.palette.resultCount({ n: displayed.length })
-      : m.palette.noResultsStatus({ query: trimmedQuery })
+      ? m.palette_resultCount({ n: displayed.length })
+      : m.palette_noResultsStatus({ query: trimmedQuery })
 
   // reset when the dialog opens, without an effect
   const [wasOpen, setWasOpen] = useState(isOpen)
@@ -170,7 +170,7 @@ export function CommandPalette() {
         }}
         className="top-[11vh] flex max-h-[min(70vh,560px)] translate-y-0 flex-col gap-0 overflow-hidden p-0 shadow-pop sm:max-w-[640px]"
       >
-        <DialogTitle className="sr-only">{m.palette.dialogTitle()}</DialogTitle>
+        <DialogTitle className="sr-only">{m.palette_dialogTitle()}</DialogTitle>
         <div className="grid grid-cols-[auto_1fr] items-center gap-3 border-b px-4 py-3">
           <Icon name="search" size={20} className="text-muted-foreground" />
           <input
@@ -182,10 +182,10 @@ export function CommandPalette() {
             aria-activedescendant={
               displayed.length ? rowId(safeIndex) : undefined
             }
-            aria-label={m.palette.inputLabel()}
+            aria-label={m.palette_inputLabel()}
             autoComplete="off"
             spellCheck={false}
-            placeholder={m.palette.inputPlaceholder()}
+            placeholder={m.palette_inputPlaceholder()}
             value={query}
             onChange={(event) => {
               setQuery(event.target.value)
@@ -203,7 +203,7 @@ export function CommandPalette() {
           <div
             id={LIST_ID}
             role="listbox"
-            aria-label={m.palette.resultsLabel()}
+            aria-label={m.palette_resultsLabel()}
           >
             {groups.map((group) => (
               <div
@@ -261,7 +261,7 @@ export function CommandPalette() {
             !displayed.length &&
             !groups.some((g) => g.status) && (
               <p className="px-4 py-7 text-center text-sm text-muted-foreground">
-                {m.palette.noResultsLead()}
+                {m.palette_noResultsLead()}
                 <strong className="text-foreground">{trimmedQuery}</strong>
               </p>
             )}
@@ -273,13 +273,13 @@ export function CommandPalette() {
 
         <div className="flex flex-wrap gap-4 border-t px-4 py-2.5 text-micro text-muted-foreground">
           <span>
-            <kbd>↑</kbd> <kbd>↓</kbd> {m.palette.hintMove()}
+            <kbd>↑</kbd> <kbd>↓</kbd> {m.palette_hintMove()}
           </span>
           <span>
-            <kbd>{m.palette.keyEnter()}</kbd> {m.palette.hintOpen()}
+            <kbd>{m.palette_keyEnter()}</kbd> {m.palette_hintOpen()}
           </span>
           <span>
-            <kbd>{m.palette.keyEsc()}</kbd> {m.palette.hintClose()}
+            <kbd>{m.palette_keyEsc()}</kbd> {m.palette_hintClose()}
           </span>
         </div>
       </DialogContent>

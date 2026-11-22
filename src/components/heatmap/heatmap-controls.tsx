@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { HeatMetric, HeatmapN } from '#/lib/search'
 
 export interface HeatmapControlsProps {
@@ -11,8 +11,8 @@ export interface HeatmapControlsProps {
 }
 
 const METRIC_LABEL: Record<HeatMetric, () => string> = {
-  index: m.heatmap.metricIndex,
-  price: m.heatmap.metricPrice,
+  index: m.heatmap_metricIndex,
+  price: m.heatmap_metricPrice,
 }
 const item = 'min-h-11 min-w-11'
 
@@ -28,7 +28,7 @@ export function HeatmapControls({
     <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
       <div className="space-y-1">
         <p id={itemsId} className="text-label">
-          {m.heatmap.controlsItemsLabel()}
+          {m.heatmap_controlsItemsLabel()}
         </p>
         <ToggleGroup
           type="single"
@@ -51,7 +51,7 @@ export function HeatmapControls({
       </div>
       <div className="space-y-1">
         <p id={showId} className="text-label">
-          {m.heatmap.controlsShowLabel()}
+          {m.heatmap_controlsShowLabel()}
         </p>
         <ToggleGroup
           type="single"

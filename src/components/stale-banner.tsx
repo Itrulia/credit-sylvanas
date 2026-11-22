@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatDateTime } from '#/lib/format'
 import { Icon } from './icon'
 
@@ -16,8 +16,8 @@ export function StaleBanner({ updatedAt }: { updatedAt: number }) {
     >
       <Icon name="warning" className="mt-0.5 text-warning-text" />
       <p>
-        <strong>{m.shell.staleTitle()}</strong>{' '}
-        {m.shell.staleBody({ date: formatDateTime(updatedAt) })}
+        <strong>{m.shell_staleTitle()}</strong>{' '}
+        {m.shell_staleBody({ date: formatDateTime(updatedAt) })}
       </p>
     </div>
   )

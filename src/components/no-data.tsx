@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { Region } from '#/lib/search'
 import { SITE } from '#/lib/seo'
 import type { RegionStatus } from '#/server/types'
@@ -17,16 +17,16 @@ export function NoData({ region, status }: NoDataProps) {
   const name = REGION_INFO[region].name
   const others = status.regionsWithData.filter((r) => r !== region)
   const devHint = import.meta.env.DEV && (
-    <p className="text-muted-foreground">{m.shell.noDataDevHint()}</p>
+    <p className="text-muted-foreground">{m.shell_noDataDevHint()}</p>
   )
   if (status.regionsWithData.length === 0) {
     return (
       <div className="page-wrap py-8">
         <title>
-          {m.shell.docTitle({ page: m.shell.noDataTitle(), site: SITE })}
+          {m.shell_docTitle({ page: m.shell_noDataTitle(), site: SITE })}
         </title>
-        <StatePanel as="h1" icon="info" title={m.shell.noDataTitle()}>
-          <p>{m.shell.noDataBody()}</p>
+        <StatePanel as="h1" icon="info" title={m.shell_noDataTitle()}>
+          <p>{m.shell_noDataBody()}</p>
           {devHint}
         </StatePanel>
       </div>
@@ -35,24 +35,24 @@ export function NoData({ region, status }: NoDataProps) {
   return (
     <div className="page-wrap py-8">
       <title>
-        {m.shell.docTitle({
-          page: m.shell.noDataRegionTitle({ region: name }),
+        {m.shell_docTitle({
+          page: m.shell_noDataRegionTitle({ region: name }),
           site: SITE,
         })}
       </title>
       <StatePanel
         as="h1"
         icon="info"
-        title={m.shell.noDataRegionTitle({ region: name })}
+        title={m.shell_noDataRegionTitle({ region: name })}
       >
         <p>
-          {m.shell.noDataRegionLead({ region: name })}{' '}
+          {m.shell_noDataRegionLead({ region: name })}{' '}
           {status.fetchedAt ? (
             <DateTime unix={status.fetchedAt} />
           ) : (
-            m.shell.noDataNoneYet()
+            m.shell_noDataNoneYet()
           )}
-          {m.shell.noDataRegionTail()}
+          {m.shell_noDataRegionTail()}
         </p>
         {others.length > 0 && (
           <ul className="flex gap-3">

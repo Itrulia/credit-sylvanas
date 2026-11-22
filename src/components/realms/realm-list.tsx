@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import type { z } from 'zod'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { RealmConfig } from '#/config/realms'
 import type { Faction, Region, RulesetFilter } from '#/lib/search'
 import { StatePanel } from '../state-panel'
@@ -11,16 +11,16 @@ import { Button } from '../ui/button'
 export type RealmsFilter = z.infer<typeof RulesetFilter>
 
 export const RULESET_LABEL: Record<RealmsFilter, string> = {
-  all: m.realms.rulesetAll(),
-  normal: m.realms.rulesetNormal(),
-  pvp: m.realms.rulesetPvp(),
-  rp: m.realms.rulesetRp(),
-  'rp-pvp': m.realms.rulesetRpPvp(),
+  all: m.realms_rulesetAll(),
+  normal: m.realms_rulesetNormal(),
+  pvp: m.realms_rulesetPvp(),
+  rp: m.realms_rulesetRp(),
+  'rp-pvp': m.realms_rulesetRpPvp(),
 }
 
 const FACTIONS: { id: Faction; label: string }[] = [
-  { id: 'alliance', label: m.realms.factionAlliance() },
-  { id: 'horde', label: m.realms.factionHorde() },
+  { id: 'alliance', label: m.realms_factionAlliance() },
+  { id: 'horde', label: m.realms_factionHorde() },
 ]
 
 const factionLink =
@@ -37,11 +37,11 @@ export function RealmList({ region, realms, ruleset }: RealmListProps) {
   const name = REGION_INFO[region].name
   if (!realms.length) {
     return (
-      <StatePanel title={m.realms.emptyTitle()}>
-        <p>{m.realms.emptyBody({ region: name })}</p>
+      <StatePanel title={m.realms_emptyTitle()}>
+        <p>{m.realms_emptyBody({ region: name })}</p>
         <p>
           <Link to="/$region" params={{ region }} className="underline">
-            {m.realms.emptyMarketLink({ region: name })}
+            {m.realms_emptyMarketLink({ region: name })}
           </Link>
         </p>
       </StatePanel>
@@ -53,7 +53,7 @@ export function RealmList({ region, realms, ruleset }: RealmListProps) {
   if (!shown.length) {
     return (
       <StatePanel
-        title={m.realms.filteredEmptyTitle({
+        title={m.realms_filteredEmptyTitle({
           ruleset: RULESET_LABEL[ruleset],
           region: name,
         })}
@@ -64,7 +64,7 @@ export function RealmList({ region, realms, ruleset }: RealmListProps) {
               params={{ region }}
               search={{ ruleset: undefined }}
             >
-              {m.realms.filteredEmptyShowAll()}
+              {m.realms_filteredEmptyShowAll()}
             </Link>
           </Button>
         }
@@ -74,7 +74,7 @@ export function RealmList({ region, realms, ruleset }: RealmListProps) {
 
   return (
     <ul
-      aria-label={m.realms.listLabel({ region: name })}
+      aria-label={m.realms_listLabel({ region: name })}
       className="divide-y rounded-md border"
     >
       {shown.map((realm) => (
@@ -91,7 +91,7 @@ export function RealmList({ region, realms, ruleset }: RealmListProps) {
                 to="/$region"
                 params={{ region }}
                 search={{ realm: realm.slug, faction: faction.id }}
-                aria-label={m.realms.factionLinkLabel({
+                aria-label={m.realms_factionLinkLabel({
                   realm: realm.name,
                   faction: faction.label,
                 })}

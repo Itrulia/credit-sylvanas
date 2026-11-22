@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 
 // Wowhead Forever links. The domain param picks the game version (wowhead.com/tooltips, read 2026-11-22).
 export const wowheadItemUrl = (id: number) =>
@@ -14,7 +14,7 @@ export const WOWHEAD_CONFIG = {
 
 /** Names can be empty in TSM files; never render a blank link. */
 export const itemName = (name: string, id: number) =>
-  name.trim() || m.format.itemFallback({ id })
+  name.trim() || m.format_itemFallback({ id })
 
 const stopPropagation = (e: Event) => e.stopPropagation()
 

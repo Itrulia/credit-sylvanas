@@ -13,7 +13,7 @@ import { MomentumGrid } from '#/components/heatmap/momentum-grid'
 import { SectionBoundary } from '#/components/section-boundary'
 import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO, regionLabel } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { track } from '#/lib/analytics'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
@@ -34,8 +34,8 @@ export const Route = createFileRoute('/$region/heatmap')({
   head: ({ params }) => {
     const name = regionLabel(params.region)
     return pageHead(
-      m.heatmap.headTitle({ region: name }),
-      m.heatmap.headDescription({ region: name }),
+      m.heatmap_headTitle({ region: name }),
+      m.heatmap_headDescription({ region: name }),
     )
   },
   component: Heatmaps,
@@ -54,11 +54,11 @@ function Heatmaps() {
     <div className="page-wrap space-y-8 py-6">
       <header className="space-y-1">
         <h1 className="text-display">
-          {m.heatmap.pageTitle({ region: name })}
+          {m.heatmap_pageTitle({ region: name })}
         </h1>
         {realm !== undefined && (
           <p className="text-sm text-muted-foreground">
-            {m.heatmap.realmNote()}
+            {m.heatmap_realmNote()}
           </p>
         )}
       </header>
@@ -80,14 +80,14 @@ function Heatmaps() {
 
       {data.rows.length === 0 ? (
         <StatePanel
-          title={m.heatmap.emptyTitle({ region: name })}
+          title={m.heatmap_emptyTitle({ region: name })}
           actions={
             <Link to="/$region/items" params={{ region }} className="underline">
-              {m.heatmap.emptyLink()}
+              {m.heatmap_emptyLink()}
             </Link>
           }
         >
-          <p>{m.heatmap.emptyBody()}</p>
+          <p>{m.heatmap_emptyBody()}</p>
         </StatePanel>
       ) : (
         <>
@@ -111,13 +111,13 @@ function Heatmaps() {
           <MomentumGrid region={region} rows={data.rows} busy={busy} />
           <section aria-labelledby="day-by-day" className="space-y-3">
             <h2 id="day-by-day" className="text-title" tabIndex={-1}>
-              {m.heatmap.dailyTitle()}
+              {m.heatmap_dailyTitle()}
             </h2>
-            <p className="max-w-prose text-sm">{m.heatmap.dailyIntro()}</p>
+            <p className="max-w-prose text-sm">{m.heatmap_dailyIntro()}</p>
             <DivergingLegend
               labels={[
-                m.heatmap.dailyLegendFell(),
-                m.heatmap.dailyLegendRose(),
+                m.heatmap_dailyLegendFell(),
+                m.heatmap_dailyLegendRose(),
               ]}
             />
             <SectionBoundary headingId="day-by-day">

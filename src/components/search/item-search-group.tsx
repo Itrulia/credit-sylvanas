@@ -6,7 +6,7 @@ import { REGION_INFO } from '#/config/regions'
 import { formatNumber } from '#/lib/format'
 import { itemName } from '#/lib/wowhead'
 import { searchItemsQuery } from '#/server/fns/items'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { DynamicGroup } from '../command-palette/command'
 import { Icon } from '../icon'
 import { ItemLink } from '../item-link'
@@ -26,7 +26,7 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
   // the region is in the label: on / and /about it is not in the URL
   const GROUP = {
     id: 'items',
-    label: m.palette.groupItems({ region: REGION_INFO[region].name }),
+    label: m.palette_groupItems({ region: REGION_INFO[region].name }),
   }
   // SearchInput caps q at 64; a longer query would fail validation
   const q = query.trim().slice(0, 64).trim()
@@ -48,20 +48,20 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
     return []
   }
   if (isError) {
-    return [{ ...GROUP, commands: [], status: m.palette.itemSearchFailed() }]
+    return [{ ...GROUP, commands: [], status: m.palette_itemSearchFailed() }]
   }
   if (
     !data ||
     (isPlaceholderData && !data.length) ||
     (settled !== q && !data.length)
   ) {
-    return [{ ...GROUP, commands: [], status: m.palette.itemSearching() }]
+    return [{ ...GROUP, commands: [], status: m.palette_itemSearching() }]
   }
   if (!data.length) {
     return [
       {
         ...GROUP,
-        status: m.palette.itemNoMatch({
+        status: m.palette_itemNoMatch({
           q,
           region: REGION_INFO[region].name,
         }),
@@ -69,7 +69,7 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
           {
             id: 'items-search-all',
             group: GROUP.label,
-            title: m.palette.itemSearchAll(),
+            title: m.palette_itemSearchAll(),
             icon: <Icon name="search" />,
             perform: () =>
               void navigate({
@@ -105,7 +105,7 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
               />
               {row.spd !== null && (
                 <span>
-                  {m.palette.itemSoldPerDay({ n: formatNumber(row.spd, 1) })}
+                  {m.palette_itemSoldPerDay({ n: formatNumber(row.spd, 1) })}
                 </span>
               )}
             </span>

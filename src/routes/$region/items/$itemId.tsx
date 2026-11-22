@@ -19,7 +19,7 @@ import { PriceBlock, isVolatile } from '#/components/item/price-block'
 import { RealmPrices } from '#/components/item/realm-prices'
 import { RegionStrip } from '#/components/item/region-strip'
 import { StatsGrid } from '#/components/item/stats-grid'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { track } from '#/lib/analytics'
 import { formatDate, formatNumber } from '#/lib/format'
 import { formatMoney, moneyText } from '#/lib/money'
@@ -70,8 +70,8 @@ export const Route = createFileRoute('/$region/items/$itemId')({
     const { name, mv, spd } = loaderData
     const base = `/${params.region}`
     const head = pageHead(
-      m.item.headTitle({ name, region }),
-      m.item.headDescription({
+      m.item_headTitle({ name, region }),
+      m.item_headDescription({
         name,
         region,
         value: moneyText(formatMoney(mv)),
@@ -82,8 +82,8 @@ export const Route = createFileRoute('/$region/items/$itemId')({
       ...head,
       scripts: [
         breadcrumbLd([
-          { name: m.market.heading({ region }), path: base },
-          { name: m.shell.navItems(), path: `${base}/items` },
+          { name: m.market_heading({ region }), path: base },
+          { name: m.shell_navItems(), path: `${base}/items` },
           { name, path: `${base}/items/${params.itemId}` },
         ]),
       ],
@@ -123,13 +123,13 @@ function ItemDetail() {
         </h1>
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           <span className="font-mono text-muted-foreground">
-            {m.item.idLabel({ id: item.id })}
+            {m.item_idLabel({ id: item.id })}
           </span>
           <WowheadLink id={item.id} />
           <FavouriteButton region={region} itemId={item.id} name={item.name} />
           {isVolatile(current.mv, current.hist) && (
             <span className="inline-flex items-center">
-              <Badge variant="outline">{m.item.volatileBadge()}</Badge>
+              <Badge variant="outline">{m.item_volatileBadge()}</Badge>
               <InfoPopover term="volatile" />
             </span>
           )}
@@ -144,12 +144,12 @@ function ItemDetail() {
           <Icon name="warning" className="mt-0.5 text-warning-text" />
           <p>
             <strong>
-              {m.item.droppedTitle({
+              {m.item_droppedTitle({
                 region: name,
                 date: formatDate(status.lastDay ?? current.day),
               })}
             </strong>{' '}
-            {m.item.droppedBody({ date: formatDate(current.day) })}
+            {m.item_droppedBody({ date: formatDate(current.day) })}
           </p>
         </div>
       )}
@@ -158,7 +158,7 @@ function ItemDetail() {
         <div className="lg:col-span-8">
           <PriceBlock current={current} />
           <p className="mt-2 text-sm text-muted-foreground">
-            {m.item.regionAverageNote({ region: name })}
+            {m.item_regionAverageNote({ region: name })}
           </p>
         </div>
         <div className="lg:col-span-4">

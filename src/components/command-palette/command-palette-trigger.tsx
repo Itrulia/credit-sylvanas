@@ -1,6 +1,6 @@
 import { useFormatForDisplay } from '@tanstack/react-hotkeys'
 import { cn } from '#/lib/utils'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { Icon } from '../icon'
 import {
   COMMAND_PALETTE_HOTKEY,
@@ -21,7 +21,7 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
       )}
     >
       <Icon name="search" />
-      <span className="truncate">{m.palette.triggerLabel()}</span>
+      <span className="truncate">{m.palette_triggerLabel()}</span>
       <kbd aria-hidden="true" className="rounded-sm bg-muted px-1.5 text-micro">
         {format(COMMAND_PALETTE_HOTKEY)}
       </kbd>

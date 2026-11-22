@@ -8,7 +8,7 @@ import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { StatePanel } from '#/components/state-panel'
 import { REGIONS, REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatPct } from '#/lib/format'
 import { sortHeatRows } from '#/lib/heatmap'
 import type { HeatMetric, HeatSort, HeatmapN, Region } from '#/lib/search'
@@ -52,10 +52,10 @@ function regionColumn(
       <>
         {name}
         {r === current && (
-          <span className="sr-only"> {m.heatmap.regionCurrent()}</span>
+          <span className="sr-only"> {m.heatmap_regionCurrent()}</span>
         )}
         {!hasData && (
-          <span className="normal-case"> {m.heatmap.regionNoData()}</span>
+          <span className="normal-case"> {m.heatmap_regionNoData()}</span>
         )}
       </>
     ),
@@ -73,10 +73,10 @@ function regionColumn(
     cell: ({ row }) => {
       const cell = row.original.cells[r]
       if (!hasData) {
-        return <Missing text={m.heatmap.cellNoPrices({ region: name })} />
+        return <Missing text={m.heatmap_cellNoPrices({ region: name })} />
       }
       if (!cell) {
-        return <Missing text={m.heatmap.cellNotListed({ region: name })} />
+        return <Missing text={m.heatmap_cellNotListed({ region: name })} />
       }
       if (metric === 'price' || cell.index === null) {
         return <Money copper={cell.mv} variant="compact" />
@@ -104,10 +104,10 @@ export function CrossRegionTable({
     return (
       <section aria-labelledby={HEADING_ID} className="space-y-3">
         <h2 id={HEADING_ID} className="text-title">
-          {m.heatmap.acrossTitle()}
+          {m.heatmap_acrossTitle()}
         </h2>
-        <StatePanel as="h3" title={m.heatmap.acrossNeedsTwoTitle()}>
-          <p>{m.heatmap.acrossNeedsTwoBody({ region: name })}</p>
+        <StatePanel as="h3" title={m.heatmap_acrossNeedsTwoTitle()}>
+          <p>{m.heatmap_acrossNeedsTwoBody({ region: name })}</p>
         </StatePanel>
       </section>
     )
@@ -116,7 +116,7 @@ export function CrossRegionTable({
   const columns: DataColumn<HeatRow>[] = [
     {
       id: 'name',
-      header: m.heatmap.itemColumn(),
+      header: m.heatmap_itemColumn(),
       meta: { sortable: true, rowHeader: true },
       cell: ({ row }) => (
         <ItemLink
@@ -132,11 +132,11 @@ export function CrossRegionTable({
     ),
     {
       id: 'spread',
-      header: m.heatmap.spreadLabel(),
+      header: m.heatmap_spreadLabel(),
       meta: { sortable: true, align: 'right' },
       cell: ({ row }) =>
         row.original.spread === null ? (
-          <Missing text={m.heatmap.cellNoSpread()} />
+          <Missing text={m.heatmap_cellNoSpread()} />
         ) : (
           formatPct(row.original.spread, { sign: false })
         ),
@@ -146,29 +146,29 @@ export function CrossRegionTable({
   const sortLabel = SORT_LABEL[sort]()
   const caption =
     rows.length < n
-      ? m.heatmap.acrossCaptionFiltered({ count: rows.length, sort: sortLabel })
-      : m.heatmap.acrossCaption({ n, region: name, sort: sortLabel })
+      ? m.heatmap_acrossCaptionFiltered({ count: rows.length, sort: sortLabel })
+      : m.heatmap_acrossCaption({ n, region: name, sort: sortLabel })
 
   return (
     <section aria-labelledby={HEADING_ID} className="space-y-3">
       <h2 id={HEADING_ID} className="text-title">
-        {m.heatmap.acrossTitle()}
+        {m.heatmap_acrossTitle()}
       </h2>
       <p className="max-w-prose text-sm">
-        {m.heatmap.acrossIntro({ count, region: name })}
+        {m.heatmap_acrossIntro({ count, region: name })}
       </p>
       <p className="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground">
         <span className="inline-flex items-center">
-          {m.heatmap.metricIndex()} <InfoPopover term="index" />
+          {m.heatmap_metricIndex()} <InfoPopover term="index" />
         </span>
         <span className="inline-flex items-center">
-          {m.heatmap.spreadLabel()} <InfoPopover term="spread" />
+          {m.heatmap_spreadLabel()} <InfoPopover term="spread" />
         </span>
       </p>
       <DivergingLegend
         labels={[
-          m.heatmap.acrossLegendCheaper(),
-          m.heatmap.acrossLegendPricier(),
+          m.heatmap_acrossLegendCheaper(),
+          m.heatmap_acrossLegendPricier(),
         ]}
       />
       <p role="status" className="sr-only">
@@ -176,7 +176,7 @@ export function CrossRegionTable({
       </p>
       <DataTable
         caption={caption}
-        label={m.heatmap.acrossTitle()}
+        label={m.heatmap_acrossTitle()}
         columns={columns}
         data={sortHeatRows(rows, sort)}
         getRowId={(row) => String(row.id)}

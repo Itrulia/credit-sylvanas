@@ -2,7 +2,7 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { REGIONS, REGION_INFO, isRegion } from '#/config/regions'
 import { realmsFor } from '#/config/realms'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import {
   readLastRegion,
   rememberRegion,
@@ -42,21 +42,21 @@ export function useRegion(): Region {
 const PAGES = [
   {
     id: 'market',
-    title: m.palette.navMarket,
+    title: m.palette_navMarket,
     to: '/$region',
-    keywords: m.palette.navMarketKeywords,
+    keywords: m.palette_navMarketKeywords,
   },
   {
     id: 'items',
-    title: m.palette.navItems,
+    title: m.palette_navItems,
     to: '/$region/items',
-    keywords: m.palette.navItemsKeywords,
+    keywords: m.palette_navItemsKeywords,
   },
   {
     id: 'heatmaps',
-    title: m.palette.navHeatmaps,
+    title: m.palette_navHeatmaps,
     to: '/$region/heatmap',
-    keywords: m.palette.navHeatmapsKeywords,
+    keywords: m.palette_navHeatmapsKeywords,
   },
 ] as const
 
@@ -78,7 +78,7 @@ export function useSiteCommands(): Command[] {
 
     const pages: Command[] = PAGES.map((page) => ({
       id: `nav-${page.id}`,
-      group: m.palette.groupNavigate(),
+      group: m.palette_groupNavigate(),
       title: page.title(),
       keywords: page.keywords().split(' '),
       icon: chevron,
@@ -87,8 +87,8 @@ export function useSiteCommands(): Command[] {
     if (realms.length) {
       pages.push({
         id: 'nav-realms',
-        group: m.palette.groupNavigate(),
-        title: m.palette.navRealms(),
+        group: m.palette_groupNavigate(),
+        title: m.palette_navRealms(),
         icon: chevron,
         perform: () =>
           void navigate({ to: '/$region/realms', params: { region } }),
@@ -96,17 +96,17 @@ export function useSiteCommands(): Command[] {
     }
     pages.push({
       id: 'nav-about',
-      group: m.palette.groupNavigate(),
-      title: m.palette.navAbout(),
-      keywords: m.palette.navAboutKeywords().split(' '),
+      group: m.palette_groupNavigate(),
+      title: m.palette_navAbout(),
+      keywords: m.palette_navAboutKeywords().split(' '),
       icon: chevron,
       perform: () => void navigate({ to: '/about' }),
     })
 
     const regions: Command[] = REGIONS.map((code) => ({
       id: `region-${code}`,
-      group: m.palette.groupRegion(),
-      title: m.palette.switchRegion({ region: REGION_INFO[code].name }),
+      group: m.palette_groupRegion(),
+      title: m.palette_switchRegion({ region: REGION_INFO[code].name }),
       keywords: [REGION_INFO[code].fullName],
       perform: () =>
         void (current
@@ -127,8 +127,8 @@ export function useSiteCommands(): Command[] {
       ? [
           {
             id: 'realm-all',
-            group: m.palette.groupRealm(),
-            title: m.shell.realmAll(),
+            group: m.palette_groupRealm(),
+            title: m.shell_realmAll(),
             perform: () =>
               void navigate({
                 to: '.',
@@ -142,13 +142,13 @@ export function useSiteCommands(): Command[] {
           ...realms.flatMap((realm) =>
             FACTIONS.map((faction) => ({
               id: `realm-${realm.slug}-${faction}`,
-              group: m.palette.groupRealm(),
-              title: m.palette.realmFaction({
+              group: m.palette_groupRealm(),
+              title: m.palette_realmFaction({
                 realm: realm.name,
                 faction:
                   faction === 'alliance'
-                    ? m.realms.factionAlliance()
-                    : m.realms.factionHorde(),
+                    ? m.realms_factionAlliance()
+                    : m.realms_factionHorde(),
               }),
               keywords: [realm.ruleset],
               perform: () =>

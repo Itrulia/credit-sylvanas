@@ -4,12 +4,12 @@ import type { RegionCode } from '#/config/regions'
 import { Credit } from '#/components/credit'
 import { Icon } from '#/components/icon'
 import { pageHead, websiteLd } from '#/lib/seo'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 
 export const Route = createFileRoute('/')({
   ssr: true,
   head: () => ({
-    ...pageHead(m.home.title(), m.home.description()),
+    ...pageHead(m.home_title(), m.home_description()),
     scripts: [websiteLd()],
   }),
   component: Home,
@@ -26,15 +26,15 @@ function Home() {
     <div className="page-wrap py-10 sm:py-16">
       <div className="ledger-rule max-w-3xl pb-6">
         <h1 className="text-display sm:text-[2.75rem] sm:leading-[3rem]">
-          {m.home.title()}
+          {m.home_title()}
         </h1>
         <p className="mt-3 max-w-prose text-lg text-muted-foreground">
-          {m.home.intro()}
+          {m.home_intro()}
         </p>
       </div>
 
       <ul
-        aria-label={m.home.regionsLabel()}
+        aria-label={m.home_regionsLabel()}
         className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
       >
         {REGIONS.map((region) => {
@@ -59,7 +59,7 @@ function Home() {
                   aria-hidden="true"
                   className="mt-auto flex items-center gap-1 pt-4 text-sm font-medium"
                 >
-                  {m.home.regionCta({ region: info.name })}
+                  {m.home_regionCta({ region: info.name })}
                   <Icon
                     name="chevron_right"
                     className="transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
@@ -78,7 +78,7 @@ function Home() {
               <span className="text-display">{r.name}</span>
               <span className="mt-1 text-sm">{r.fullName}</span>
               <span className="mt-auto pt-4 text-sm">
-                {m.home.regionUnavailable()}
+                {m.home_regionUnavailable()}
               </span>
             </div>
           </li>
@@ -87,9 +87,9 @@ function Home() {
 
       <p className="mt-8 text-sm text-muted-foreground">
         <Credit />
-        {m.home.creditTail()}{' '}
+        {m.home_creditTail()}{' '}
         <Link to="/about" className="underline">
-          {m.home.howItWorks()}
+          {m.home_howItWorks()}
         </Link>
       </p>
     </div>

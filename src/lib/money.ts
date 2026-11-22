@@ -1,5 +1,5 @@
-import { m } from '#/i18n'
-import { LOCALE } from '#/i18n/locale'
+import { m } from '#/paraglide/messages.js'
+import { baseLocale } from '#/paraglide/runtime.js'
 
 // Prices are integer copper everywhere; this is the one place they become g/s/c.
 export type CoinUnit = 'g' | 's' | 'c'
@@ -9,7 +9,7 @@ export interface MoneyPart {
 }
 export type MoneyVariant = 'full' | 'compact' | 'axis'
 
-const nf = new Intl.NumberFormat(LOCALE)
+const nf = new Intl.NumberFormat(baseLocale)
 const pad = (n: number) => String(n).padStart(2, '0')
 
 const split = (copper: number) => ({
@@ -86,9 +86,9 @@ export const moneyText = (parts: MoneyPart[]) =>
   parts.map((p) => `${p.amount}${p.unit}`).join(' ')
 
 const WORDS: Record<CoinUnit, (p: { n: number }) => string> = {
-  g: m.format.moneyGold,
-  s: m.format.moneySilver,
-  c: m.format.moneyCopper,
+  g: m.format_moneyGold,
+  s: m.format_moneySilver,
+  c: m.format_moneyCopper,
 }
 
 export function moneyLabel(copper: number) {
@@ -102,5 +102,5 @@ export function moneyLabel(copper: number) {
   )
     .filter(([n]) => n > 0)
     .map(([n, u]) => WORDS[u]({ n }))
-  return parts.length ? parts.join(' ') : m.format.moneyCopper({ n: 0 })
+  return parts.length ? parts.join(' ') : m.format_moneyCopper({ n: 0 })
 }

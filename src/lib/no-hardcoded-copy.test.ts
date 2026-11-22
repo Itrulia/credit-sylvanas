@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
 
-// Every file is clean. Keep this empty: move new copy into src/i18n/en instead
+// Every file is clean. Keep this empty: move new copy into messages/en.json instead
 // of listing a file here.
 const ALLOWLIST: Array<string> = []
 
@@ -10,6 +10,7 @@ const SKIP = [
   /\.test\.tsx$/,
   /^src\/components\/ui\//,
   /^src\/routeTree\.gen\.ts$/,
+  /^src\/paraglide\//,
   /^src\/components\/devtools\.tsx$/,
 ]
 
@@ -102,7 +103,7 @@ it('finds JSX text and copy props, and ignores everything else', () => {
         Hello
         <Icon name="search" />
         <a href="https://example.com" title={\`Open \${n}\`}>{' '}{'Inline'}{n}</a>
-        <input placeholder={m.items.search()} />
+        <input placeholder={m.items_searchLabel()} />
       </div>
     )`
   expect(findCopy('a.tsx', src)).toEqual([

@@ -1,7 +1,7 @@
 import { useRouter } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { track } from '#/lib/analytics'
 import { SITE } from '#/lib/seo'
 import { StatePanel } from './state-panel'
@@ -21,20 +21,20 @@ export function ErrorPage({ error }: ErrorComponentProps) {
   return (
     <div className="page-wrap py-8">
       <title>
-        {m.shell.docTitle({ page: m.shell.errorDocPage(), site: SITE })}
+        {m.shell_docTitle({ page: m.shell_errorDocPage(), site: SITE })}
       </title>
       <meta name="robots" content="noindex" />
       <StatePanel
         as="h1"
         icon="error"
-        title={m.shell.errorTitle()}
+        title={m.shell_errorTitle()}
         actions={
           <Button onClick={() => void router.invalidate()}>
-            {m.shell.retry()}
+            {m.shell_retry()}
           </Button>
         }
       >
-        <p>{m.shell.errorBody()}</p>
+        <p>{m.shell_errorBody()}</p>
       </StatePanel>
     </div>
   )

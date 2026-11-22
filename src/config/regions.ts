@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 
 // Enabled regions, in display order. The code stays 'us' (TSM's file name and
 // the D1 value) while the label says NA.
@@ -9,8 +9,8 @@ export const REGION_INFO: Record<
   RegionCode,
   { code: RegionCode; name: string; fullName: string }
 > = {
-  eu: { code: 'eu', name: 'EU', fullName: m.shell.regionNameEu() },
-  us: { code: 'us', name: 'NA', fullName: m.shell.regionNameUs() },
+  eu: { code: 'eu', name: 'EU', fullName: m.shell_regionNameEu() },
+  us: { code: 'us', name: 'NA', fullName: m.shell_regionNameUs() },
 }
 
 export const isRegion = (value: string): value is RegionCode =>
@@ -24,6 +24,6 @@ export const regionLabel = (code: string) =>
 // The D1 schema still accepts kr and tw: moving one into REGIONS (with its
 // REGION_INFO) turns it on.
 export const DISABLED_REGIONS = [
-  { code: 'kr', name: 'KR', fullName: m.shell.regionNameKr() },
-  { code: 'tw', name: 'TW', fullName: m.shell.regionNameTw() },
+  { code: 'kr', name: 'KR', fullName: m.shell_regionNameKr() },
+  { code: 'tw', name: 'TW', fullName: m.shell_regionNameTw() },
 ] as const

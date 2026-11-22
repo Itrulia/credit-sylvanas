@@ -2,7 +2,7 @@ import { REGION_INFO } from '#/config/regions'
 import { ChartFigure } from '#/components/chart-figure'
 import { Delta } from '#/components/delta'
 import { Money } from '#/components/money'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { binFill, binInk, binOf } from '#/lib/bins'
 import {
   dayOf,
@@ -114,8 +114,8 @@ export interface HeatmapCardProps {
 }
 
 const TITLE = {
-  value: m.item.heatmapValueTitle,
-  sales: m.item.heatmapSalesTitle,
+  value: m.item_heatmapValueTitle,
+  sales: m.item_heatmapSalesTitle,
 }
 
 /** Cards 3 and 4: weekday heatmaps of market value and sales. */
@@ -151,7 +151,7 @@ export function HeatmapCard({
   const notes: string[] = []
   if (kind === 'value' && realmName && !useHourly) {
     notes.push(
-      m.item.hourlyPending({
+      m.item_hourlyPending({
         realm: realmName,
         min: MIN_DAYS,
         n: hourly?.days ?? 0,
@@ -159,56 +159,56 @@ export function HeatmapCard({
     )
   }
   if (kind === 'sales' && realmName) {
-    notes.push(m.item.salesRegionOnly())
+    notes.push(m.item_salesRegionOnly())
   }
 
   let body
   if (!useHourly && daily.length < MIN_DAYS) {
     const firstWeekEnds = (points[0]?.day ?? 0) + MIN_DAYS - 1
     body = (
-      <CardNote title={m.item.heatmapNeedsWeek()}>
+      <CardNote title={m.item_heatmapNeedsWeek()}>
         <p>
-          {m.item.heatmapProgress({
+          {m.item_heatmapProgress({
             n: daily.length,
             min: MIN_DAYS,
             region: name,
           })}{' '}
           {points.length >= MIN_DAYS
-            ? m.item.heatmapPickRange()
-            : m.item.heatmapFirstWeek({ date: formatDate(firstWeekEnds) })}
+            ? m.item_heatmapPickRange()
+            : m.item_heatmapFirstWeek({ date: formatDate(firstWeekEnds) })}
         </p>
       </CardNote>
     )
   } else if (kind === 'sales' && daily.every((d) => d.value === 0)) {
     body = (
-      <CardNote title={m.item.noSalesTitle()}>
-        <p>{m.item.noSalesBody({ region: name, days })}</p>
+      <CardNote title={m.item_noSalesTitle()}>
+        <p>{m.item_noSalesBody({ region: name, days })}</p>
       </CardNote>
     )
   } else {
     const grid = useHourly ? hourly : dailyGrid(daily)
     const summary = heatmapSummary(grid, range)
     const caption = useHourly
-      ? m.item.heatmapHourlyCaption({ realm: realmName ?? '', days: grid.days })
+      ? m.item_heatmapHourlyCaption({ realm: realmName ?? '', days: grid.days })
       : kind === 'sales'
-        ? m.item.heatmapSalesCaption({ days })
-        : m.item.heatmapValueCaption({ days })
+        ? m.item_heatmapSalesCaption({ days })
+        : m.item_heatmapValueCaption({ days })
     const note = useHourly ? null : rangeNote(range, points.length)
     const fmt = (v: number) =>
       kind === 'value' ? (
         <Money copper={Math.round(v)} />
       ) : (
-        m.item.perDay({ n: formatNumber(v, 1) })
+        m.item_perDay({ n: formatNumber(v, 1) })
       )
     const reference = useHourly
-      ? m.item.medianHourReference()
-      : m.item.rangeMedianReference({ days })
+      ? m.item_medianHourReference()
+      : m.item_rangeMedianReference({ days })
     // newest first; hourly slots go by weekday then hour
     const rows = useHourly
       ? grid.cells.map((c) => ({
           key: `${c.row}:${c.hour}`,
           cells: [
-            m.item.hourSlot({
+            m.item_hourSlot({
               weekday: c.row,
               hour: String(c.hour).padStart(2, '0'),
             }),
@@ -246,13 +246,13 @@ export function HeatmapCard({
           }
           table={() => (
             <StatTable
-              caption={m.item.tableCaption({ title, scope: name })}
+              caption={m.item_tableCaption({ title, scope: name })}
               head={[
-                useHourly ? m.item.weekdayHourColumn() : m.item.dayColumn(),
+                useHourly ? m.item_weekdayHourColumn() : m.item_dayColumn(),
                 kind === 'value'
-                  ? m.shell.glossaryMarketValueLabel()
-                  : m.shell.glossarySoldPerDayLabel(),
-                m.item.vsMedianColumn(),
+                  ? m.shell_glossaryMarketValueLabel()
+                  : m.shell_glossarySoldPerDayLabel(),
+                m.item_vsMedianColumn(),
               ]}
               rows={rows}
             />

@@ -10,7 +10,7 @@ import {
 import { ChartFigure } from '#/components/chart-figure'
 import { Money } from '#/components/money'
 import { ChartContainer } from '#/components/ui/chart'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatDate, formatDayLong, formatNumber } from '#/lib/format'
 import type { Region, StatRange } from '#/lib/search'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
@@ -66,28 +66,28 @@ export function ValueQuantityCard({
   const rows = inRange(all, range)
   const n = rows.length
 
-  const title = m.item.valueTitle()
+  const title = m.item_valueTitle()
   let body
   if (n <= 1) {
     const only = rows[0] as Row | undefined
     body = only ? (
-      <CardNote title={m.item.historyStarts({ date: formatDate(only.day) })}>
+      <CardNote title={m.item_historyStarts({ date: formatDate(only.day) })}>
         <p>
           <Money copper={only.mv} />{' '}
-          {m.item.onlyPointDate({ date: formatDayLong(only.day) })}
+          {m.item_onlyPointDate({ date: formatDayLong(only.day) })}
         </p>
-        <p>{m.item.fillsInNote()}</p>
+        <p>{m.item_fillsInNote()}</p>
       </CardNote>
     ) : (
-      <CardNote title={m.item.noRealmScans({ realm: realmName ?? '' })} />
+      <CardNote title={m.item_noRealmScans({ realm: realmName ?? '' })} />
     )
   } else {
     const days = rows.map((r) => r.day)
     const short = n <= 6
     const notes = [
-      short ? m.item.historyNote({ n, date: formatDate(rows[0].day) }) : null,
+      short ? m.item_historyNote({ n, date: formatDate(rows[0].day) }) : null,
       rangeNote(range, all.length),
-      isRealm ? m.item.salesRegionOnly() : null,
+      isRealm ? m.item_salesRegionOnly() : null,
     ]
     const tip = ({
       active,
@@ -108,13 +108,13 @@ export function ValueQuantityCard({
               ? [
                   {
                     key: 'mv',
-                    label: m.item.realmValueLabel(),
+                    label: m.item_realmValueLabel(),
                     color: C.realm,
                     value: <Money copper={r.mv} />,
                   },
                   {
                     key: 'mb',
-                    label: m.shell.glossaryMinBuyoutLabel(),
+                    label: m.shell_glossaryMinBuyoutLabel(),
                     color: C.mv,
                     dash: '2 3',
                     value: <Money copper={r.minBuyout ?? null} />,
@@ -123,20 +123,20 @@ export function ValueQuantityCard({
               : [
                   {
                     key: 'mv',
-                    label: m.shell.glossaryMarketValueLabel(),
+                    label: m.shell_glossaryMarketValueLabel(),
                     color: C.mv,
                     value: <Money copper={r.mv} />,
                   },
                   {
                     key: 'hist',
-                    label: m.shell.glossaryHistoricalLabel(),
+                    label: m.shell_glossaryHistoricalLabel(),
                     color: C.hist,
                     dash: '4 3',
                     value: <Money copper={r.hist ?? null} />,
                   },
                   {
                     key: 'spd',
-                    label: m.shell.glossarySoldPerDayLabel(),
+                    label: m.shell_glossarySoldPerDayLabel(),
                     color: C.spd,
                     value: formatNumber(r.spd ?? 0, 1),
                   },
@@ -156,22 +156,22 @@ export function ValueQuantityCard({
         }
         table={() => (
           <StatTable
-            caption={m.item.tableCaption({
+            caption={m.item_tableCaption({
               title,
               scope: isRealm ? realmName : region.toUpperCase(),
             })}
             head={
               isRealm
                 ? [
-                    m.item.dayColumn(),
-                    m.item.realmValueLabel(),
-                    m.shell.glossaryMinBuyoutLabel(),
+                    m.item_dayColumn(),
+                    m.item_realmValueLabel(),
+                    m.shell_glossaryMinBuyoutLabel(),
                   ]
                 : [
-                    m.item.dayColumn(),
-                    m.shell.glossaryMarketValueLabel(),
-                    m.shell.glossaryHistoricalLabel(),
-                    m.shell.glossarySoldPerDayLabel(),
+                    m.item_dayColumn(),
+                    m.shell_glossaryMarketValueLabel(),
+                    m.shell_glossaryHistoricalLabel(),
+                    m.shell_glossarySoldPerDayLabel(),
                   ]
             }
             rows={[...rows].reverse().map((r) => ({
@@ -183,7 +183,7 @@ export function ValueQuantityCard({
                     r.minBuyout ? (
                       <Money key="mb" copper={r.minBuyout} />
                     ) : (
-                      m.item.noListings()
+                      m.item_noListings()
                     ),
                   ]
                 : [
@@ -197,9 +197,9 @@ export function ValueQuantityCard({
         )}
       >
         <div className="flex justify-between">
-          <p className="text-label">{m.shell.glossaryMarketValueLabel()}</p>
+          <p className="text-label">{m.shell_glossaryMarketValueLabel()}</p>
           {!isRealm && (
-            <p className="text-label">{m.shell.glossarySoldPerDayLabel()}</p>
+            <p className="text-label">{m.shell_glossarySoldPerDayLabel()}</p>
           )}
         </div>
         <ChartContainer
@@ -250,7 +250,7 @@ export function ValueQuantityCard({
               <Bar
                 yAxisId="spd"
                 dataKey="spd"
-                name={m.shell.glossarySoldPerDayLabel()}
+                name={m.shell_glossarySoldPerDayLabel()}
                 fill={C.spd}
                 isAnimationActive={false}
               />
@@ -260,22 +260,22 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="minBuyout"
-                  name={m.shell.glossaryMinBuyoutLabel()}
+                  name={m.shell_glossaryMinBuyoutLabel()}
                   stroke={C.mv}
                   strokeWidth={1.5}
                   strokeDasharray="2 3"
                   dot={endDot(n, C.mv, C.mv, short)}
-                  label={endLabel(n, m.item.endLabelBuyout(), C.mv)}
+                  label={endLabel(n, m.item_endLabelBuyout(), C.mv)}
                   isAnimationActive={false}
                 />
                 <Line
                   yAxisId="mv"
                   dataKey="mv"
-                  name={m.item.realmValueLabel()}
+                  name={m.item_realmValueLabel()}
                   stroke={C.realm}
                   strokeWidth={2}
                   dot={endDot(n, C.realm, C.realm, short)}
-                  label={endLabel(n, m.item.endLabelRealm(), C.realm)}
+                  label={endLabel(n, m.item_endLabelRealm(), C.realm)}
                   isAnimationActive={false}
                 />
               </>
@@ -284,22 +284,22 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="hist"
-                  name={m.shell.glossaryHistoricalLabel()}
+                  name={m.shell_glossaryHistoricalLabel()}
                   stroke={C.hist}
                   strokeWidth={1.5}
                   strokeDasharray="4 3"
                   dot={endDot(n, C.hist, C.hist, short)}
-                  label={endLabel(n, m.item.endLabelAvg(), C.hist)}
+                  label={endLabel(n, m.item_endLabelAvg(), C.hist)}
                   isAnimationActive={false}
                 />
                 <Line
                   yAxisId="mv"
                   dataKey="mv"
-                  name={m.shell.glossaryMarketValueLabel()}
+                  name={m.shell_glossaryMarketValueLabel()}
                   stroke={C.mv}
                   strokeWidth={2}
                   dot={endDot(n, C.mv, C.tomato, short)}
-                  label={endLabel(n, m.item.endLabelValue(), C.mv)}
+                  label={endLabel(n, m.item_endLabelValue(), C.mv)}
                   isAnimationActive={false}
                 />
               </>

@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatPct } from '#/lib/format'
 import { cn } from '#/lib/utils'
 
@@ -26,19 +26,19 @@ function srText(
   const pct = formatPct(value, { sign: false }).replace('%', '')
   if (mode === 'change') {
     return dir === 0
-      ? m.shell.deltaUnchanged()
-      : (dir > 0 ? m.shell.deltaUp : m.shell.deltaDown)({ value: pct })
+      ? m.shell_deltaUnchanged()
+      : (dir > 0 ? m.shell_deltaUp : m.shell_deltaDown)({ value: pct })
   }
   if (mode === 'vsHist') {
     return dir === 0
-      ? m.shell.deltaHistSame()
-      : (dir > 0 ? m.shell.deltaAboveHist : m.shell.deltaBelowHist)({
+      ? m.shell_deltaHistSame()
+      : (dir > 0 ? m.shell_deltaAboveHist : m.shell_deltaBelowHist)({
           value: pct,
         })
   }
   return dir === 0
-    ? m.shell.deltaRefSame({ reference })
-    : (dir > 0 ? m.shell.deltaAboveRef : m.shell.deltaBelowRef)({
+    ? m.shell_deltaRefSame({ reference })
+    : (dir > 0 ? m.shell_deltaAboveRef : m.shell_deltaBelowRef)({
         value: pct,
         reference,
       })
@@ -48,14 +48,14 @@ export function Delta({
   value,
   mode = 'change',
   compact,
-  reference = m.shell.deltaDefaultReference(),
+  reference = m.shell_deltaDefaultReference(),
   className,
 }: DeltaProps) {
   if (value === null || !Number.isFinite(value)) {
     return (
       <span className={cn('num text-muted-foreground', className)}>
         <span aria-hidden="true">—</span>
-        <span className="sr-only">{m.shell.deltaNoHistory()}</span>
+        <span className="sr-only">{m.shell_deltaNoHistory()}</span>
       </span>
     )
   }

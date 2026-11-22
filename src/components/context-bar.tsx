@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { REGION_INFO } from '#/config/regions'
 import { findRealm, realmsFor } from '#/config/realms'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { Faction, Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import { Freshness } from './freshness'
@@ -18,8 +18,8 @@ export interface ContextBarProps {
 
 const FACTIONS: Faction[] = ['alliance', 'horde']
 const FACTION_LABEL = {
-  alliance: m.shell.factionAlliance,
-  horde: m.shell.factionHorde,
+  alliance: m.shell_factionAlliance,
+  horde: m.shell_factionHorde,
 }
 
 /** Realm button, faction toggle (realm set only) and the freshness stamp. */
@@ -38,16 +38,16 @@ export function ContextBar({
         <Popover>
           <PopoverTrigger className="inline-flex h-8 items-center gap-1 rounded-md border border-input px-2 text-sm pointer-coarse:h-11">
             {selected
-              ? m.shell.realmSelected({ name: selected.name })
-              : m.shell.realmAll()}
+              ? m.shell_realmSelected({ name: selected.name })
+              : m.shell_realmAll()}
             <Icon name="expand_more" />
           </PopoverTrigger>
           <PopoverContent className="max-w-sm text-sm">
             {realms.length === 0 ? (
               <div className="space-y-2">
-                <p className="font-semibold">{m.shell.realmNoneTitle()}</p>
+                <p className="font-semibold">{m.shell_realmNoneTitle()}</p>
                 <p>
-                  {m.shell.realmNoneBody({ region: REGION_INFO[region].name })}
+                  {m.shell_realmNoneBody({ region: REGION_INFO[region].name })}
                 </p>
               </div>
             ) : (
@@ -62,7 +62,7 @@ export function ContextBar({
                     })}
                     className="underline"
                   >
-                    {m.shell.realmAll()}
+                    {m.shell_realmAll()}
                   </Link>
                 </li>
                 {realms.map((r) => (
@@ -86,7 +86,7 @@ export function ContextBar({
         </Popover>
         {selected && (
           <nav
-            aria-label={m.shell.factionLabel()}
+            aria-label={m.shell_factionLabel()}
             className="flex rounded-md border border-input p-0.5"
           >
             {FACTIONS.map((f) => (

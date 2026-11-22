@@ -3,7 +3,7 @@ import { Icon } from '#/components/icon'
 import { ItemLink } from '#/components/item-link'
 import { StatePanel } from '#/components/state-panel'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatInt } from '#/lib/format'
 import type { Region } from '#/lib/search'
 import { wowheadItemUrl } from '#/lib/wowhead'
@@ -28,7 +28,7 @@ function MostSold({ region, rows }: { region: Region; rows: HotRow[] }) {
   }
   return (
     <div className="space-y-2 pt-2">
-      <h3 className="text-label">{m.items.mostSoldHeading()}</h3>
+      <h3 className="text-label">{m.items_mostSoldHeading()}</h3>
       <ul className="space-y-1">
         {rows.map((row) => (
           <li key={row.id}>
@@ -58,7 +58,7 @@ export function ItemsEmpty({
     const last = lastPage(total)
     return (
       <StatePanel
-        title={m.items.pastEndTitle({ page })}
+        title={m.items_pastEndTitle({ page })}
         actions={
           <Link
             from="/$region/items/"
@@ -66,12 +66,12 @@ export function ItemsEmpty({
             search={(prev) => ({ ...prev, page: undefined })}
             className="inline-flex min-h-11 items-center underline"
           >
-            {m.items.pastEndBackLink()}
+            {m.items_pastEndBackLink()}
           </Link>
         }
       >
         <p>
-          {m.items.pastEndBody({
+          {m.items_pastEndBody({
             countText: countText(total, q),
             pages: last,
             pageCount: formatInt(last),
@@ -83,7 +83,7 @@ export function ItemsEmpty({
   }
   if (isNumericQuery(q)) {
     return (
-      <StatePanel title={m.items.numericMissTitle({ id: q, region: name })}>
+      <StatePanel title={m.items_numericMissTitle({ id: q, region: name })}>
         <p>
           <a
             href={wowheadItemUrl(Number(q))}
@@ -91,17 +91,17 @@ export function ItemsEmpty({
             rel="noreferrer"
             className="inline-flex min-h-11 items-center gap-1 underline"
           >
-            {m.items.numericMissLink()}
+            {m.items_numericMissLink()}
             <Icon name="open_in_new" />
-            <span className="sr-only">{m.shell.wowheadOpens()}</span>
+            <span className="sr-only">{m.shell_wowheadOpens()}</span>
           </a>
         </p>
       </StatePanel>
     )
   }
   return (
-    <StatePanel title={m.items.noMatchTitle({ q, region: name })}>
-      <p>{m.items.noMatchHint()}</p>
+    <StatePanel title={m.items_noMatchTitle({ q, region: name })}>
+      <p>{m.items_noMatchHint()}</p>
       <MostSold region={region} rows={popular} />
     </StatePanel>
   )

@@ -7,7 +7,7 @@ import { InfoPopover } from '#/components/info-popover'
 import { ItemLink } from '#/components/item-link'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
 import { REGION_INFO } from '#/config/regions'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatDate, formatNumber } from '#/lib/format'
 import { MoverBy, MoverMetric } from '#/lib/search'
 import type { Region } from '#/lib/search'
@@ -17,7 +17,7 @@ import type { MoverRow, MoversResult } from '#/server/types'
 import { barWidth } from './market'
 
 const title = (dir: 1 | -1) =>
-  dir > 0 ? m.market.moverIncrease() : m.market.moverDecrease()
+  dir > 0 ? m.market_moverIncrease() : m.market_moverDecrease()
 const DIRS = [1, -1] as const
 
 export interface MoverChartProps {
@@ -38,30 +38,30 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
       {k === 0 ? (
         <p className="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm">
           <Icon name="info" className="mt-0.5 text-muted-foreground" />
-          <span>{m.market.moverNothing({ window })}</span>
+          <span>{m.market_moverNothing({ window })}</span>
         </p>
       ) : (
         // same box as the Hottest table (DataTable); relative keeps sr-only text inside
         <div className="relative rounded-md border px-3 py-1">
           <table className="w-full table-fixed border-collapse text-[0.8125rem] leading-[1.125rem]">
             <caption className="sr-only">
-              {m.market.moverCaption({
+              {m.market_moverCaption({
                 n: k,
                 region: REGION_INFO[region].name,
                 by,
                 dir,
                 window,
               })}
-              {k < 10 && ` ${m.market.moverFew({ n: k })}`}
+              {k < 10 && ` ${m.market_moverFew({ n: k })}`}
             </caption>
             <thead className="sr-only">
               <tr>
-                <th scope="col">{m.market.itemHeader()}</th>
+                <th scope="col">{m.market_itemHeader()}</th>
                 <td />
                 <th scope="col">
                   {by === 'price'
-                    ? m.market.changeHeader()
-                    : m.market.measurePopularity()}
+                    ? m.market_changeHeader()
+                    : m.market_measurePopularity()}
                 </th>
               </tr>
             </thead>
@@ -100,7 +100,7 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
                     />
                     {by === 'sales' && (
                       <div className="text-micro text-muted-foreground">
-                        {m.market.moverPerDay({
+                        {m.market_moverPerDay({
                           from: formatNumber(r.from, 1),
                           to: formatNumber(r.to, 1),
                         })}
@@ -119,20 +119,20 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
 
 const INTRO: Record<MoverBy, Partial<Record<MoverMetric, () => string>>> = {
   price: {
-    vs_hist: m.market.introPriceVsHist,
-    d1: m.market.introPriceD1,
-    d7: m.market.introPriceD7,
+    vs_hist: m.market_introPriceVsHist,
+    d1: m.market_introPriceD1,
+    d7: m.market_introPriceD7,
   },
   sales: {
-    d1: m.market.introSalesD1,
-    d7: m.market.introSalesD7,
+    d1: m.market_introSalesD1,
+    d7: m.market_introSalesD7,
   },
 }
 
 const WINDOW_LABEL: Record<MoverMetric, () => string> = {
-  vs_hist: m.market.windowVsHist,
-  d1: m.market.windowD1,
-  d7: m.market.windowD7,
+  vs_hist: m.market_windowVsHist,
+  d1: m.market_windowD1,
+  d7: m.market_windowD7,
 }
 
 export interface MoverBarsProps {
@@ -164,19 +164,19 @@ export function MoverBars({
   })
   const reasons: Partial<Record<MoverMetric, string>> = {}
   if (by === 'sales') {
-    reasons.vs_hist = m.market.reasonNoSalesAverage()
+    reasons.vs_hist = m.market_reasonNoSalesAverage()
   }
   if (!available.d1) {
     reasons.d1 =
       nextDay !== null
-        ? m.market.reasonD1On({ date: formatDate(nextDay) })
-        : m.market.reasonD1Later()
+        ? m.market_reasonD1On({ date: formatDate(nextDay) })
+        : m.market_reasonD1Later()
   }
   if (!available.d7) {
     reasons.d7 =
       available.d7From !== null
-        ? m.market.reasonD7On({ date: formatDate(available.d7From), days })
-        : m.market.reasonD7Later({ days })
+        ? m.market_reasonD7On({ date: formatDate(available.d7From), days })
+        : m.market_reasonD7Later({ days })
   }
   const toggle = 'pointer-coarse:h-11'
   return (
@@ -184,7 +184,7 @@ export function MoverBars({
       <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
         <div className="space-y-1">
           <p id={`${id}-by`} className="text-label flex min-h-6 items-center">
-            {m.market.measureLabel()}
+            {m.market_measureLabel()}
           </p>
           <div className="flex items-center gap-1">
             <ToggleGroup
@@ -204,10 +204,10 @@ export function MoverBars({
               }}
             >
               <ToggleGroupItem value="price" className={toggle}>
-                {m.market.measurePrice()}
+                {m.market_measurePrice()}
               </ToggleGroupItem>
               <ToggleGroupItem value="sales" className={toggle}>
-                {m.market.measurePopularity()}
+                {m.market_measurePopularity()}
               </ToggleGroupItem>
             </ToggleGroup>
             {/* defines the Popularity option, so it sits next to it */}
@@ -216,7 +216,7 @@ export function MoverBars({
         </div>
         <div className="space-y-1">
           <p id={`${id}-win`} className="text-label flex min-h-6 items-center">
-            {m.market.windowLabel()}
+            {m.market_windowLabel()}
           </p>
           <ToggleGroup
             type="single"
@@ -285,10 +285,10 @@ export function MoverBars({
             <div className="rounded-md border border-dashed p-4 text-sm">
               <p className="font-semibold">
                 {nextDay !== null
-                  ? m.market.popularityStartsOn({ date: formatDate(nextDay) })
-                  : m.market.popularityStartsLater()}
+                  ? m.market_popularityStartsOn({ date: formatDate(nextDay) })
+                  : m.market_popularityStartsLater()}
               </p>
-              <p>{m.market.popularityNeed()}</p>
+              <p>{m.market_popularityNeed()}</p>
             </div>
           </div>
         ))

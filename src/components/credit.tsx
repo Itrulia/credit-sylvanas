@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { cn } from '#/lib/utils'
 
 export const TSM_URL = 'https://tradeskillmaster.com'
@@ -7,12 +7,12 @@ export const TSM_URL = 'https://tradeskillmaster.com'
 export function Credit({ className }: { className?: string }) {
   return (
     <span className={className}>
-      {m.shell.creditLead()}{' '}
+      {m.shell_creditLead()}{' '}
       <a href={TSM_URL} className={cn('underline')} rel="noreferrer">
-        {m.shell.creditLink()}
+        {m.shell_creditLink()}
       </a>
     </span>
   )
 }
 
-export const NOT_AFFILIATED = m.shell.notAffiliated()
+export const NOT_AFFILIATED = m.shell_notAffiliated()

@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatInt } from '#/lib/format'
 
 export function countText(total: number, q: string) {
   const count = formatInt(total)
   return q
-    ? m.items.countMatchingLabel({ n: total, count, q })
-    : m.items.countLabel({ n: total, count })
+    ? m.items_countMatchingLabel({ n: total, count, q })
+    : m.items_countLabel({ n: total, count })
 }
 
 /**

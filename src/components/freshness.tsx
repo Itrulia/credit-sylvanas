@@ -1,4 +1,4 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { formatDateTime, isoFromUnix } from '#/lib/format'
 import { cn } from '#/lib/utils'
 import { Credit } from './credit'
@@ -21,10 +21,10 @@ export function Freshness({ updatedAt, fetchedAt, className }: FreshnessProps) {
       {updatedAt !== null && (
         <>
           {' · '}
-          {m.shell.freshnessScanLead()} <DateTime unix={updatedAt} />
+          {m.shell_freshnessScanLead()} <DateTime unix={updatedAt} />
           {fetchedAt !== null && (
             <>
-              {m.shell.freshnessImportedLead()} <DateTime unix={fetchedAt} />
+              {m.shell_freshnessImportedLead()} <DateTime unix={fetchedAt} />
             </>
           )}
         </>

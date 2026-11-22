@@ -1,67 +1,67 @@
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 
 // Copy from DESIGN §7, in m.shell. Each label has an info popover; the full sentence goes on About.
 export const GLOSSARY = {
   marketValue: {
-    label: m.shell.glossaryMarketValueLabel(),
-    text: m.shell.glossaryMarketValueText(),
+    label: m.shell_glossaryMarketValueLabel(),
+    text: m.shell_glossaryMarketValueText(),
   },
   historical: {
-    label: m.shell.glossaryHistoricalLabel(),
-    text: m.shell.glossaryHistoricalText(),
+    label: m.shell_glossaryHistoricalLabel(),
+    text: m.shell_glossaryHistoricalText(),
   },
   avgSalePrice: {
-    label: m.shell.glossaryAvgSalePriceLabel(),
-    text: m.shell.glossaryAvgSalePriceText(),
+    label: m.shell_glossaryAvgSalePriceLabel(),
+    text: m.shell_glossaryAvgSalePriceText(),
   },
   saleRate: {
-    label: m.shell.glossarySaleRateLabel(),
-    text: m.shell.glossarySaleRateText(),
+    label: m.shell_glossarySaleRateLabel(),
+    text: m.shell_glossarySaleRateText(),
   },
   // the per-realm vs region-total wording still needs a human check against the TSM docs before launch
   soldPerDay: {
-    label: m.shell.glossarySoldPerDayLabel(),
-    text: m.shell.glossarySoldPerDayText(),
+    label: m.shell_glossarySoldPerDayLabel(),
+    text: m.shell_glossarySoldPerDayText(),
   },
   minBuyout: {
-    label: m.shell.glossaryMinBuyoutLabel(),
-    text: m.shell.glossaryMinBuyoutText(),
+    label: m.shell_glossaryMinBuyoutLabel(),
+    text: m.shell_glossaryMinBuyoutText(),
   },
   recent: {
-    label: m.shell.glossaryRecentLabel(),
-    text: m.shell.glossaryRecentText(),
+    label: m.shell_glossaryRecentLabel(),
+    text: m.shell_glossaryRecentText(),
   },
   goldPerDay: {
-    label: m.shell.glossaryGoldPerDayLabel(),
-    text: m.shell.glossaryGoldPerDayText(),
+    label: m.shell_glossaryGoldPerDayLabel(),
+    text: m.shell_glossaryGoldPerDayText(),
   },
   vsHist: {
-    label: m.shell.glossaryVsHistLabel(),
-    text: m.shell.glossaryVsHistText(),
+    label: m.shell_glossaryVsHistLabel(),
+    text: m.shell_glossaryVsHistText(),
   },
   change: {
-    label: m.shell.glossaryChangeLabel(),
-    text: m.shell.glossaryChangeText(),
+    label: m.shell_glossaryChangeLabel(),
+    text: m.shell_glossaryChangeText(),
   },
   popularity: {
-    label: m.shell.glossaryPopularityLabel(),
-    text: m.shell.glossaryPopularityText(),
+    label: m.shell_glossaryPopularityLabel(),
+    text: m.shell_glossaryPopularityText(),
   },
   rising: {
-    label: m.shell.glossaryRisingLabel(),
-    text: m.shell.glossaryRisingText(),
+    label: m.shell_glossaryRisingLabel(),
+    text: m.shell_glossaryRisingText(),
   },
   index: {
-    label: m.shell.glossaryIndexLabel(),
-    text: m.shell.glossaryIndexText(),
+    label: m.shell_glossaryIndexLabel(),
+    text: m.shell_glossaryIndexText(),
   },
   volatile: {
-    label: m.shell.glossaryVolatileLabel(),
-    text: m.shell.glossaryVolatileText(),
+    label: m.shell_glossaryVolatileLabel(),
+    text: m.shell_glossaryVolatileText(),
   },
   spread: {
-    label: m.shell.glossarySpreadLabel(),
-    text: m.shell.glossarySpreadText(),
+    label: m.shell_glossarySpreadLabel(),
+    text: m.shell_glossarySpreadText(),
   },
 } as const
 

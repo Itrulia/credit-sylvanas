@@ -9,7 +9,7 @@ import { ItemsEmpty, isNumericQuery } from '#/components/items/items-empty'
 import { ItemsSearchInput } from '#/components/items/items-search-input'
 import { ItemsTable, nextSort } from '#/components/items/items-table'
 import { Pager } from '#/components/items/pager'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import { track } from '#/lib/analytics'
 import { ITEMS_DEFAULTS, itemsSearch } from '#/lib/search'
 import type { Region } from '#/lib/search'
@@ -47,8 +47,8 @@ export const Route = createFileRoute('/$region/items/')({
   head: ({ params }) => {
     const name = regionLabel(params.region)
     return pageHead(
-      m.items.headTitle({ region: name }),
-      m.items.headDescription({ region: name }),
+      m.items_headTitle({ region: name }),
+      m.items_headDescription({ region: name }),
     )
   },
   component: Items,
@@ -71,7 +71,7 @@ function Items() {
     <div className="page-wrap space-y-4 py-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <h1 className="text-display">
-          {m.items.pageTitle({ region: REGION_INFO[region].name })}
+          {m.items_pageTitle({ region: REGION_INFO[region].name })}
         </h1>
         <ItemsSearchInput
           q={q}

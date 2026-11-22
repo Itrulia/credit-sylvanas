@@ -6,7 +6,7 @@ import type {
   RowData,
   TableFeatures,
 } from '@tanstack/react-table'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { SortDir } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import type { GlossaryKey } from './glossary'
@@ -89,7 +89,7 @@ export function DataTable<TData extends RowData>({
     <div
       role="region"
       tabIndex={0}
-      aria-label={m.shell.tableScrollLabel({ label })}
+      aria-label={m.shell_tableScrollLabel({ label })}
       aria-busy={busy || undefined}
       className={cn(
         // relative: sr-only text inside is absolute and would escape the scroller

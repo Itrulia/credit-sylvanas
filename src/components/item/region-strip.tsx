@@ -5,7 +5,7 @@ import { InfoPopover } from '#/components/info-popover'
 import { Money } from '#/components/money'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
-import { m } from '#/i18n'
+import { m } from '#/paraglide/messages.js'
 import type { RegionCell } from '#/server/types'
 
 /** The item in all four regions: compact value and index vs the cross-region median. */
@@ -27,16 +27,16 @@ export function RegionStrip({
         id="regions-heading"
         className="mb-2 flex items-center gap-1 text-label"
       >
-        {m.item.regionsHeading()}
+        {m.item_regionsHeading()}
         <InfoPopover term="index" />
       </h2>
       <table className="w-full text-sm">
-        <caption className="sr-only">{m.item.regionsCaption()}</caption>
+        <caption className="sr-only">{m.item_regionsCaption()}</caption>
         <thead className="sr-only">
           <tr>
-            <th scope="col">{m.item.regionColumn()}</th>
-            <th scope="col">{m.shell.glossaryMarketValueLabel()}</th>
-            <th scope="col">{m.item.vsOtherRegionsColumn()}</th>
+            <th scope="col">{m.item_regionColumn()}</th>
+            <th scope="col">{m.shell_glossaryMarketValueLabel()}</th>
+            <th scope="col">{m.item_vsOtherRegionsColumn()}</th>
           </tr>
         </thead>
         <tbody>
@@ -67,7 +67,7 @@ export function RegionStrip({
                 <Money
                   copper={r.mv}
                   variant="compact"
-                  reason={m.item.notListedReason({
+                  reason={m.item_notListedReason({
                     region: REGION_INFO[r.region].name,
                   })}
                 />
