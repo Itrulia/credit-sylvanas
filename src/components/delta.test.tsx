@@ -23,7 +23,14 @@ describe('Delta', () => {
   it('treats +-0.5% as flat', () => {
     const { container } = render(<Delta value={0.004} mode="vsMedian" />)
     expect(container.textContent).toContain('≈0.0%')
-    expect(sr(container)).toBe('about the same as other regions')
+    expect(sr(container)).toBe('about the same as the cross-region median')
+  })
+
+  it('names the reference it was given', () => {
+    const { container } = render(
+      <Delta value={0.2} mode="vsMedian" reference="the 30-day median" />,
+    )
+    expect(sr(container)).toBe('20.0 percent above the 30-day median')
   })
 
   it('drops glyph and decimal in compact mode', () => {

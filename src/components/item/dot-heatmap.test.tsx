@@ -62,6 +62,8 @@ describe('HeatmapCard', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Show as table' }))
     const table = screen.getByRole('table')
     expect(within(table).getAllByRole('row')).toHaveLength(dots + 1)
+    expect(table.textContent).toMatch(/the 90-day median/)
+    expect(table.textContent).not.toMatch(/cross-region/)
   })
 
   it('switches card 3 to the hourly layout at 7 realm days', () => {

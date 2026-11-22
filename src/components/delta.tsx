@@ -8,13 +8,20 @@ export interface DeltaProps {
   mode?: DeltaMode
   /** no glyph, no decimal: only the day-by-day heatmap uses it */
   compact?: boolean
+  /** what `vsMedian` compares against, read out by screen readers */
+  reference?: string
   className?: string
 }
 
 // within +-0.5% counts as flat
 const FLAT = 0.005
 
-function srText(value: number, mode: DeltaMode, dir: -1 | 0 | 1) {
+function srText(
+  value: number,
+  mode: DeltaMode,
+  dir: -1 | 0 | 1,
+  reference: string,
+) {
   const pct = `${formatPct(value, { sign: false }).replace('%', '')} percent`
   if (mode === 'change') {
     return dir === 0 ? 'unchanged' : `${dir > 0 ? 'up' : 'down'} ${pct}`
@@ -25,14 +32,15 @@ function srText(value: number, mode: DeltaMode, dir: -1 | 0 | 1) {
       : `${pct} ${dir > 0 ? 'above' : 'below'} 60-day average`
   }
   return dir === 0
-    ? 'about the same as other regions'
-    : `${pct} ${dir > 0 ? 'above' : 'below'} the cross-region median`
+    ? `about the same as ${reference}`
+    : `${pct} ${dir > 0 ? 'above' : 'below'} ${reference}`
 }
 
 export function Delta({
   value,
   mode = 'change',
   compact,
+  reference = 'the cross-region median',
   className,
 }: DeltaProps) {
   if (value === null || !Number.isFinite(value)) {
@@ -64,7 +72,7 @@ export function Delta({
         </span>
       )}
       <span aria-hidden="true">{text}</span>
-      <span className="sr-only">{srText(value, mode, dir)}</span>
+      <span className="sr-only">{srText(value, mode, dir, reference)}</span>
     </span>
   )
 }

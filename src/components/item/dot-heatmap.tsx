@@ -176,6 +176,9 @@ export function HeatmapCard({
       ) : (
         `${formatNumber(v, 1)} a day`
       )
+    const reference = useHourly
+      ? 'the median hour'
+      : `the ${RANGE_DAYS[range]}-day median`
     // newest first; hourly slots go by weekday then hour
     const rows = useHourly
       ? grid.cells.map((c) => ({
@@ -186,6 +189,7 @@ export function HeatmapCard({
             <Delta
               key="d"
               mode="vsMedian"
+              reference={reference}
               value={grid.median ? c.value / grid.median - 1 : null}
             />,
           ],
@@ -198,6 +202,7 @@ export function HeatmapCard({
             <Delta
               key="d"
               mode="vsMedian"
+              reference={reference}
               value={grid.median ? c.value / grid.median - 1 : null}
             />,
           ],
