@@ -32,8 +32,9 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
       <h2 id="price-heading" className="sr-only">
         Current price
       </h2>
-      <dl className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
+      {/* two lists: a <dl> allows only one wrapping div per dt/dd group */}
+      <div className="flex flex-col gap-4">
+        <dl className="flex flex-col gap-1">
           <dt className="flex items-center gap-1 text-label">
             Market value
             <InfoPopover term="marketValue" />
@@ -45,8 +46,8 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
               vs 60-day average
             </span>
           </dd>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        </dl>
+        <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Stat term="historical">
             <Money copper={current.hist} />
           </Stat>
@@ -71,8 +72,8 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
           <Stat term="saleRate">
             {formatPct(current.saleRate, { sign: false })}
           </Stat>
-        </div>
-      </dl>
+        </dl>
+      </div>
     </section>
   )
 }
