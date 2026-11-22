@@ -62,6 +62,19 @@ export interface MoversResult {
   available: { d1: boolean; d7: boolean; d7From: number | null }
 }
 
+export interface RisingRow {
+  id: number
+  name: string
+  mv: number
+  /** market value change against about 7 days earlier */
+  change: number
+  spd: number
+  /** the item's average sold/day over the previous 30 days */
+  avgSpd: number
+  /** spd / avgSpd */
+  lift: number
+}
+
 export interface SearchRow {
   id: number
   name: string

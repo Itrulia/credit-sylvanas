@@ -5,6 +5,7 @@ import { HottestTable } from '#/components/market/hottest-table'
 import { MarketMap } from '#/components/market/market-map'
 import { MarketMapSkeleton } from '#/components/market/market-map-skeleton'
 import { MoverBars } from '#/components/market/mover-bars'
+import { Rising } from '#/components/market/rising-table'
 import {
   mapMetric,
   probeInput,
@@ -15,7 +16,7 @@ import { REGION_INFO } from '#/config/regions'
 import { dayOf } from '#/lib/format'
 import { MARKET_DEFAULTS, marketSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
-import { hottestQuery, moversQuery } from '#/server/fns/market'
+import { hottestQuery, moversQuery, risingQuery } from '#/server/fns/market'
 import { regionStatusQuery } from '#/server/fns/status'
 
 const HOT_LIMIT = 20
@@ -30,6 +31,7 @@ export const Route = createFileRoute('/$region/')({
     by: search.by,
   }),
   loader: async ({ context: { queryClient, region }, deps }) => {
+    void queryClient.prefetchQuery(risingQuery({ region }))
     const [, probe] = await Promise.all([
       queryClient.ensureQueryData(
         hottestQuery({ region, by: deps.hot, limit: HOT_LIMIT }),
@@ -111,6 +113,26 @@ function Market() {
           />
         </section>
       </div>
+      <section aria-labelledby="rising" className="space-y-3">
+        <h2 id="rising" tabIndex={-1} className="text-title">
+          Rising with demand
+        </h2>
+        <SectionBoundary headingId="rising">
+          <Suspense
+            fallback={
+              <div aria-busy="true" className="h-64 rounded-md border bg-muted">
+                <span className="sr-only">Loading rising items…</span>
+              </div>
+            }
+          >
+            <Rising
+              region={region}
+              days={status.days}
+              lastDay={status.lastDay}
+            />
+          </Suspense>
+        </SectionBoundary>
+      </section>
       <section aria-labelledby="market-map" className="space-y-3">
         <h2 id="market-map" tabIndex={-1} className="text-title">
           Market map

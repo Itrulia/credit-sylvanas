@@ -45,6 +45,10 @@ export const GLOSSARY = {
     label: 'Popularity',
     text: 'Change in units sold per day. Only items that sold at least one a day before the change count.',
   },
+  rising: {
+    label: 'Rising with demand',
+    text: "Market value at least 5% above 7 days ago, and today's sold per day at least 1.25 times the item's average over the previous 30 days. The item needs 14 days of data in those 30 and about 1g traded a day to count.",
+  },
   index: {
     label: 'vs other regions',
     text: "How this region's market value compares with the median of the regions that list the item (US, EU, KR and TW). +20% means 20% pricier than the typical region.",

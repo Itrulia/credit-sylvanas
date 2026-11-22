@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { DAILY_CHANGE_SQL } from './heatmap.ts'
 import { OWN_HISTORY_SQL } from './history.ts'
 import { CURRENT_SQL } from './item.ts'
+import { RISING_SQL } from './rising.ts'
 import { REGIONS_SQL } from './status.ts'
 
 // Without sqlite_stat1 the planner picks the (region, day, item_id) primary key
@@ -19,10 +20,11 @@ describe('item-scoped region_snapshots reads use the item index', () => {
     ['own history', OWN_HISTORY_SQL, [1, 'us']],
     ['current', CURRENT_SQL, [1, 'us']],
     ['daily change', DAILY_CHANGE_SQL, ['us', '[1,2]']],
+    ['rising sales baseline', RISING_SQL, ['us']],
   ] as const)('%s', async (_, sql, binds) => {
     const detail = await plan(sql, ...binds)
     expect(detail).toMatch(
-      /SEARCH region_snapshots USING (COVERING )?INDEX region_snapshots_item/,
+      /SEARCH (region_snapshots|h) USING (COVERING )?INDEX region_snapshots_item/,
     )
   })
 })
