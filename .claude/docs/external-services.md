@@ -27,9 +27,11 @@ are `us`, `eu`, `kr` and `tw`. Forever has no pets or commodities files.
 2. No bulk republishing: no CSV/JSON export, no bulk public API, no public
    access to the R2 archive. Showing prices in the product is fine.
 3. No TSM logo or branding, and a "not affiliated" note.
-4. Each file at most once per update: only the scheduled ingest fetches,
+4. Each file at most once per update: only the Worker's ingest fetches,
    with `If-None-Match`/ETag, and skips storing an unchanged `updatedAt`.
-   Request handlers and local dev never fetch TSM.
+   It runs from the cron or from the token-protected `POST /__ingest`
+   (`pnpm ingest:prod`), which calls the same job. Page and server fn
+   handlers and local dev never fetch TSM.
 5. The format may change: validate the CSV header, fail loudly, keep the
    last good data.
 6. Never fetch tradeskillmaster.com pages (they ban automated access).

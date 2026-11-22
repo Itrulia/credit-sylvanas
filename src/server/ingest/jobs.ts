@@ -53,11 +53,34 @@ export function buildJobs(
   )
 }
 
+export type IngestEnv = { DB: D1Database; ARCHIVE: ArchiveBucket } & PurgeConfig
+
+// wrapped: passing the bare global around can lose its receiver in workerd
+const globalFetch: FetchFn = (u, i) => fetch(u, i)
+
+/** One ingest job: fetch, log, purge after an import. Never throws for a failed file. */
+export async function runJob(
+  kind: 'region' | 'realm',
+  now: number,
+  env: IngestEnv,
+  fetchFn: FetchFn = globalFetch,
+) {
+  const results = await runIngest(env.DB, env.ARCHIVE, fetchFn, { kind, now })
+  for (const r of results) {
+    console.log(
+      `ingest ${r.status}: ${r.url} (${r.rows} rows)${r.reason ? `: ${r.reason}` : ''}`,
+    )
+  }
+  if (results.some((r) => r.status === 'imported')) {
+    await purgeEdgeCache(env, fetchFn)
+  }
+  return results
+}
+
 export async function runScheduled(
   controller: Pick<ScheduledController, 'cron' | 'scheduledTime'>,
-  env: { DB: D1Database; ARCHIVE: ArchiveBucket } & PurgeConfig,
-  // wrapped: passing the bare global around can lose its receiver in workerd
-  fetchFn: FetchFn = (u, i) => fetch(u, i),
+  env: IngestEnv,
+  fetchFn: FetchFn = globalFetch,
 ) {
   const kind =
     controller.cron === REGION_CRON
@@ -69,18 +92,7 @@ export async function runScheduled(
     // fail loudly if wrangler.jsonc drifts
     throw new Error(`Unknown cron ${controller.cron}`)
   }
-  const results = await runIngest(env.DB, env.ARCHIVE, fetchFn, {
-    kind,
-    now: controller.scheduledTime,
-  })
-  for (const r of results) {
-    console.log(
-      `ingest ${r.status}: ${r.url} (${r.rows} rows)${r.reason ? `: ${r.reason}` : ''}`,
-    )
-  }
-  if (results.some((r) => r.status === 'imported')) {
-    await purgeEdgeCache(env, fetchFn)
-  }
+  const results = await runJob(kind, controller.scheduledTime, env, fetchFn)
   // a missing file is normal for the bucket; anything else marks the cron run as failed
   const broken = results.filter(
     (r) => r.status === 'failed' && r.reason !== 'no such file',

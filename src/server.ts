@@ -1,6 +1,7 @@
 import handler from '@tanstack/react-start/server-entry'
 import { cachedFetch, pageVersion } from './server/edge-cache.ts'
 import { runScheduled } from './server/ingest/jobs.ts'
+import { ingestTrigger } from './server/ingest/trigger.ts'
 import { withSecurityHeaders } from './server/security-headers.ts'
 import { wwwRedirect } from './server/www-redirect.ts'
 
@@ -8,6 +9,7 @@ export default {
   fetch: async (request, env, ctx) =>
     withSecurityHeaders(
       wwwRedirect(request) ??
+        (await ingestTrigger(request, env, ctx)) ??
         (await cachedFetch(
           request,
           ctx,

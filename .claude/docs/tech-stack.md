@@ -83,5 +83,12 @@ downloads TSM files. Build scripts for `workerd` and `sharp` are allowed in
 `.env` is committed and holds public values only. `VITE_CONTACT_EMAIL` is the only contact shown on `/impressum` and `/privacy` (prerendered); while it is empty both pages say contact details are pending and `vite.config.ts` logs a warning. Never fill it with a guessed address. Secrets go in `.env.local`,
 `.env.prod` or `.dev.vars`, all gitignored. Deploy only from a clean
 checkout of `main` after the full gate passes there: run
-`pnpm db:migrate:remote`, then `pnpm run deploy`. Never deploy from a
+`pnpm db:migrate:remote`, then `pnpm run deploy`. To run an ingest job
+outside its cron, `pnpm ingest:prod [region|realm]` posts to the Worker's
+`/__ingest` with `INGEST_TOKEN` from `.env.prod`; the same value must be set
+as a Worker secret (`wrangler secret put INGEST_TOKEN`), and without it the
+endpoint answers 404. It prints every file's result and exits 1 when one
+failed. Don't run it while the cron runs (19:30 UTC for regions) or twice at
+once: nothing serialises ingest runs, so two overlapping runs both download
+the new file and both record an import. Never deploy from a
 working tree with uncommitted changes, and never run `wrangler login`.
