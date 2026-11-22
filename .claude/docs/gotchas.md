@@ -137,6 +137,16 @@ return 90 rows, on every item view and hover preload (2026-11-22).
 Load-bearing: the `INDEXED BY` clauses. Pinned by
 `src/server/queries/plan.test.ts`.
 
+### Prerendered pages are `about.html`, never `about/index.html`
+
+`vite.config.ts` sets `prerender.autoSubfolderIndex: false`. With the default
+the build wrote `about/index.html`, and the Workers asset layer answered
+`/about` with a 307 to `/about/` while the canonical and sitemap said `/about`
+(live, 2026-11-22). As `about.html` it serves `/about` with 200 and redirects
+`/about/` to it.
+
+Load-bearing: the `autoSubfolderIndex: false` line. Nothing guards this.
+
 ## Adding an entry
 
 ```markdown

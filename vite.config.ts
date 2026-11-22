@@ -35,6 +35,8 @@ export default defineConfig({
         enabled: true,
         crawlLinks: false,
         autoStaticPathsDiscovery: false,
+        // about.html, not about/index.html: the asset layer would 307 /about to /about/
+        autoSubfolderIndex: false,
       },
       pages: [
         { path: '/' },
