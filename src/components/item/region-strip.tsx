@@ -26,18 +26,18 @@ export function RegionStrip({
         id="regions-heading"
         className="mb-2 flex items-center gap-1 text-label"
       >
-        Other regions
+        All regions
         <InfoPopover term="index" />
       </h2>
       <table className="w-full text-sm">
         <caption className="sr-only">
-          Market value in each region against the cross-region median
+          Market value in each region against the other regions
         </caption>
         <thead className="sr-only">
           <tr>
             <th scope="col">Region</th>
             <th scope="col">Market value</th>
-            <th scope="col">vs median</th>
+            <th scope="col">vs other regions</th>
           </tr>
         </thead>
         <tbody>

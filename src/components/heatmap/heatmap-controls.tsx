@@ -10,7 +10,7 @@ export interface HeatmapControlsProps {
 }
 
 const METRIC_LABEL: Record<HeatMetric, string> = {
-  index: '% vs median',
+  index: 'vs other regions',
   price: 'Price',
 }
 const item = 'min-h-11 min-w-11'

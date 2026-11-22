@@ -144,7 +144,7 @@ export function CrossRegionTable({
     rows.length < n
       ? `Top ${rows.length} items (only ${rows.length} pass the trading filter)`
       : `Top ${n} ${name} items`
-  const caption = `${top}, market value in each region against the cross-region median. Sorted by ${SORT_LABEL[sort]}.`
+  const caption = `${top}, market value in each region against the other regions. Sorted by ${SORT_LABEL[sort]}.`
 
   return (
     <section aria-labelledby={HEADING_ID} className="space-y-3">
@@ -153,13 +153,13 @@ export function CrossRegionTable({
       </h2>
       <p className="max-w-prose text-sm">
         Top {count} items by gold traded per day in {name}. Each cell compares
-        that region's market value with the middle value of every region that
-        lists it. Regions have separate economies, so a gap means scarce or
-        plentiful there, not an exchange rate.
+        that region's market value with the median of every region that lists
+        it. Regions have separate economies. A higher price means the item is
+        scarcer there.
       </p>
       <p className="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground">
         <span className="inline-flex items-center">
-          Cross-region index <InfoPopover term="index" />
+          vs other regions <InfoPopover term="index" />
         </span>
         <span className="inline-flex items-center">
           Spread <InfoPopover term="spread" />

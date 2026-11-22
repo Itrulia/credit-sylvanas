@@ -8,7 +8,9 @@ import type {
 } from '@tanstack/react-table'
 import type { SortDir } from '#/lib/search'
 import { cn } from '#/lib/utils'
+import type { GlossaryKey } from './glossary'
 import { Icon } from './icon'
+import { InfoPopover } from './info-popover'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<
@@ -23,6 +25,8 @@ declare module '@tanstack/react-table' {
     headerClassName?: string
     /** header gets a sort button that calls onSort(column id) */
     sortable?: boolean
+    /** glossary term for an info popover next to the header (outside the sort button) */
+    info?: GlossaryKey
     /** render the cell as <th scope="row"> (the item column) */
     rowHeader?: boolean
     /** keep ts happy about unused generics */
@@ -128,29 +132,41 @@ export function DataTable<TData extends RowData>({
                       meta?.headerClassName,
                     )}
                   >
-                    {header.isPlaceholder ? null : meta?.sortable && onSort ? (
-                      <button
-                        type="button"
-                        onClick={() => onSort(header.column.id)}
+                    {header.isPlaceholder ? null : (
+                      <span
                         className={cn(
-                          'inline-flex min-h-6 items-center gap-1 uppercase pointer-coarse:min-h-11',
+                          'inline-flex items-center gap-0.5',
                           right && 'flex-row-reverse',
                         )}
                       >
-                        <table.FlexRender header={header} />
-                        <Icon
-                          name={
-                            dir
-                              ? dir === 'asc'
-                                ? 'arrow_upward'
-                                : 'arrow_downward'
-                              : 'unfold_more'
-                          }
-                          className={dir ? undefined : 'text-muted-foreground'}
-                        />
-                      </button>
-                    ) : (
-                      <table.FlexRender header={header} />
+                        {meta?.sortable && onSort ? (
+                          <button
+                            type="button"
+                            onClick={() => onSort(header.column.id)}
+                            className={cn(
+                              'inline-flex min-h-6 items-center gap-1 uppercase pointer-coarse:min-h-11',
+                              right && 'flex-row-reverse',
+                            )}
+                          >
+                            <table.FlexRender header={header} />
+                            <Icon
+                              name={
+                                dir
+                                  ? dir === 'asc'
+                                    ? 'arrow_upward'
+                                    : 'arrow_downward'
+                                  : 'unfold_more'
+                              }
+                              className={
+                                dir ? undefined : 'text-muted-foreground'
+                              }
+                            />
+                          </button>
+                        ) : (
+                          <table.FlexRender header={header} />
+                        )}
+                        {meta?.info && <InfoPopover term={meta.info} />}
+                      </span>
                     )}
                   </th>
                 )

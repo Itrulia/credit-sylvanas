@@ -46,8 +46,12 @@ export const GLOSSARY = {
     text: 'Change in units sold per day. Only items that sold at least one a day before the change count.',
   },
   index: {
-    label: 'Cross-region index',
-    text: "How this region's market value compares with the middle value across US, EU, KR and TW. +20% means 20% pricier than the typical region.",
+    label: 'vs other regions',
+    text: "How this region's market value compares with the median of the regions that list the item (US, EU, KR and TW). +20% means 20% pricier than the typical region.",
+  },
+  volatile: {
+    label: 'Volatile',
+    text: 'Market value is under a fifth or over five times the 60-day average. Prices like that often swing back, so check recent sales before you buy or sell.',
   },
   spread: {
     label: 'Spread',

@@ -18,10 +18,13 @@ const row: ListRow = {
   spd: 42.5,
 }
 
-// header text minus the trailing sort icon ligature
+// header text minus the sort and info icon ligatures
 const headerTexts = async () =>
   (await screen.findAllByRole('columnheader')).map((h) =>
-    h.textContent.replace(/(unfold_more|arrow_upward|arrow_downward)$/, ''),
+    h.textContent.replace(
+      /(unfold_more|arrow_upward|arrow_downward)?(info)?$/,
+      '',
+    ),
   )
 
 describe('nextSort', () => {
@@ -61,15 +64,19 @@ it('renders the region columns with aria-sort and calls onSort', async () => {
   expect(await headerTexts()).toEqual([
     'Item',
     'Market value',
-    '60-day avg',
-    'vs avg',
-    'Avg sale',
-    'Sold/day',
+    '60-day average',
+    'vs 60-day avg',
+    'Avg. sale price',
+    'Sold per day',
     'Sale rate',
   ])
+  // same names and definitions as the glossary and item page
+  expect(
+    screen.getByRole('button', { name: 'What is Avg. sale price?' }),
+  ).toBeTruthy()
   expect(
     screen
-      .getByRole('columnheader', { name: /Sold\/day/ })
+      .getByRole('columnheader', { name: /Sold per day/ })
       .getAttribute('aria-sort'),
   ).toBe('descending')
   expect(
@@ -86,7 +93,7 @@ it('renders the region columns with aria-sort and calls onSort', async () => {
   expect(outbound.dataset.whRenameLink).toBe('false')
   expect(screen.getByText('25%')).toBeTruthy()
   expect(screen.getByText('42.5')).toBeTruthy()
-  fireEvent.click(screen.getByRole('button', { name: /Market value/ }))
+  fireEvent.click(screen.getByRole('button', { name: /^Market value/ }))
   expect(onSort).toHaveBeenCalledWith('marketValue')
 })
 

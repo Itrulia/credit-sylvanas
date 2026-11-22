@@ -12,6 +12,7 @@ import { Freshness } from '#/components/freshness'
 import { Icon } from '#/components/icon'
 import { WowheadLink } from '#/components/wowhead-link'
 import { Badge } from '#/components/ui/badge'
+import { InfoPopover } from '#/components/info-popover'
 import { ItemNotFound } from '#/components/item/item-not-found'
 import { PriceBlock, isVolatile } from '#/components/item/price-block'
 import { RealmPrices } from '#/components/item/realm-prices'
@@ -99,7 +100,10 @@ function ItemDetail() {
           <span className="font-mono text-muted-foreground">#{item.id}</span>
           <WowheadLink id={item.id} />
           {isVolatile(current.mv, current.hist) && (
-            <Badge variant="outline">Volatile</Badge>
+            <span className="inline-flex items-center">
+              <Badge variant="outline">Volatile</Badge>
+              <InfoPopover term="volatile" />
+            </span>
           )}
         </p>
       </header>
