@@ -117,4 +117,6 @@ it('shows the 500 page with a retry and logs the error', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
   expect(invalidate).toHaveBeenCalled()
   expect(log).toHaveBeenCalledWith(error)
+  // the message goes to the log only, never into the page
+  expect(document.documentElement.outerHTML).not.toContain('D1 unreachable')
 })

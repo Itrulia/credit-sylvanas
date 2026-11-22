@@ -103,6 +103,23 @@ describe('cachedFetch', () => {
     expect(cache.put).not.toHaveBeenCalled()
   })
 
+  it('skips the cache when the version read fails, so the app renders its own 500', async () => {
+    const cache = fakeCache()
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const res = new Response('page', { status: 500 })
+    const out = await cachedFetch(
+      new Request('https://site.test/eu'),
+      ctx(),
+      () => res,
+      () => Promise.reject(new Error('no such table: imports')),
+      cache,
+    )
+    expect(out).toBe(res)
+    expect(cache.match).not.toHaveBeenCalled()
+    expect(log).toHaveBeenCalled()
+    log.mockRestore()
+  })
+
   it('keys the cache by data version, so a new import misses', async () => {
     const cache = fakeCache()
     const c = ctx()

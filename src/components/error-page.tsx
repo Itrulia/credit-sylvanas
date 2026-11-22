@@ -30,10 +30,6 @@ export function ErrorPage({ error }: ErrorComponentProps) {
         }
       >
         <p>We've logged the error. Try again, or come back in a few minutes.</p>
-        {/* no stack trace in production */}
-        {import.meta.env.DEV && error instanceof Error && (
-          <pre className="text-micro whitespace-pre-wrap">{error.message}</pre>
-        )}
       </StatePanel>
     </div>
   )

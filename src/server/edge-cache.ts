@@ -56,7 +56,15 @@ export async function cachedFetch(
   if (request.method !== 'GET') {
     return handler()
   }
-  const key = versionedKey(request, await version())
+  let current: string
+  try {
+    current = await version()
+  } catch (error) {
+    // an uncaught throw here shows the runtime's error page instead of ours
+    console.error(error)
+    return handler()
+  }
+  const key = versionedKey(request, current)
   const hit = await cache.match(key)
   if (hit) {
     return hit
