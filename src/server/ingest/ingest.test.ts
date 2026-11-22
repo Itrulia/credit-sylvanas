@@ -10,6 +10,7 @@ import { REGION_HEADER } from './csv.ts'
 import { sha256Hex } from './archive.ts'
 import { runIngest } from './ingest.ts'
 import { REALM_CRON, REGION_CRON, runScheduled } from './jobs.ts'
+import { PURGE_URL, purgeEdgeCache } from './purge.ts'
 
 resetTables()
 
@@ -461,8 +462,7 @@ describe('runScheduled', () => {
     const fetchFn = stubFetch({ [US]: { body: usCsv, etag: '"x"' } })
     const results = await runScheduled(
       createScheduledController({ cron: REGION_CRON, scheduledTime: NOW }),
-      db,
-      archive,
+      env,
       fetchFn,
     )
     expect(results[0].status).toBe('imported')
@@ -473,8 +473,7 @@ describe('runScheduled', () => {
     const fetchFn = stubFetch({})
     await runScheduled(
       createScheduledController({ cron: REALM_CRON, scheduledTime: NOW }),
-      db,
-      archive,
+      env,
       fetchFn,
     )
     expect(fetchFn).not.toHaveBeenCalled()
@@ -487,8 +486,7 @@ describe('runScheduled', () => {
     await expect(
       runScheduled(
         createScheduledController({ cron: '* * * * *' }),
-        db,
-        archive,
+        env,
         stubFetch({}),
       ),
     ).rejects.toThrow('Unknown cron * * * * *')
@@ -499,10 +497,63 @@ describe('runScheduled', () => {
     await expect(
       runScheduled(
         createScheduledController({ cron: REGION_CRON, scheduledTime: NOW }),
-        db,
-        archive,
+        env,
         fetchFn,
       ),
     ).rejects.toThrow(/ingest failed/)
+  })
+
+  describe('cache purge', () => {
+    const purgeEnv = { ...env, CF_PURGE_TOKEN: 'tok', CF_ZONE_ID: 'zone' }
+    const purges = (fn: ReturnType<typeof stubFetch>) =>
+      fn.mock.calls.filter(([url]) => url.startsWith(PURGE_URL))
+    const regionRun = () =>
+      createScheduledController({ cron: REGION_CRON, scheduledTime: NOW })
+
+    it('purges everything once after a run that imported a file', async () => {
+      vi.spyOn(console, 'error').mockImplementation(() => undefined)
+      const fetchFn = stubFetch({
+        [US]: { body: usCsv, etag: '"x"' },
+        [EU]: { body: euCsv, etag: '"y"' },
+      })
+      await runScheduled(regionRun(), purgeEnv, fetchFn)
+      const calls = purges(fetchFn)
+      expect(calls).toHaveLength(1)
+      const [url, init] = calls[0]
+      expect(url).toBe(`${PURGE_URL}/zone/purge_cache`)
+      expect(init?.method).toBe('POST')
+      expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer tok')
+      expect(JSON.parse(String(init?.body))).toEqual({ purge_everything: true })
+    })
+
+    it('does not purge when nothing was imported', async () => {
+      const fetchFn = stubFetch({ [US]: { body: usCsv, etag: '"x"' } })
+      await runScheduled(regionRun(), env, fetchFn)
+      await runScheduled(regionRun(), purgeEnv, fetchFn)
+      expect(purges(fetchFn)).toHaveLength(0)
+    })
+
+    it('does not purge without the token', async () => {
+      const fetchFn = stubFetch({ [US]: { body: usCsv, etag: '"x"' } })
+      await runScheduled(
+        regionRun(),
+        { ...purgeEnv, CF_PURGE_TOKEN: '' },
+        fetchFn,
+      )
+      expect(purges(fetchFn)).toHaveLength(0)
+    })
+
+    it('logs a failed purge and never throws', async () => {
+      const log = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+      await purgeEdgeCache(
+        { CF_PURGE_TOKEN: 't', CF_ZONE_ID: 'z' },
+        vi.fn(() => Promise.reject(new Error('offline'))),
+      )
+      await purgeEdgeCache(
+        { CF_PURGE_TOKEN: 't', CF_ZONE_ID: 'z' },
+        vi.fn(async () => new Response('no', { status: 403 })),
+      )
+      expect(log).toHaveBeenCalledTimes(2)
+    })
   })
 })

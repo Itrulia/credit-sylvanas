@@ -1,5 +1,12 @@
-import { describe, expect, it, vi } from 'vitest'
-import { cachedFetch } from './edge-cache.ts'
+import { env } from 'cloudflare:workers'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { resetTables } from './test/reset.ts'
+import { cachedFetch, dataVersion, resetDataVersion } from './edge-cache.ts'
+
+resetTables()
+beforeEach(resetDataVersion)
+
+const v1 = async () => '1'
 
 function fakeCache() {
   const store = new Map<string, Response>()
@@ -30,13 +37,14 @@ describe('cachedFetch', () => {
           headers: { 'Cache-Control': 'public, max-age=300, s-maxage=3600' },
         }),
     )
-    await cachedFetch(req, c, handler, cache)
+    await cachedFetch(req, c, handler, v1, cache)
     await Promise.all(c.pending)
     expect(cache.put).toHaveBeenCalledTimes(1)
     const second = await cachedFetch(
       new Request('https://site.test/us?x=1'),
       c,
       handler,
+      v1,
       cache,
     )
     expect(await second.text()).toBe('hi')
@@ -75,6 +83,7 @@ describe('cachedFetch', () => {
       new Request('https://site.test/us'),
       c,
       () => response,
+      v1,
       cache,
     )
     expect(cache.put).not.toHaveBeenCalled()
@@ -87,9 +96,65 @@ describe('cachedFetch', () => {
       new Request('https://site.test/_fn', { method: 'POST' }),
       ctx(),
       () => res,
+      v1,
       cache,
     )
     expect(cache.match).not.toHaveBeenCalled()
     expect(cache.put).not.toHaveBeenCalled()
+  })
+
+  it('keys the cache by data version, so a new import misses', async () => {
+    const cache = fakeCache()
+    const c = ctx()
+    const handler = vi.fn(
+      async () =>
+        new Response('hi', { headers: { 'Cache-Control': 'public' } }),
+    )
+    await cachedFetch(
+      new Request('https://site.test/us'),
+      c,
+      handler,
+      v1,
+      cache,
+    )
+    await Promise.all(c.pending)
+    expect([...cache.store.keys()]).toEqual(['https://site.test/us?__v=1'])
+    await cachedFetch(
+      new Request('https://site.test/us'),
+      c,
+      handler,
+      async () => '2',
+      cache,
+    )
+    expect(handler).toHaveBeenCalledTimes(2)
+  })
+})
+
+const insertImport = (status: string) =>
+  env.DB.prepare(
+    `INSERT INTO imports (region, kind, source_url, fetched_at, status) VALUES ('us', 'region', 'u', 1, ?1)`,
+  )
+    .bind(status)
+    .run()
+
+describe('dataVersion', () => {
+  it('is the latest imported id and ignores skipped and failed rows', async () => {
+    expect(await dataVersion(env.DB, 0)).toBe('0')
+    await insertImport('imported')
+    await insertImport('imported')
+    await insertImport('skipped')
+    await insertImport('failed')
+    const { id } = (await env.DB.prepare(
+      `SELECT max(id) AS id FROM imports WHERE status = 'imported'`,
+    ).first<{ id: number }>())!
+    expect(await dataVersion(env.DB, 100_000)).toBe(String(id))
+  })
+
+  it('reads D1 at most once a minute per isolate', async () => {
+    await insertImport('imported')
+    const first = await dataVersion(env.DB, 0)
+    await insertImport('imported')
+    expect(await dataVersion(env.DB, 59_000)).toBe(first)
+    expect(await dataVersion(env.DB, 61_000)).not.toBe(first)
   })
 })

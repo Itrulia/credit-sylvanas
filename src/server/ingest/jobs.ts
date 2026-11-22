@@ -5,6 +5,8 @@ import { REGIONS } from '../../config/regions.ts'
 import type { ArchiveBucket } from './archive.ts'
 import { runIngest } from './ingest.ts'
 import type { FetchFn } from './ingest.ts'
+import { purgeEdgeCache } from './purge.ts'
+import type { PurgeConfig } from './purge.ts'
 
 // Must match wrangler.jsonc "triggers.crons" character for character.
 export const REGION_CRON = '30 19 * * *'
@@ -53,8 +55,7 @@ export function buildJobs(
 
 export async function runScheduled(
   controller: Pick<ScheduledController, 'cron' | 'scheduledTime'>,
-  db: D1Database,
-  archive: ArchiveBucket,
+  env: { DB: D1Database; ARCHIVE: ArchiveBucket } & PurgeConfig,
   // wrapped: passing the bare global around can lose its receiver in workerd
   fetchFn: FetchFn = (u, i) => fetch(u, i),
 ) {
@@ -68,7 +69,7 @@ export async function runScheduled(
     // fail loudly if wrangler.jsonc drifts
     throw new Error(`Unknown cron ${controller.cron}`)
   }
-  const results = await runIngest(db, archive, fetchFn, {
+  const results = await runIngest(env.DB, env.ARCHIVE, fetchFn, {
     kind,
     now: controller.scheduledTime,
   })
@@ -76,6 +77,9 @@ export async function runScheduled(
     console.log(
       `ingest ${r.status}: ${r.url} (${r.rows} rows)${r.reason ? `: ${r.reason}` : ''}`,
     )
+  }
+  if (results.some((r) => r.status === 'imported')) {
+    await purgeEdgeCache(env, fetchFn)
   }
   // a missing file is normal for the bucket; anything else marks the cron run as failed
   const broken = results.filter(
