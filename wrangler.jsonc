@@ -27,5 +27,5 @@
     { "binding": "ARCHIVE", "bucket_name": "credit-sylvanas-tsm-archive" },
   ],
   // must match REGION_CRON and REALM_CRON in src/server/ingest/jobs.ts character for character
-  "triggers": { "crons": ["50 8 * * *", "15 */3 * * *"] },
+  "triggers": { "crons": ["30 19 * * *", "15 */3 * * *"] },
 }

@@ -9,7 +9,7 @@ import { purgeEdgeCache } from './purge.ts'
 import type { PurgeConfig } from './purge.ts'
 
 // Must match wrangler.jsonc "triggers.crons" character for character.
-export const REGION_CRON = '50 8 * * *'
+export const REGION_CRON = '30 19 * * *'
 export const REALM_CRON = '15 */3 * * *'
 
 export const TSM_BASE = 'https://public-data.tradeskillmaster.com'
