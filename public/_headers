@@ -1,0 +1,17 @@
+# Static files skip the Worker, so /* repeats HEADERS from src/server/security-headers.ts (checked by scripts/public-headers.test.ts).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://wow.zamimg.com https://nether.wowhead.com https://cloud.umami.is; connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://nether.wowhead.com; img-src 'self' data: https://wow.zamimg.com; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+
+# content-hashed file names
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# not hashed; rebuilt rarely by scripts/fetch-icon-font.ts
+/fonts/*
+  Cache-Control: public, max-age=604800
