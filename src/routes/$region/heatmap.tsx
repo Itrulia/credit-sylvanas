@@ -1,13 +1,40 @@
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import { Suspense } from 'react'
+import {
+  Link,
+  createFileRoute,
+  stripSearchParams,
+  useRouterState,
+} from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { Credit } from '#/components/credit'
+import { DivergingLegend } from '#/components/diverging-legend'
+import { Freshness } from '#/components/freshness'
+import { CrossRegionTable } from '#/components/heatmap/cross-region-table'
+import { DailyChangeSkeleton } from '#/components/heatmap/daily-change-skeleton'
+import { DailyChangeTable } from '#/components/heatmap/daily-change-table'
+import { HeatmapControls } from '#/components/heatmap/heatmap-controls'
+import { MomentumGrid } from '#/components/heatmap/momentum-grid'
+import { SectionBoundary } from '#/components/section-boundary'
+import { StatePanel } from '#/components/state-panel'
+import { REGION_INFO } from '#/config/regions'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
+import type { HeatmapN, Region } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
+import { dailyChangeQuery, heatmapQuery } from '#/server/fns/heatmap'
+import { regionStatusQuery } from '#/server/fns/status'
 
-// Stub: WP5 owns this page.
 export const Route = createFileRoute('/$region/heatmap')({
   ssr: true,
   validateSearch: heatmapSearch,
   search: { middlewares: [stripSearchParams(HEATMAP_DEFAULTS)] },
+  // sort and metric are applied in render and never refetch
   loaderDeps: ({ search }) => ({ n: search.n }),
+  loader: async ({ context, deps }) => {
+    const input = { region: context.region, n: deps.n }
+    // the day-by-day table is the largest payload and below the fold: stream it
+    void context.queryClient.prefetchQuery(dailyChangeQuery(input))
+    await context.queryClient.ensureQueryData(heatmapQuery(input))
+  },
   head: ({ params }) => {
     const name = params.region.toUpperCase()
     return pageHead(
@@ -19,9 +46,104 @@ export const Route = createFileRoute('/$region/heatmap')({
 })
 
 function Heatmaps() {
+  const { region } = Route.useRouteContext()
+  const { n, sort, metric, realm } = Route.useSearch()
+  const navigate = Route.useNavigate()
+  // a new n keeps the old tables on screen, dimmed, until the loader finishes
+  const busy = useRouterState({ select: (s) => s.isLoading })
+  const { data: status } = useSuspenseQuery(regionStatusQuery({ region }))
+  const { data } = useSuspenseQuery(heatmapQuery({ region, n }))
+  const name = REGION_INFO[region].name
+
   return (
-    <div className="page-wrap py-6">
-      <h1 className="text-display">Price heatmaps</h1>
+    <div className="page-wrap space-y-8 py-6">
+      <header className="space-y-1">
+        <h1 className="text-display">Price heatmaps</h1>
+        <Freshness updatedAt={status.updatedAt} fetchedAt={status.fetchedAt} />
+        {realm !== undefined && (
+          <p className="text-sm text-muted-foreground">
+            Heatmaps are region-wide.
+          </p>
+        )}
+      </header>
+
+      <HeatmapControls
+        n={n}
+        metric={metric}
+        onN={(next) =>
+          navigate({ search: (prev) => ({ ...prev, n: next }), replace: true })
+        }
+        onMetric={(next) =>
+          navigate({
+            search: (prev) => ({ ...prev, metric: next }),
+            replace: true,
+          })
+        }
+      />
+
+      {data.rows.length === 0 ? (
+        <StatePanel
+          title={`Not enough trading in ${name} to build a heatmap.`}
+          actions={
+            <Link to="/$region/items" params={{ region }} className="underline">
+              Browse all items
+            </Link>
+          }
+        >
+          <p>Items need about one sale every two days to count.</p>
+        </StatePanel>
+      ) : (
+        <>
+          <CrossRegionTable
+            region={region}
+            rows={data.rows}
+            regionsWithData={data.regionsWithData}
+            n={n}
+            sort={sort}
+            metric={metric}
+            busy={busy}
+            onSort={(next) =>
+              navigate({
+                search: (prev) => ({ ...prev, sort: next }),
+                replace: true,
+                resetScroll: false,
+              })
+            }
+          />
+          <MomentumGrid region={region} rows={data.rows} busy={busy} />
+          <section aria-labelledby="day-by-day" className="space-y-3">
+            <h2 id="day-by-day" className="text-title" tabIndex={-1}>
+              Day by day
+            </h2>
+            <p className="max-w-prose text-sm">
+              Market value change since the previous daily update, last 14 days.
+            </p>
+            <DivergingLegend labels={['Fell', 'Rose']} />
+            <SectionBoundary headingId="day-by-day">
+              <Suspense fallback={<DailyChangeSkeleton n={n} />}>
+                <DailyChange region={region} n={n} busy={busy} />
+              </Suspense>
+            </SectionBoundary>
+          </section>
+        </>
+      )}
+
+      <p className="text-micro text-muted-foreground">
+        <Credit />
+      </p>
     </div>
   )
+}
+
+function DailyChange({
+  region,
+  n,
+  busy,
+}: {
+  region: Region
+  n: HeatmapN
+  busy: boolean
+}) {
+  const { data } = useSuspenseQuery(dailyChangeQuery({ region, n }))
+  return <DailyChangeTable region={region} data={data} busy={busy} />
 }
