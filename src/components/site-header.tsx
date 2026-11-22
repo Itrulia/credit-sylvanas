@@ -75,7 +75,7 @@ export function SiteHeader() {
   const { open } = useCommandPalette()
   const [menuOpen, setMenuOpen] = useState(false)
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95">
+    <header className="sticky top-0 z-40 border-b bg-background">
       <div className="page-wrap flex h-14 items-center gap-3">
         <Wordmark />
         <div className="hidden lg:block">

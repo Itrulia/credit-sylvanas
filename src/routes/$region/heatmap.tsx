@@ -5,9 +5,7 @@ import {
   useRouterState,
 } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Credit } from '#/components/credit'
 import { DivergingLegend } from '#/components/diverging-legend'
-import { Freshness } from '#/components/freshness'
 import { CrossRegionTable } from '#/components/heatmap/cross-region-table'
 import { DailyChangeSection } from '#/components/heatmap/daily-change-section'
 import { HeatmapControls } from '#/components/heatmap/heatmap-controls'
@@ -19,7 +17,6 @@ import { track } from '#/lib/analytics'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
 import { dailyChangeQuery, heatmapQuery } from '#/server/fns/heatmap'
-import { regionStatusQuery } from '#/server/fns/status'
 
 export const Route = createFileRoute('/$region/heatmap')({
   ssr: true,
@@ -49,7 +46,6 @@ function Heatmaps() {
   const navigate = Route.useNavigate()
   // a new n keeps the old tables on screen, dimmed, until the loader finishes
   const busy = useRouterState({ select: (s) => s.isLoading })
-  const { data: status } = useSuspenseQuery(regionStatusQuery({ region }))
   const { data } = useSuspenseQuery(heatmapQuery({ region, n }))
   const name = REGION_INFO[region].name
 
@@ -57,7 +53,6 @@ function Heatmaps() {
     <div className="page-wrap space-y-8 py-6">
       <header className="space-y-1">
         <h1 className="text-display">Price heatmaps</h1>
-        <Freshness updatedAt={status.updatedAt} fetchedAt={status.fetchedAt} />
         {realm !== undefined && (
           <p className="text-sm text-muted-foreground">
             Heatmaps are region-wide.
@@ -125,10 +120,6 @@ function Heatmaps() {
           </section>
         </>
       )}
-
-      <p className="text-micro text-muted-foreground">
-        <Credit />
-      </p>
     </div>
   )
 }

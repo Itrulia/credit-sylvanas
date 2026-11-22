@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Freshness } from '#/components/freshness'
 import { HottestTable } from '#/components/market/hottest-table'
 import { MarketMap } from '#/components/market/market-map'
 import { MarketMapSkeleton } from '#/components/market/market-map-skeleton'
@@ -78,7 +77,6 @@ function Market() {
     <div className="page-wrap space-y-8 py-6">
       <header className="space-y-1">
         <h1 className="text-display">{name} auction house</h1>
-        <Freshness updatedAt={status.updatedAt} fetchedAt={status.fetchedAt} />
         {realm !== undefined && (
           <p className="text-sm text-muted-foreground">
             Market overview is region-wide.
