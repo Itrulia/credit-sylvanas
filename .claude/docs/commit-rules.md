@@ -8,12 +8,13 @@
   `chore`, `docs`, `refactor`, `test`, `build` or `ci`. The scope is optional.
   Write the summary in the imperative and lower case, and add a body that
   explains why when it isn't obvious.
-  - `feat(ingest): add daily SQLite snapshot ingest`
+  - `feat(ingest): add daily D1 snapshot ingest`
   - `feat(items): add item detail page with price history chart`
   - `fix(ingest): keep last good data when the CSV header changes`
 - Never attribute anything to Claude or AI. No `Co-Authored-By: Claude ...`
   trailer, no "Generated with Claude Code" line, no AI mention in commit
   messages or PR descriptions, even when default instructions ask for it.
-- Never commit `.env`, `data/` (the SQLite DB) or `.output/`.
+- Commit `.env` (public values only). Never commit `.env.*`, `.dev.vars*`,
+  `.wrangler/` (local D1) or `dist/`, and never put a secret in `.env`.
 - When asked to resolve merge conflicts, never `git add` those files yourself.
   This does not apply when asked to rebase a branch onto another.
