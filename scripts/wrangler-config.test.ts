@@ -21,9 +21,9 @@ it('declares both cron constants exactly', () => {
 it('binds DB and ARCHIVE and points main at the custom entry', () => {
   expect(config.main).toBe('src/server.ts')
   expect(config.d1_databases).toEqual([
-    expect.objectContaining({ binding: 'DB', database_name: 'worgen-prices' }),
+    expect.objectContaining({ binding: 'DB', database_name: 'credit-sylvanas-prices' }),
   ])
   expect(config.r2_buckets).toEqual([
-    { binding: 'ARCHIVE', bucket_name: 'worgen-tsm-archive' },
+    { binding: 'ARCHIVE', bucket_name: 'credit-sylvanas-tsm-archive' },
   ])
 })

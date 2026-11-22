@@ -1,5 +1,5 @@
 {
-  "name": "worgen-of-booty-bay",
+  "name": "credit-sylvanas",
   "private": true,
   "type": "module",
   "imports": {
@@ -17,8 +17,8 @@
     "typecheck": "tsc --noEmit",
     "deploy": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "db:migrate:local": "wrangler d1 migrations apply worgen-prices --local",
-    "db:migrate:remote": "wrangler d1 migrations apply worgen-prices --remote",
+    "db:migrate:local": "wrangler d1 migrations apply credit-sylvanas-prices --local",
+    "db:migrate:remote": "wrangler d1 migrations apply credit-sylvanas-prices --remote",
     "db:seed": "node scripts/seed-local.ts",
     "db:synth": "node scripts/seed-synthetic.ts"
   },

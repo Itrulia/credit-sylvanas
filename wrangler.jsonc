@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "worgen-of-booty-bay",
+  "name": "credit-sylvanas",
   "account_id": "32006b4321f1adae9bd7099cdf135350",
   "main": "src/server.ts",
   "compatibility_date": "2026-11-01",
@@ -10,14 +10,14 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "worgen-prices",
-      // placeholder until a human runs `wrangler d1 create worgen-prices` and pastes the id here
+      "database_name": "credit-sylvanas-prices",
+      // placeholder until a human runs `wrangler d1 create credit-sylvanas-prices` and pastes the id here
       "database_id": "00000000-0000-0000-0000-000000000000",
       "migrations_dir": "migrations",
     },
   ],
-  // private raw-CSV archive. A human runs `wrangler r2 bucket create worgen-tsm-archive` once.
-  "r2_buckets": [{ "binding": "ARCHIVE", "bucket_name": "worgen-tsm-archive" }],
+  // private raw-CSV archive. A human runs `wrangler r2 bucket create credit-sylvanas-tsm-archive` once.
+  "r2_buckets": [{ "binding": "ARCHIVE", "bucket_name": "credit-sylvanas-tsm-archive" }],
   // must match REGION_CRON and REALM_CRON in src/server/ingest/jobs.ts character for character
   "triggers": { "crons": ["30 19 * * *", "15 */3 * * *"] },
 }

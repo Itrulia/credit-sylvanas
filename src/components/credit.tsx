@@ -15,4 +15,4 @@ export function Credit({ className }: { className?: string }) {
 }
 
 export const NOT_AFFILIATED =
-  'Worgen of Booty Bay is a fan project. It is not affiliated with or endorsed by TradeSkillMaster or Blizzard Entertainment. World of Warcraft is a trademark of Blizzard Entertainment, Inc.'
+  'Credit Sylvanas is a fan project. It is not affiliated with or endorsed by TradeSkillMaster or Blizzard Entertainment. World of Warcraft is a trademark of Blizzard Entertainment, Inc.'

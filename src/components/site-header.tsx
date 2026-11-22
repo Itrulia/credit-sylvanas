@@ -62,9 +62,9 @@ function Wordmark() {
       to="/"
       className="text-display !text-[1.25rem] !leading-6 whitespace-nowrap text-primary no-underline"
     >
-      Worgen of{' '}
+      Credit{' '}
       <span className="underline decoration-brand-tomato decoration-[3px] underline-offset-4">
-        Booty Bay
+        Sylvanas
       </span>
     </Link>
   )

@@ -17,6 +17,7 @@ import { StaleBanner, isStale } from '#/components/stale-banner'
 import { StatePanel } from '#/components/state-panel'
 import { noDataError, noDataRegion } from '#/lib/errors'
 import { contextSearch } from '#/lib/search'
+import { SITE } from '#/lib/seo'
 import type { Region } from '#/lib/search'
 import { regionStatusQuery } from '#/server/fns/status'
 
@@ -91,7 +92,7 @@ function NoData({ region }: { region: Region }) {
   const others = status.regionsWithData.filter((r) => r !== region)
   return (
     <div className="page-wrap py-8">
-      <title>{`No ${name} prices yet · Worgen of Booty Bay`}</title>
+      <title>{`No ${name} prices yet · ${SITE}`}</title>
       <StatePanel as="h1" icon="info" title={`No ${name} prices yet`}>
         <p>
           We haven't saved a price update for {name}. Last successful import:{' '}
