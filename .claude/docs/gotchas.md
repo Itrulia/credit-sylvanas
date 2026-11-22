@@ -175,6 +175,19 @@ Load-bearing: `outputStructure: 'message-modules'` (and
 plain imports, so vitest runs it without the Vite plugin and the client
 bundle only gets the messages it uses. Nothing guards this.
 
+### Item links carry no `data-wowhead` in server HTML
+
+`ItemLink` sets the attribute from the `tagForWowhead` callback ref in
+`src/lib/wowhead.ts`. With it in the markup, live `/eu` threw minified React
+error #418 now and then (2026-11-22): the Wowhead script loads from a root
+effect, and when it is cached it can prepend its icon to links in a streamed
+Suspense section (Rising, the market map) before React hydrates that section.
+A ref only runs once React owns the node, so the script never sees an
+unhydrated link.
+
+Load-bearing: no `data-wowhead` prop on `ItemLink`. Pinned by
+`src/components/item-link.test.tsx`.
+
 ## Adding an entry
 
 ```markdown

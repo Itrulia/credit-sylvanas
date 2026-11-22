@@ -30,3 +30,27 @@ export function iconOnlyTooltip(el: HTMLElement | null) {
   el.addEventListener('mouseover', stopPropagation)
   return () => el.removeEventListener('mouseover', stopPropagation)
 }
+
+let rescanQueued = false
+
+/**
+ * Callback ref that adds `data-wowhead` once React has mounted the link.
+ * Server HTML leaves it out: the script would otherwise put its icon into a
+ * streamed section React has not hydrated yet, which fails hydration
+ * (minified React error #418). Tagged links get one rescan per frame.
+ */
+export const tagForWowhead = (id: number) => (el: HTMLElement | null) => {
+  if (!el) {
+    return
+  }
+  el.dataset.wowhead = wowheadData(id)
+  if (rescanQueued) {
+    return
+  }
+  rescanQueued = true
+  requestAnimationFrame(() => {
+    rescanQueued = false
+    // refreshLinks is undocumented, so every step is guarded
+    window.WH?.Tooltips?.refreshLinks?.()
+  })
+}

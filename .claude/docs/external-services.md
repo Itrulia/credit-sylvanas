@@ -40,8 +40,10 @@ Wowhead Forever tooltips, client-side only and as progressive enhancement:
 `window.whTooltips = {colorLinks: false, iconizeLinks: true, renameLinks: false, iconSize: 'small'}`
 plus `https://wow.zamimg.com/js/tooltips.js`. Links are
 `<a href="https://www.wowhead.com/forever/item={id}" data-wowhead="item={id}&domain=forever">`.
-After client navigation call `WH.Tooltips.refreshLinks()` behind a guard (it
-is undocumented). Layout and names never depend on the script.
+Item links get `data-wowhead` from the `tagForWowhead` ref (`src/lib/wowhead.ts`)
+after React mounts them, never in server HTML (see gotchas), and the ref queues
+one rescan per frame. After client navigation call `WH.Tooltips.refreshLinks()`
+behind a guard (it is undocumented). Layout and names never depend on the script.
 The script prepends `span.iconsmall > ins + del` to each link: `ins` is the
 icon picture, `del` Wowhead's thick frame. `src/styles.css` hides the `del`
 and draws a 1px edge with unlayered `a[data-wowhead] .iconsmall` rules

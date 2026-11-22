@@ -1,6 +1,7 @@
+import { useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import type { Region } from '#/lib/search'
-import { iconOnlyTooltip, itemName, wowheadData } from '#/lib/wowhead'
+import { iconOnlyTooltip, itemName, tagForWowhead } from '#/lib/wowhead'
 import { cn } from '#/lib/utils'
 
 export interface ItemLinkProps {
@@ -23,11 +24,12 @@ export function ItemLink({
   className,
   iconSize,
 }: ItemLinkProps) {
+  const tag = useMemo(() => tagForWowhead(id), [id])
   return (
     <Link
       to="/$region/items/$itemId"
       params={{ region, itemId: String(id) }}
-      data-wowhead={wowheadData(id)}
+      ref={tag}
       data-wh-icon-size={iconSize}
       title={itemName(name, id)}
       className={cn(
