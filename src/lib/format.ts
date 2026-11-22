@@ -1,11 +1,15 @@
-// Fixed formatting (no viewer locale) so server and client render the same string.
-const nf = new Intl.NumberFormat('en-US')
+import { m } from '#/i18n'
+import { LOCALE } from '#/i18n/locale'
+import { plural as pluralForm } from '#/i18n/plural'
+
+// The site locale, never the viewer's, so server and client render the same string.
+const nf = new Intl.NumberFormat(LOCALE)
 const MINUS = '−'
 
 export const DAY_SECONDS = 86_400
 
 export const formatNumber = (n: number, maxFractionDigits = 0) =>
-  new Intl.NumberFormat('en-US', {
+  new Intl.NumberFormat(LOCALE, {
     maximumFractionDigits: maxFractionDigits,
   }).format(n)
 
@@ -23,45 +27,52 @@ export function formatPct(
   return `${prefix}${rounded}%`
 }
 
-const pad = (n: number) => String(n).padStart(2, '0')
-const MONTHS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-]
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const dateParts = new Intl.DateTimeFormat(LOCALE, {
+  timeZone: 'UTC',
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+})
+
+// Intl gives the localized pieces; the order stays the catalog's ("22 Nov 2026").
+function partsOf(ms: number) {
+  const p = Object.fromEntries(
+    dateParts.formatToParts(ms).map(({ type, value }) => [type, value]),
+  )
+  return {
+    weekday: p.weekday,
+    day: p.day,
+    month: p.month,
+    year: p.year,
+    time: `${p.hour}:${p.minute}`,
+  }
+}
 
 /** Unix seconds -> "22 Nov 2026, 04:10 UTC". */
 export function formatDateTime(unixSeconds: number) {
-  const d = new Date(unixSeconds * 1000)
-  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}, ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`
+  return m.format.dateTime(partsOf(unixSeconds * 1000))
 }
 
 /** Day number (days since epoch, UTC) -> "22 Nov". */
 export function formatDay(day: number) {
-  const d = new Date(day * DAY_SECONDS * 1000)
-  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`
+  const p = partsOf(day * DAY_SECONDS * 1000)
+  return `${p.day} ${p.month}`
 }
 
 /** Day number -> "22 Nov 2026". */
 export function formatDate(day: number) {
-  const d = new Date(day * DAY_SECONDS * 1000)
-  return `${formatDay(day)} ${d.getUTCFullYear()}`
+  const p = partsOf(day * DAY_SECONDS * 1000)
+  return `${p.day} ${p.month} ${p.year}`
 }
 
 /** Day number -> "Sun 22 Nov 2026" (chart tooltip header). */
 export function formatDayLong(day: number) {
-  const d = new Date(day * DAY_SECONDS * 1000)
-  return `${WEEKDAYS[d.getUTCDay()]} ${formatDate(day)}`
+  const p = partsOf(day * DAY_SECONDS * 1000)
+  return `${p.weekday} ${p.day} ${p.month} ${p.year}`
 }
 
 export const isoFromUnix = (unixSeconds: number) =>
@@ -73,9 +84,8 @@ export const isoFromDay = (day: number) =>
 export const dayOf = (unixSeconds: number) =>
   Math.floor(unixSeconds / DAY_SECONDS)
 
-const rules = new Intl.PluralRules('en-US')
-
 /** plural(3, 'item', 'items') -> "3 items" */
 export function plural(n: number, one: string, other: string) {
-  return `${nf.format(n)} ${rules.select(n) === 'one' ? one : other}`
+  const count = nf.format(n)
+  return pluralForm(n, { one: `${count} ${one}`, other: `${count} ${other}` })
 }

@@ -15,6 +15,14 @@ Prettier (no semicolons, single quotes, trailing commas) settle disputes.
 - Prices stay integer copper in code and DB. Convert to g/s/c only at render,
   through one formatter.
 
+## UI copy
+
+UI copy lives in `src/i18n/en/<area>.ts` and is read through
+`m.<area>.<key>()` from `#/i18n`. Never write user-facing text inline.
+Messages return plain strings; counts go through `plural()`, and a sentence
+with a link is split into parts the component composes around `<Link>`.
+`src/i18n/no-hardcoded-copy.test.ts` enforces it.
+
 ## React
 
 - Avoid `useEffect` when something else solves it

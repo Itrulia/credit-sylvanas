@@ -1,3 +1,5 @@
+import { m } from '#/i18n'
+
 // Wowhead Forever links. The domain param picks the game version (wowhead.com/tooltips, read 2026-11-22).
 export const wowheadItemUrl = (id: number) =>
   `https://www.wowhead.com/forever/item=${id}`
@@ -12,7 +14,7 @@ export const WOWHEAD_CONFIG = {
 
 /** Names can be empty in TSM files; never render a blank link. */
 export const itemName = (name: string, id: number) =>
-  name.trim() || `Item #${id}`
+  name.trim() || m.format.itemFallback({ id })
 
 const stopPropagation = (e: Event) => e.stopPropagation()
 

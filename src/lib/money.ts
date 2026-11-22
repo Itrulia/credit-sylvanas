@@ -1,3 +1,5 @@
+import { LOCALE } from '#/i18n/locale'
+
 // Prices are integer copper everywhere; this is the one place they become g/s/c.
 export type CoinUnit = 'g' | 's' | 'c'
 export interface MoneyPart {
@@ -6,7 +8,7 @@ export interface MoneyPart {
 }
 export type MoneyVariant = 'full' | 'compact' | 'axis'
 
-const nf = new Intl.NumberFormat('en-US')
+const nf = new Intl.NumberFormat(LOCALE)
 const pad = (n: number) => String(n).padStart(2, '0')
 
 const split = (copper: number) => ({
