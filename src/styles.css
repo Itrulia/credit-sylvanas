@@ -442,3 +442,29 @@ a[data-wowhead] .iconsmall ins {
 a[data-wowhead] .iconsmall del {
   display: none;
 }
+/*
+ * Reserve the small icon's box from first paint so names don't jump when
+ * tooltips.js prepends it. Hidden once the icon is in, and everywhere when
+ * wowhead-tooltips.tsx sets data-wowhead="off" (script blocked, failed or not
+ * loaded on this page). Links Wowhead skips (data-wh-icon-added) or sizes
+ * differently (data-wh-icon-size) get no box. Item links match on
+ * data-item-link, because they only get data-wowhead after hydration.
+ */
+:is(a[data-wowhead], a[data-item-link]):not(
+    [data-wh-icon-added],
+    [data-wh-icon-size]
+  )::before {
+  content: '';
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0 0.375rem 0 0;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--muted);
+}
+:is(a[data-wowhead], a[data-item-link]):has(.iconsmall)::before,
+html[data-wowhead='off'] :is(a[data-wowhead], a[data-item-link])::before {
+  display: none;
+}

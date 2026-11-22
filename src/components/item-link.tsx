@@ -30,6 +30,7 @@ export function ItemLink({
       to="/$region/items/$itemId"
       params={{ region, itemId: String(id) }}
       ref={tag}
+      data-item-link
       data-wh-icon-size={iconSize}
       title={itemName(name, id)}
       className={cn(

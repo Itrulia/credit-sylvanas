@@ -34,6 +34,8 @@ it('leaves the tag out of server HTML, where Wowhead could edit an unhydrated se
   const html = renderToString(<RouterProvider router={router} />)
   expect(html).toContain('Linen Cloth')
   expect(html).not.toContain('data-wowhead')
+  // the icon placeholder in styles.css keys off this until hydration
+  expect(html).toContain('data-item-link')
 })
 
 it('rescans Wowhead links once per frame after tagging', () => {

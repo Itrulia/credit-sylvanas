@@ -49,5 +49,12 @@ icon picture, `del` Wowhead's thick frame. `src/styles.css` hides the `del`
 and draws a 1px edge with unlayered `a[data-wowhead] .iconsmall` rules
 (Tailwind layers lose to Wowhead's unlayered CSS). That markup comes from
 reading `tooltips.js` on 2026-11-22 and is undocumented, so recheck it if the
-frame comes back. Never scrape
+frame comes back. So names don't shift when the icon lands, an unlayered
+`::before` box of the same size holds its place from first paint on
+`a[data-wowhead]` and on `a[data-item-link]` (item links, untagged until
+hydration). It hides once the link has `.iconsmall`, and on every link while
+`<html data-wowhead="off">` is set, which `components/wowhead-tooltips.tsx` does
+on pages that don't load the script, on `onerror`, and when `window.WH` is still
+missing 10 s after insertion. Links with `data-wh-icon-added` or
+`data-wh-icon-size` get no box. Never scrape
 or fetch Wowhead server-side; it answers bots with 403.
