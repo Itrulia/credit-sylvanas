@@ -1,0 +1,267 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { cn } from '#/lib/utils'
+import { Icon } from '../icon'
+import { Dialog, DialogContent, DialogTitle } from '../ui/dialog'
+import type { CommandMatch } from './command'
+import { useCommandPalette } from './command-palette-provider'
+import { groupMatches } from './group-matches'
+import type { GroupedMatch } from './group-matches'
+import { searchCommands } from './search-commands'
+
+const LIST_ID = 'command-palette-results'
+const rowId = (index: number) => `command-palette-row-${index}`
+
+function Highlighted({ text, indices }: { text: string; indices: number[] }) {
+  if (!indices.length) {
+    return <>{text}</>
+  }
+  const matched = new Set(indices)
+  const runs: { text: string; hit: boolean }[] = []
+  ;[...text].forEach((character, index) => {
+    const hit = matched.has(index)
+    const last = runs.at(-1)
+    if (last && last.hit === hit) {
+      last.text += character
+    } else {
+      runs.push({ text: character, hit })
+    }
+  })
+  return (
+    <>
+      {runs.map((run, index) =>
+        run.hit ? (
+          <mark key={index} className="bg-transparent font-bold text-inherit">
+            {run.text}
+          </mark>
+        ) : (
+          <span key={index}>{run.text}</span>
+        ),
+      )}
+    </>
+  )
+}
+
+interface RenderGroup {
+  id: string
+  label: string
+  matches: GroupedMatch[]
+  status?: React.ReactNode
+}
+
+export function CommandPalette() {
+  const { isOpen, close, commands, useDynamicGroups } = useCommandPalette()
+  const [query, setQuery] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
+  const resultsRef = useRef<HTMLDivElement>(null)
+  const dynamic = useDynamicGroups(query)
+
+  const groups = useMemo<RenderGroup[]>(() => {
+    const fixed = groupMatches(searchCommands(commands, query)).map((g) => ({
+      id: g.group,
+      label: g.group,
+      matches: g.matches,
+    }))
+    let index = fixed.reduce((n, g) => n + g.matches.length, 0)
+    const extra = dynamic.map((g) => ({
+      id: g.id,
+      label: g.label,
+      status: g.status,
+      matches: g.commands.map((command) => ({
+        command,
+        indices: [],
+        index: index++,
+      })),
+    }))
+    return [...fixed, ...extra.filter((g) => g.matches.length || g.status)]
+  }, [commands, dynamic, query])
+
+  const displayed = useMemo(
+    () => groups.flatMap((group) => group.matches),
+    [groups],
+  )
+
+  const trimmedQuery = query.trim()
+  const announcement = !trimmedQuery
+    ? ''
+    : displayed.length
+      ? `${displayed.length} ${displayed.length === 1 ? 'result' : 'results'}`
+      : `No results for ${trimmedQuery}`
+
+  // reset when the dialog opens, without an effect
+  const [wasOpen, setWasOpen] = useState(isOpen)
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen)
+    if (isOpen) {
+      setQuery('')
+      setActiveIndex(0)
+    }
+  }
+
+  const safeIndex = displayed.length
+    ? Math.min(activeIndex, displayed.length - 1)
+    : 0
+
+  useEffect(() => {
+    const row = resultsRef.current?.querySelector(
+      `#${CSS.escape(rowId(safeIndex))}`,
+    )
+    // jsdom has no scrollIntoView
+    if (row && 'scrollIntoView' in row) {
+      row.scrollIntoView({ block: 'nearest' })
+    }
+  }, [safeIndex, displayed])
+
+  const run = (match: CommandMatch | undefined) => {
+    if (!match) {
+      return
+    }
+    close()
+    match.command.perform({ close })
+  }
+
+  const move = (delta: number) => {
+    if (!displayed.length) {
+      return
+    }
+    setActiveIndex(
+      (current) =>
+        (Math.min(current, displayed.length - 1) + delta + displayed.length) %
+        displayed.length,
+    )
+  }
+
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+    const keys: Partial<Record<string, () => void>> = {
+      ArrowDown: () => move(1),
+      ArrowUp: () => move(-1),
+      Home: () => setActiveIndex(0),
+      End: () => setActiveIndex(Math.max(displayed.length - 1, 0)),
+      Enter: () => run(displayed[safeIndex]),
+    }
+    const handler = keys[event.key]
+    if (handler) {
+      event.preventDefault()
+      handler()
+    }
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => (open ? undefined : close())}>
+      <DialogContent
+        showCloseButton={false}
+        aria-describedby={undefined}
+        className="top-[11vh] flex max-h-[min(70vh,560px)] translate-y-0 flex-col gap-0 overflow-hidden p-0 shadow-pop sm:max-w-[640px]"
+      >
+        <DialogTitle className="sr-only">Search or jump to</DialogTitle>
+        <div className="grid grid-cols-[auto_1fr] items-center gap-3 border-b px-4 py-3">
+          <Icon name="search" size={20} className="text-muted-foreground" />
+          <input
+            autoFocus
+            type="text"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls={LIST_ID}
+            aria-activedescendant={
+              displayed.length ? rowId(safeIndex) : undefined
+            }
+            aria-label="Search items or jump to a page"
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="Item name or ID, e.g. Arcanite Bar"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setActiveIndex(0)
+            }}
+            onKeyDown={onKeyDown}
+            className="min-w-0 bg-transparent text-base outline-none placeholder:text-muted-foreground"
+          />
+        </div>
+
+        <div
+          ref={resultsRef}
+          className="overflow-y-auto overscroll-contain p-1.5"
+        >
+          <div id={LIST_ID} role="listbox" aria-label="Results">
+            {groups.map((group) => (
+              <div
+                key={group.id}
+                role="group"
+                aria-labelledby={`${LIST_ID}-${group.id}`}
+              >
+                <div
+                  id={`${LIST_ID}-${group.id}`}
+                  className="text-label px-2.5 pt-2.5 pb-1.5"
+                >
+                  {group.label}
+                </div>
+                {group.matches.map((match) => (
+                  <div
+                    key={match.command.id}
+                    id={rowId(match.index)}
+                    role="option"
+                    aria-selected={match.index === safeIndex}
+                    onMouseMove={() => setActiveIndex(match.index)}
+                    onClick={() => run(match)}
+                    className={cn(
+                      'grid cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 rounded-md px-2.5 py-2 text-sm',
+                      match.index === safeIndex
+                        ? 'bg-accent'
+                        : 'hover:bg-accent/60',
+                    )}
+                  >
+                    <span className="flex w-4 justify-center">
+                      {match.command.icon}
+                    </span>
+                    <span className="truncate font-medium">
+                      {match.command.content ?? (
+                        <Highlighted
+                          text={match.command.title}
+                          indices={match.indices}
+                        />
+                      )}
+                    </span>
+                    <span className="text-micro text-muted-foreground">
+                      {match.command.section}
+                    </span>
+                  </div>
+                ))}
+                {group.status && (
+                  <div className="px-2.5 py-2 text-sm text-muted-foreground">
+                    {group.status}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {trimmedQuery &&
+            !displayed.length &&
+            !groups.some((g) => g.status) && (
+              <p className="px-4 py-7 text-center text-sm text-muted-foreground">
+                No results for{' '}
+                <strong className="text-foreground">{trimmedQuery}</strong>
+              </p>
+            )}
+        </div>
+
+        <div role="status" className="sr-only">
+          {announcement}
+        </div>
+
+        <div className="flex flex-wrap gap-4 border-t px-4 py-2.5 text-micro text-muted-foreground">
+          <span>
+            <kbd>↑</kbd> <kbd>↓</kbd> to move
+          </span>
+          <span>
+            <kbd>Enter</kbd> to open
+          </span>
+          <span>
+            <kbd>Esc</kbd> to close
+          </span>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
