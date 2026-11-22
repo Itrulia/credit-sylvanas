@@ -16,9 +16,9 @@ describe('hideServerError', () => {
     const hidden = hideServerError(raw)
     expect(log).toHaveBeenCalledWith(raw)
     expect(hidden).toBeInstanceOf(Error)
-    expect(JSON.stringify(hidden, Object.getOwnPropertyNames(hidden))).not.toMatch(
-      /SQLITE|no such table/,
-    )
+    expect(
+      JSON.stringify(hidden, Object.getOwnPropertyNames(hidden)),
+    ).not.toMatch(/SQLITE|no such table/)
     log.mockRestore()
   })
 
