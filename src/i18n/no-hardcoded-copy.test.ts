@@ -28,11 +28,6 @@ const ALLOWLIST: Array<string> = [
   'src/components/item/stat-card.tsx',
   'src/components/item/stats-grid.tsx',
   'src/components/item/value-quantity-card.tsx',
-  'src/components/market/hottest-table.tsx',
-  'src/components/market/market-map-skeleton.tsx',
-  'src/components/market/market-map.tsx',
-  'src/components/market/mover-bars.tsx',
-  'src/components/market/rising-table.tsx',
   'src/components/no-data.tsx',
   'src/components/not-found.tsx',
   'src/components/realms/realm-list.tsx',
@@ -43,11 +38,9 @@ const ALLOWLIST: Array<string> = [
   'src/components/site-header.tsx',
   'src/components/stale-banner.tsx',
   'src/components/wowhead-link.tsx',
-  'src/routes/$region/index.tsx',
   'src/routes/$region/items/$itemId.tsx',
   'src/routes/$region/realms.tsx',
   'src/routes/__root.tsx',
-  'src/routes/index.tsx',
 ]
 
 const SKIP = [

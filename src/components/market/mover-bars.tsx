@@ -7,15 +7,17 @@ import { InfoPopover } from '#/components/info-popover'
 import { ItemLink } from '#/components/item-link'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatDate, formatNumber } from '#/lib/format'
 import { MoverBy, MoverMetric } from '#/lib/search'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import { moversQuery } from '#/server/fns/market'
 import type { MoverRow, MoversResult } from '#/server/types'
-import { WINDOW_PHRASE, barWidth } from './market'
+import { barWidth } from './market'
 
-const TITLE = { 1: 'Biggest increase', [-1]: 'Biggest decrease' } as const
+const title = (dir: 1 | -1) =>
+  dir > 0 ? m.market.moverIncrease() : m.market.moverDecrease()
 const DIRS = [1, -1] as const
 
 export interface MoverChartProps {
@@ -28,31 +30,39 @@ export interface MoverChartProps {
 
 /** One chart as a real table, so names stay links and the bars can be ignored. */
 export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
-  const title = TITLE[dir]
-  const phrase = WINDOW_PHRASE[window]
   const max = Math.max(0, ...rows.map((r) => Math.abs(r.change)))
   const k = rows.length
   return (
     <div className="space-y-2">
-      <h3 className="text-label">{title}</h3>
+      <h3 className="text-label">{title(dir)}</h3>
       {k === 0 ? (
         <p className="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm">
           <Icon name="info" className="mt-0.5 text-muted-foreground" />
-          <span>Nothing moved more than 0.5% {phrase}.</span>
+          <span>{m.market.moverNothing({ window })}</span>
         </p>
       ) : (
         // same box as the Hottest table (DataTable); relative keeps sr-only text inside
         <div className="relative rounded-md border px-3 py-1">
           <table className="w-full table-fixed border-collapse text-[0.8125rem] leading-[1.125rem]">
             <caption className="sr-only">
-              {`Top ${k} ${REGION_INFO[region].name} items by ${by === 'price' ? 'price' : 'popularity'} ${dir > 0 ? 'increase' : 'decrease'}, ${phrase}.`}
-              {k < 10 && ` Only ${k} items moved more than 0.5%.`}
+              {m.market.moverCaption({
+                n: k,
+                region: REGION_INFO[region].name,
+                by,
+                dir,
+                window,
+              })}
+              {k < 10 && ` ${m.market.moverFew({ n: k })}`}
             </caption>
             <thead className="sr-only">
               <tr>
-                <th scope="col">Item</th>
+                <th scope="col">{m.market.itemHeader()}</th>
                 <td />
-                <th scope="col">{by === 'price' ? 'Change' : 'Popularity'}</th>
+                <th scope="col">
+                  {by === 'price'
+                    ? m.market.changeHeader()
+                    : m.market.measurePopularity()}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -90,8 +100,10 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
                     />
                     {by === 'sales' && (
                       <div className="text-micro text-muted-foreground">
-                        {formatNumber(r.from, 1)} → {formatNumber(r.to, 1)} a
-                        day
+                        {m.market.moverPerDay({
+                          from: formatNumber(r.from, 1),
+                          to: formatNumber(r.to, 1),
+                        })}
                       </div>
                     )}
                   </td>
@@ -105,22 +117,22 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
   )
 }
 
-const INTRO: Record<MoverBy, Partial<Record<MoverMetric, string>>> = {
+const INTRO: Record<MoverBy, Partial<Record<MoverMetric, () => string>>> = {
   price: {
-    vs_hist: "Today's market value compared with the 60-day average.",
-    d1: "Today's market value compared with the previous daily update.",
-    d7: "Today's market value compared with 7 days ago.",
+    vs_hist: m.market.introPriceVsHist,
+    d1: m.market.introPriceD1,
+    d7: m.market.introPriceD7,
   },
   sales: {
-    d1: 'Change in units sold per day since the previous daily update.',
-    d7: 'Change in units sold per day since 7 days ago.',
+    d1: m.market.introSalesD1,
+    d7: m.market.introSalesD7,
   },
 }
 
-const WINDOW_LABEL: Record<MoverMetric, string> = {
-  vs_hist: 'vs 60-day avg',
-  d1: 'Last update',
-  d7: '7 days',
+const WINDOW_LABEL: Record<MoverMetric, () => string> = {
+  vs_hist: m.market.windowVsHist,
+  d1: m.market.windowD1,
+  d7: m.market.windowD7,
 }
 
 export interface MoverBarsProps {
@@ -150,16 +162,21 @@ export function MoverBars({
       ? DIRS.map((dir) => moversQuery({ region, by, metric: window, dir }))
       : [],
   })
-  const secondDay = nextDay !== null ? ` (${formatDate(nextDay)})` : ''
   const reasons: Partial<Record<MoverMetric, string>> = {}
   if (by === 'sales') {
-    reasons.vs_hist = 'TSM has no 60-day sales average.'
+    reasons.vs_hist = m.market.reasonNoSalesAverage()
   }
   if (!available.d1) {
-    reasons.d1 = `Last update: available after the second daily update${secondDay}.`
+    reasons.d1 =
+      nextDay !== null
+        ? m.market.reasonD1On({ date: formatDate(nextDay) })
+        : m.market.reasonD1Later()
   }
   if (!available.d7) {
-    reasons.d7 = `7 days: available from ${available.d7From !== null ? formatDate(available.d7From) : 'the eighth daily update'} (${days} of 7 days so far).`
+    reasons.d7 =
+      available.d7From !== null
+        ? m.market.reasonD7On({ date: formatDate(available.d7From), days })
+        : m.market.reasonD7Later({ days })
   }
   const toggle = 'pointer-coarse:h-11'
   return (
@@ -167,7 +184,7 @@ export function MoverBars({
       <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
         <div className="space-y-1">
           <p id={`${id}-by`} className="text-label flex min-h-6 items-center">
-            Measure
+            {m.market.measureLabel()}
           </p>
           <div className="flex items-center gap-1">
             <ToggleGroup
@@ -187,10 +204,10 @@ export function MoverBars({
               }}
             >
               <ToggleGroupItem value="price" className={toggle}>
-                Price
+                {m.market.measurePrice()}
               </ToggleGroupItem>
               <ToggleGroupItem value="sales" className={toggle}>
-                Popularity
+                {m.market.measurePopularity()}
               </ToggleGroupItem>
             </ToggleGroup>
             {/* defines the Popularity option, so it sits next to it */}
@@ -199,7 +216,7 @@ export function MoverBars({
         </div>
         <div className="space-y-1">
           <p id={`${id}-win`} className="text-label flex min-h-6 items-center">
-            Window
+            {m.market.windowLabel()}
           </p>
           <ToggleGroup
             type="single"
@@ -217,15 +234,15 @@ export function MoverBars({
               }
             }}
           >
-            {MoverMetric.options.map((m) => (
+            {MoverMetric.options.map((w) => (
               <ToggleGroupItem
-                key={m}
-                value={m}
-                disabled={reasons[m] !== undefined}
-                aria-describedby={reasons[m] ? `${id}-${m}` : undefined}
+                key={w}
+                value={w}
+                disabled={reasons[w] !== undefined}
+                aria-describedby={reasons[w] ? `${id}-${w}` : undefined}
                 className={toggle}
               >
-                {WINDOW_LABEL[m]}
+                {WINDOW_LABEL[w]()}
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
@@ -234,10 +251,10 @@ export function MoverBars({
       {Object.keys(reasons).length > 0 && (
         <ul className="text-micro space-y-0.5 text-muted-foreground">
           {MoverMetric.options.map(
-            (m) =>
-              reasons[m] && (
-                <li key={m} id={`${id}-${m}`}>
-                  {reasons[m]}
+            (w) =>
+              reasons[w] && (
+                <li key={w} id={`${id}-${w}`}>
+                  {reasons[w]}
                 </li>
               ),
           )}
@@ -245,7 +262,7 @@ export function MoverBars({
       )}
       {window ? (
         <>
-          <p className="text-sm">{INTRO[by][window]}</p>
+          <p className="text-sm">{INTRO[by][window]?.()}</p>
           <MoverChart
             region={region}
             dir={1}
@@ -264,16 +281,14 @@ export function MoverBars({
       ) : (
         DIRS.map((dir) => (
           <div key={dir} className="space-y-2">
-            <h3 className="text-label">{TITLE[dir]}</h3>
+            <h3 className="text-label">{title(dir)}</h3>
             <div className="rounded-md border border-dashed p-4 text-sm">
               <p className="font-semibold">
-                Popularity changes start on{' '}
                 {nextDay !== null
-                  ? formatDate(nextDay)
-                  : 'the second daily update'}
-                .
+                  ? m.market.popularityStartsOn({ date: formatDate(nextDay) })
+                  : m.market.popularityStartsLater()}
               </p>
-              <p>Sales need two daily updates to compare.</p>
+              <p>{m.market.popularityNeed()}</p>
             </div>
           </div>
         ))

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { m } from '#/i18n'
 
 export const MAP_BOX = 'aspect-[3/4] w-full sm:aspect-[2/1]'
 
@@ -11,7 +12,7 @@ export function MarketMapSkeleton() {
   }, [])
   return (
     <div aria-busy="true" className="space-y-3" data-market-map-skeleton="">
-      <span className="sr-only">Loading market map…</span>
+      <span className="sr-only">{m.market.mapLoading()}</span>
       <div
         aria-hidden="true"
         className="h-5 w-3/4 max-w-xl rounded-sm bg-muted"
@@ -23,9 +24,7 @@ export function MarketMapSkeleton() {
         className="h-9 w-full max-w-2xl rounded-sm bg-muted"
       />
       {slow && (
-        <p className="text-sm text-muted-foreground">
-          Still loading. This is taking longer than usual.
-        </p>
+        <p className="text-sm text-muted-foreground">{m.market.mapSlow()}</p>
       )}
     </div>
   )

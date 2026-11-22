@@ -9,6 +9,7 @@ import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { Button } from '#/components/ui/button'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { binFill, binInk, binOf } from '#/lib/bins'
 import type { Bin } from '#/lib/bins'
 import { formatPct } from '#/lib/format'
@@ -39,7 +40,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
   return [
     {
       id: 'item',
-      header: 'Item',
+      header: m.market.itemHeader(),
       cell: ({ row }) => (
         <ItemLink
           id={row.original.id}
@@ -51,7 +52,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     },
     {
       id: 'goldVolume',
-      header: 'Gold/day',
+      header: m.market.goldPerDayHeader(),
       cell: ({ row }) => (
         <Money copper={row.original.goldVolume} variant="compact" align />
       ),
@@ -59,7 +60,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     },
     {
       id: 'mv',
-      header: 'Market value',
+      header: m.market.marketValueHeader(),
       cell: ({ row }) => (
         <Money copper={row.original.mv} variant="compact" align />
       ),
@@ -68,13 +69,13 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     metric === 'd1'
       ? {
           id: 'd1',
-          header: 'Change',
+          header: m.market.changeHeader(),
           cell: ({ row }) => <Delta value={row.original.d1} />,
           meta: { align: 'right' },
         }
       : {
           id: 'vsHist',
-          header: 'vs 60-day avg',
+          header: m.market.vsHistHeader(),
           cell: ({ row }) => (
             <Delta value={row.original.vsHist} mode="vsHist" />
           ),
@@ -101,18 +102,14 @@ export function MarketMap({ region, metric }: MarketMapProps) {
   if (data.length === 0) {
     return (
       <p className="rounded-md border border-dashed p-4 text-sm">
-        Not enough trading in {name} to draw a market map yet. Items need about
-        one sale every two days to count.
+        {m.market.mapEmpty({ region: name })}
       </p>
     )
   }
   return (
     <div className="space-y-3">
       <p className="text-sm">
-        Tile size is gold traded per day. Colour is{' '}
-        {metric === 'd1'
-          ? 'the market value change since the previous daily update.'
-          : "today's price against the 60-day average."}
+        {metric === 'd1' ? m.market.mapIntroD1() : m.market.mapIntroVsHist()}
       </p>
       <Button
         variant="outline"
@@ -121,12 +118,12 @@ export function MarketMap({ region, metric }: MarketMapProps) {
         onClick={() => setList((v) => !v)}
         className="pointer-coarse:h-11"
       >
-        List view
+        {m.market.listView()}
       </Button>
       {list ? (
         <DataTable
-          caption={`Top ${data.length} ${name} items by gold traded per day`}
-          label={`Market map list, ${name}`}
+          caption={m.market.mapListCaption({ n: data.length, region: name })}
+          label={m.market.mapListLabel({ region: name })}
           columns={listColumns(region, metric)}
           data={data}
           getRowId={(row) => String(row.id)}
@@ -151,7 +148,7 @@ export function MarketMap({ region, metric }: MarketMapProps) {
                 to="/$region/items/$itemId"
                 params={{ region, itemId: String(r.id) }}
                 tabIndex={-1}
-                title={`${label}, ${signed}`}
+                title={m.market.mapTileTitle({ name: label, change: signed })}
                 className={cn(
                   'absolute top-(--pt) left-(--pl) h-(--ph) w-(--pw) overflow-hidden border border-card no-underline [container-type:size] hover:z-10 hover:outline-2 hover:outline-foreground sm:top-(--t) sm:left-(--l) sm:h-(--h) sm:w-(--w)',
                   bin === null && 'hatch',
@@ -187,8 +184,8 @@ export function MarketMap({ region, metric }: MarketMapProps) {
       <DivergingLegend
         labels={
           metric === 'd1'
-            ? ['Fell', 'Rose']
-            : ['Cheaper than usual', 'Pricier than usual']
+            ? [m.market.mapLegendFell(), m.market.mapLegendRose()]
+            : [m.market.mapLegendCheaper(), m.market.mapLegendPricier()]
         }
       />
     </div>

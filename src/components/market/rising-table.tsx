@@ -7,6 +7,7 @@ import { InfoPopover } from '#/components/info-popover'
 import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatDate, formatNumber } from '#/lib/format'
 import type { Region } from '#/lib/search'
 import { risingQuery } from '#/server/fns/market'
@@ -18,7 +19,7 @@ const NEED = 14
 const columns = (region: Region): DataColumn<RisingRow>[] => [
   {
     id: 'item',
-    header: 'Item',
+    header: m.market.itemHeader(),
     cell: ({ row }) => (
       <ItemLink
         id={row.original.id}
@@ -31,7 +32,7 @@ const columns = (region: Region): DataColumn<RisingRow>[] => [
   },
   {
     id: 'mv',
-    header: 'Market value',
+    header: m.market.marketValueHeader(),
     cell: ({ row }) => (
       <Money copper={row.original.mv} variant="compact" align />
     ),
@@ -39,18 +40,18 @@ const columns = (region: Region): DataColumn<RisingRow>[] => [
   },
   {
     id: 'change',
-    header: '7 days',
+    header: m.market.risingChangeHeader(),
     cell: ({ row }) => <Delta value={row.original.change} />,
     meta: { align: 'right' },
   },
   {
     id: 'spd',
-    header: 'Sold/day',
+    header: m.market.soldPerDayHeader(),
     cell: ({ row }) => (
       <>
         {formatNumber(row.original.spd, 1)}
         <div className="text-micro text-muted-foreground">
-          {formatNumber(row.original.lift, 1)}× usual
+          {m.market.risingLift({ lift: formatNumber(row.original.lift, 1) })}
         </div>
       </>
     ),
@@ -71,14 +72,13 @@ export function RisingTable({ region, rows, days, lastDay }: RisingTableProps) {
   return (
     <div className="space-y-3">
       <p className="text-sm">
-        Up at least 5% in a week and selling at least 1.25 times their usual
-        amount per day. <InfoPopover term="rising" />
+        {m.market.risingIntro()} <InfoPopover term="rising" />
       </p>
       {rows.length > 0 ? (
         <DataTable
-          caption={`Top ${rows.length} ${name} items rising in price while selling more than usual`}
+          caption={m.market.risingCaption({ n: rows.length, region: name })}
           captionHidden
-          label={`${name} items rising with demand`}
+          label={m.market.risingLabel({ region: name })}
           columns={columns(region)}
           data={rows}
           getRowId={(row) => String(row.id)}
@@ -86,22 +86,20 @@ export function RisingTable({ region, rows, days, lastDay }: RisingTableProps) {
       ) : days < NEED ? (
         <div className="rounded-md border border-dashed p-4 text-sm">
           <p className="font-semibold">
-            Starts on{' '}
             {lastDay !== null
-              ? formatDate(lastDay + NEED - days)
-              : 'the 15th daily update'}{' '}
-            ({days} of {NEED} earlier daily updates so far).
+              ? m.market.risingStartsOn({
+                  date: formatDate(lastDay + NEED - days),
+                  days,
+                  need: NEED,
+                })
+              : m.market.risingStartsLater({ days, need: NEED })}
           </p>
-          <p>Sales need {NEED} earlier daily updates to compare with.</p>
+          <p>{m.market.risingNeed({ need: NEED })}</p>
         </div>
       ) : (
         <p className="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm">
           <Icon name="info" className="mt-0.5 text-muted-foreground" />
-          <span>
-            No item is rising with demand today. In {name}, nothing that trades
-            at least 1g a day and has two weeks of sales is up 5% on the week
-            while selling more than usual.
-          </span>
+          <span>{m.market.risingEmpty({ region: name })}</span>
         </p>
       )}
     </div>

@@ -16,6 +16,7 @@ import { REGION_INFO } from '#/config/regions'
 import { dayOf } from '#/lib/format'
 import { MARKET_DEFAULTS, marketSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
+import { m } from '#/i18n'
 import { hottestQuery, moversQuery, risingQuery } from '#/server/fns/market'
 import { regionStatusQuery } from '#/server/fns/status'
 
@@ -52,10 +53,10 @@ export const Route = createFileRoute('/$region/')({
     }
   },
   head: ({ params }) => {
-    const name = params.region.toUpperCase()
+    const region = params.region.toUpperCase()
     return pageHead(
-      `${name} Forever auction house prices`,
-      `Daily WoW Forever auction house prices for ${name}: most traded items, biggest price moves and price history. Pricing data from TradeSkillMaster.`,
+      m.market.headTitle({ region }),
+      m.market.headDescription({ region }),
     )
   },
   component: Market,
@@ -78,17 +79,17 @@ function Market() {
   return (
     <div className="page-wrap space-y-8 py-6">
       <header className="space-y-1">
-        <h1 className="text-display">{name} auction house</h1>
+        <h1 className="text-display">{m.market.heading({ region: name })}</h1>
         {realm !== undefined && (
           <p className="text-sm text-muted-foreground">
-            Market overview is region-wide.
+            {m.market.regionWideNote()}
           </p>
         )}
       </header>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <section aria-labelledby="hottest" className="space-y-3 lg:col-span-7">
           <h2 id="hottest" tabIndex={-1} className="text-title">
-            Hottest
+            {m.market.hottestHeading()}
           </h2>
           <HottestTable
             region={region}
@@ -99,7 +100,7 @@ function Market() {
         </section>
         <section aria-labelledby="moves" className="space-y-3 lg:col-span-5">
           <h2 id="moves" tabIndex={-1} className="text-title">
-            Biggest moves
+            {m.market.movesHeading()}
           </h2>
           <MoverBars
             region={region}
@@ -114,7 +115,7 @@ function Market() {
         </section>
         <section aria-labelledby="rising" className="space-y-3 lg:col-span-7">
           <h2 id="rising" tabIndex={-1} className="text-title">
-            Rising with demand
+            {m.market.risingHeading()}
           </h2>
           <SectionBoundary headingId="rising">
             <Suspense
@@ -123,7 +124,7 @@ function Market() {
                   aria-busy="true"
                   className="h-64 rounded-md border bg-muted"
                 >
-                  <span className="sr-only">Loading rising items…</span>
+                  <span className="sr-only">{m.market.risingLoading()}</span>
                 </div>
               }
             >
@@ -134,7 +135,7 @@ function Market() {
       </div>
       <section aria-labelledby="market-map" className="space-y-3">
         <h2 id="market-map" tabIndex={-1} className="text-title">
-          Market map
+          {m.market.mapHeading()}
         </h2>
         {/* no loader prefetch on purpose: MarketMap's useSuspenseQuery starts the
             read during render, so the skeleton always flushes first and the map

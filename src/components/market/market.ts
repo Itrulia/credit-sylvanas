@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { binOf } from '#/lib/bins'
 import type { MoverBy, MoverMetric, Region } from '#/lib/search'
 import type { MoversInput } from '#/server/fns/inputs'
@@ -54,15 +55,8 @@ export function mapSummary(values: (number | null)[], metric: MapMetric) {
   const bins = values.map(binOf)
   const up = bins.filter((b) => b !== null && b > 0).length
   const down = bins.filter((b) => b !== null && b < 0).length
-  const head = `Top ${values.length} items by gold traded per day.`
+  const counts = { n: values.length, up, down }
   return metric === 'd1'
-    ? `${head} ${up} rose since the previous daily update, ${down} fell.`
-    : `${head} ${up} above usual, ${down} below.`
-}
-
-/** Phrase that ends the captions and empty states, e.g. "since the previous daily update". */
-export const WINDOW_PHRASE: Record<MoverMetric, string> = {
-  vs_hist: 'against the 60-day average',
-  d1: 'since the previous daily update',
-  d7: 'over the last 7 days',
+    ? m.market.mapSummaryD1(counts)
+    : m.market.mapSummaryVsHist(counts)
 }

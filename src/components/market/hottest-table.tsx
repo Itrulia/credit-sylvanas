@@ -8,6 +8,7 @@ import { ItemLink } from '#/components/item-link'
 import { Money } from '#/components/money'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs'
 import { REGION_INFO } from '#/config/regions'
+import { m } from '#/i18n'
 import { formatNumber } from '#/lib/format'
 import { HotBy } from '#/lib/search'
 import type { Region } from '#/lib/search'
@@ -39,7 +40,7 @@ export function columns(
       header: () => (
         <>
           <span aria-hidden="true">#</span>
-          <span className="sr-only">Rank</span>
+          <span className="sr-only">{m.market.rankHeader()}</span>
         </>
       ),
       cell: ({ row }) => (
@@ -57,7 +58,7 @@ export function columns(
     },
     {
       id: 'item',
-      header: 'Item',
+      header: m.market.itemHeader(),
       cell: ({ row }) => (
         <ItemLink
           id={row.original.id}
@@ -70,7 +71,9 @@ export function columns(
     },
     {
       id: 'mv',
-      header: () => <Head label="Market value" term="marketValue" />,
+      header: () => (
+        <Head label={m.market.marketValueHeader()} term="marketValue" />
+      ),
       cell: ({ row }) => (
         <Money copper={row.original.mv} variant="compact" align />
       ),
@@ -78,7 +81,7 @@ export function columns(
     },
     {
       id: 'vsHist',
-      header: () => <Head label="vs 60-day avg" term="vsHist" />,
+      header: () => <Head label={m.market.vsHistHeader()} term="vsHist" />,
       cell: ({ row }) => <Delta value={row.original.vsHist} mode="vsHist" />,
       meta: { align: 'right' },
     },
@@ -86,7 +89,9 @@ export function columns(
       ? [
           {
             id: 'd1',
-            header: () => <Head label="Change" term="change" />,
+            header: () => (
+              <Head label={m.market.changeHeader()} term="change" />
+            ),
             cell: ({ row }) => <Delta value={row.original.d1} />,
             meta: { align: 'right' },
           } satisfies DataColumn<HotRow>,
@@ -94,7 +99,9 @@ export function columns(
       : []),
     {
       id: 'spd',
-      header: () => <Head label="Sold/day" term="soldPerDay" />,
+      header: () => (
+        <Head label={m.market.soldPerDayHeader()} term="soldPerDay" />
+      ),
       cell: ({ row }) => formatNumber(row.original.spd, 1),
       meta: {
         align: 'right',
@@ -104,7 +111,9 @@ export function columns(
     },
     {
       id: 'goldVolume',
-      header: () => <Head label="Gold/day" term="goldPerDay" />,
+      header: () => (
+        <Head label={m.market.goldPerDayHeader()} term="goldPerDay" />
+      ),
       cell: ({ row }) => (
         <Money copper={row.original.goldVolume} variant="compact" align />
       ),
@@ -133,7 +142,6 @@ export function HottestTable({
 }: HottestTableProps) {
   const navigate = useNavigate({ from: '/$region/' })
   const name = REGION_INFO[region].name
-  const measure = hot === 'gold' ? 'gold traded' : 'units sold'
   return (
     <Tabs
       value={hot}
@@ -147,24 +155,30 @@ export function HottestTable({
         }
       }}
     >
-      <TabsList className="pointer-coarse:h-11!" aria-label="Rank by">
-        <TabsTrigger value="gold">Most gold traded</TabsTrigger>
-        <TabsTrigger value="traded">Most sold</TabsTrigger>
+      <TabsList
+        className="pointer-coarse:h-11!"
+        aria-label={m.market.rankByLabel()}
+      >
+        <TabsTrigger value="gold">{m.market.hottestTabGold()}</TabsTrigger>
+        <TabsTrigger value="traded">{m.market.hottestTabSold()}</TabsTrigger>
       </TabsList>
       <TabsContent value={hot} className="space-y-3">
         <p className="text-sm">
-          Ranked by {measure} per day across {name}.
+          {m.market.hottestRanked({ region: name, hot })}
         </p>
         {rows.length === 0 ? (
           <p className="rounded-md border border-dashed p-4 text-sm">
-            Not enough trading in {name} to rank items yet. Items need about one
-            sale every two days to count.
+            {m.market.hottestEmpty({ region: name })}
           </p>
         ) : (
           <DataTable
-            caption={`Top ${rows.length} ${name} items by ${measure} per day`}
+            caption={m.market.hottestCaption({
+              n: rows.length,
+              region: name,
+              hot,
+            })}
             captionHidden
-            label={`Hottest ${name} items`}
+            label={m.market.hottestLabel({ region: name })}
             columns={columns(region, hot, showChange)}
             data={rows}
             getRowId={(row) => String(row.id)}
@@ -176,7 +190,7 @@ export function HottestTable({
           search={{ sort: hot === 'gold' ? 'goldPerDay' : 'soldPerDay' }}
           className="inline-flex min-h-6 items-center gap-1 text-sm font-medium underline pointer-coarse:min-h-11"
         >
-          See all items
+          {m.market.seeAllItems()}
         </Link>
       </TabsContent>
     </Tabs>
