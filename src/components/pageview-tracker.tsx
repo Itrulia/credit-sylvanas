@@ -8,6 +8,6 @@ import { trackPageview } from '#/lib/analytics'
  */
 export function PageviewTracker() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
-  useEffect(() => trackPageview(), [pathname])
+  useEffect(() => trackPageview(pathname), [pathname])
   return null
 }

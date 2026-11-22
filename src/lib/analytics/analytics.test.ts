@@ -16,12 +16,12 @@ describe('createAnalytics', () => {
     const { track, trackPageview } = createAnalytics(provider)
     track('item_view', { itemId: 2589, region: 'eu' })
     track('palette_open')
-    trackPageview()
+    trackPageview('/eu')
     expect(provider.track.mock.calls).toEqual([
       ['item_view', { itemId: 2589, region: 'eu' }],
       ['palette_open', undefined],
     ])
-    expect(provider.pageview).toHaveBeenCalledTimes(1)
+    expect(provider.pageview).toHaveBeenCalledWith('/eu')
   })
 
   it('only accepts the closed event union with its props', () => {
@@ -44,7 +44,7 @@ describe('createAnalytics', () => {
   it('noop accepts every call without throwing', () => {
     expect(() => {
       noopProvider.track('palette_open')
-      noopProvider.pageview()
+      noopProvider.pageview('/')
     }).not.toThrow()
   })
 })
@@ -62,16 +62,32 @@ describe('umamiProvider', () => {
     window.umami = umami
     const provider = umamiProvider(options)
     provider.track('item_view', { itemId: 1, region: 'us' })
-    provider.pageview()
     expect(umami.track.mock.calls).toEqual([
       ['item_view', { itemId: 1, region: 'us' }],
-      [],
+    ])
+  })
+
+  it('sends each pageview with its own path and title, not the landing page', () => {
+    const umami = { track: vi.fn() }
+    window.umami = umami
+    const provider = umamiProvider(options)
+    // the tracker captures url and title once at load; with auto-track off
+    // nothing updates them, so a bare track() repeats the landing page
+    const landing = { website: 'site-1', url: '/', title: 'Home' }
+    document.title = 'EU prices'
+    provider.pageview('/eu')
+    document.title = 'EU items'
+    provider.pageview('/eu/items')
+    const sent = umami.track.mock.calls.map(([fn]) => fn(landing))
+    expect(sent).toEqual([
+      { website: 'site-1', url: '/eu', title: 'EU prices' },
+      { website: 'site-1', url: '/eu/items', title: 'EU items' },
     ])
   })
 
   it('injects one cookieless, manual script and flushes calls made before it loaded', () => {
     const provider = umamiProvider(options)
-    provider.pageview()
+    provider.pageview('/')
     provider.track('palette_open')
     const scripts = document.head.querySelectorAll('script')
     expect(scripts).toHaveLength(1)
@@ -88,12 +104,13 @@ describe('umamiProvider', () => {
     const umami = { track: vi.fn() }
     window.umami = umami
     script.dispatchEvent(new Event('load'))
-    expect(umami.track.mock.calls).toEqual([[], ['palette_open', undefined]])
+    expect(umami.track.mock.calls[1]).toEqual(['palette_open', undefined])
+    expect(umami.track.mock.calls[0][0]).toBeTypeOf('function')
   })
 
   it('drops calls when the script is blocked', () => {
     const provider = umamiProvider(options)
-    provider.pageview()
+    provider.pageview('/')
     document.head.querySelector('script')!.dispatchEvent(new Event('error'))
     provider.track('palette_open')
     expect(document.head.querySelectorAll('script')).toHaveLength(1)

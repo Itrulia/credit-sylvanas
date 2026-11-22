@@ -36,8 +36,8 @@ type PropsArg<TEvent extends AnalyticsEvent> =
 /** What a provider implements. Swapping provider is one file plus one line below. */
 export interface AnalyticsProvider {
   track: (event: string, props?: Record<string, string | number>) => void
-  /** the current location, called after each client navigation */
-  pageview: () => void
+  /** the new pathname (never the query), called after each client navigation */
+  pageview: (path: string) => void
 }
 
 export function createAnalytics(provider: AnalyticsProvider) {
@@ -46,7 +46,7 @@ export function createAnalytics(provider: AnalyticsProvider) {
       event: TEvent,
       ...[props]: PropsArg<TEvent>
     ) => provider.track(event, props),
-    trackPageview: () => provider.pageview(),
+    trackPageview: (path: string) => provider.pageview(path),
   }
 }
 

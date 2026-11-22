@@ -1,7 +1,12 @@
 import type { AnalyticsProvider } from './index'
 
+type UmamiPayload = Record<string, unknown>
+
 interface Umami {
-  track: (event?: string, props?: Record<string, string | number>) => void
+  track: {
+    (event: string, props?: Record<string, string | number>): void
+    (payload: (defaults: UmamiPayload) => UmamiPayload): void
+  }
 }
 
 declare global {
@@ -72,6 +77,11 @@ export function umamiProvider({
 
   return {
     track: (event, props) => run((umami) => umami.track(event, props)),
-    pageview: () => run((umami) => umami.track()),
+    // with auto-track off the tracker never updates its url and title after
+    // load, so a bare track() would credit every pageview to the landing page
+    pageview: (path) => {
+      const title = document.title
+      run((umami) => umami.track((p) => ({ ...p, url: path, title })))
+    },
   }
 }
