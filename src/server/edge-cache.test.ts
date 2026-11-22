@@ -145,6 +145,48 @@ describe('cachedFetch', () => {
     )
     expect(handler).toHaveBeenCalledTimes(2)
   })
+
+  it('drops query params no route knows and sorts the rest, so junk params share one entry', async () => {
+    const cache = fakeCache()
+    const c = ctx()
+    const handler = vi.fn(
+      async (_req: Request) =>
+        new Response('hi', { headers: { 'Cache-Control': 'public' } }),
+    )
+    await cachedFetch(
+      new Request('https://site.test/us/items?sort=name&fbclid=abc&page=2'),
+      c,
+      handler,
+      v1,
+      cache,
+    )
+    await Promise.all(c.pending)
+    expect([...cache.store.keys()]).toEqual([
+      'https://site.test/us/items?page=2&sort=name&__v=1',
+    ])
+    expect(handler.mock.calls[0][0].url).toBe(
+      'https://site.test/us/items?page=2&sort=name',
+    )
+    await cachedFetch(
+      new Request('https://site.test/us/items?x=1&page=2&sort=name'),
+      c,
+      handler,
+      v1,
+      cache,
+    )
+    expect(handler).toHaveBeenCalledTimes(1)
+  })
+
+  it('leaves server fn URLs alone', async () => {
+    const cache = fakeCache()
+    const handler = vi.fn(
+      async (_req: Request) =>
+        new Response('hi', { headers: { 'Cache-Control': 'public' } }),
+    )
+    const url = 'https://site.test/_serverFn/abc?payload=%7B%7D'
+    await cachedFetch(new Request(url), ctx(), handler, v1, cache)
+    expect(handler.mock.calls[0][0].url).toBe(url)
+  })
 })
 
 const insertImport = (status: string) =>

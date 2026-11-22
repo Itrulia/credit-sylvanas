@@ -9,7 +9,7 @@ export default {
     cachedFetch(
       request,
       ctx,
-      () => handler.fetch(request),
+      (canonical) => handler.fetch(canonical),
       () => dataVersion(env.DB),
     ),
   // awaited, not waitUntil: a rejection then marks the cron run as failed in the dashboard
