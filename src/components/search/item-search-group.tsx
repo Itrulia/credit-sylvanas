@@ -10,11 +10,10 @@ import type { DynamicGroup } from '../command-palette/command'
 import { Icon } from '../icon'
 import { ItemLink } from '../item-link'
 import { Money } from '../money'
-import { useCurrentRegion } from './site-commands'
+import { useRegion } from './site-commands'
 
 const MIN_CHARS = 2
 const DEBOUNCE_MS = 200
-const GROUP = { id: 'items', label: 'Items' }
 
 /**
  * Live Items group for the palette. Must stay a module-level function: the
@@ -22,7 +21,9 @@ const GROUP = { id: 'items', label: 'Items' }
  */
 export function useItemSearchGroups(query: string): DynamicGroup[] {
   const navigate = useNavigate()
-  const region = useCurrentRegion() ?? 'us'
+  const region = useRegion()
+  // the region is in the label: on / and /about it is not in the URL
+  const GROUP = { id: 'items', label: `Items in ${REGION_INFO[region].name}` }
   const q = query.trim()
   const [settled] = useDebouncedValue(q, { wait: DEBOUNCE_MS })
   const { data, isError, isPlaceholderData } = useQuery({

@@ -1,7 +1,12 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useSyncExternalStore } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { REGIONS, REGION_INFO, isRegion } from '#/config/regions'
 import { realmsFor } from '#/config/realms'
+import {
+  readLastRegion,
+  rememberRegion,
+  subscribeLastRegion,
+} from '#/lib/last-region'
 import type { Faction, Region } from '#/lib/search'
 import type { Command } from '../command-palette/command'
 import { Icon } from '../icon'
@@ -10,6 +15,27 @@ import { Icon } from '../icon'
 export function useCurrentRegion(): Region | null {
   const { region } = useParams({ strict: false })
   return region && isRegion(region) ? region : null
+}
+
+/**
+ * The URL region, else the last one this viewer opened, else US. Pages
+ * without a region (/, /about, a 404) use it for nav and palette.
+ */
+export function useRegion(): Region {
+  const current = useCurrentRegion()
+  // the server snapshot is null, so hydration renders US first, then the
+  // remembered region
+  const last = useSyncExternalStore(
+    subscribeLastRegion,
+    readLastRegion,
+    () => null,
+  )
+  useEffect(() => {
+    if (current) {
+      rememberRegion(current)
+    }
+  }, [current])
+  return current ?? last ?? 'us'
 }
 
 const PAGES = [
@@ -43,8 +69,7 @@ type LooseParams = Record<string, string>
 export function useSiteCommands(): Command[] {
   const navigate = useNavigate()
   const current = useCurrentRegion()
-  // / and /about have no region yet: commands default to US
-  const region = current ?? 'us'
+  const region = useRegion()
 
   return useMemo(() => {
     const realms = realmsFor(region)

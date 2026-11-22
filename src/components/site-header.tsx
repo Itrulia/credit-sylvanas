@@ -1,12 +1,12 @@
-import { Link, useParams } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { isRegion } from '#/config/regions'
 import type { Region } from '#/lib/search'
 import { cn } from '#/lib/utils'
 import { CommandPaletteTrigger } from './command-palette/command-palette-trigger'
 import { useCommandPalette } from './command-palette/command-palette-provider'
 import { Icon } from './icon'
 import { RegionNav } from './region-nav'
+import { useCurrentRegion, useRegion } from './search/site-commands'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet'
 
 const NAV = [
@@ -70,11 +70,8 @@ function Wordmark() {
 }
 
 export function SiteHeader() {
-  const params = useParams({ strict: false })
-  const current =
-    params.region && isRegion(params.region) ? params.region : null
-  // / and /about have no region yet: nav targets and palette default to US
-  const region: Region = current ?? 'us'
+  const current = useCurrentRegion()
+  const region = useRegion()
   const { open } = useCommandPalette()
   const [menuOpen, setMenuOpen] = useState(false)
   return (
