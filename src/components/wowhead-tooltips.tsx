@@ -9,11 +9,11 @@ declare global {
   }
 }
 
-const NO_SCRIPT = new Set(['/', '/about'])
+const NO_SCRIPT = new Set(['/', '/about', '/impressum', '/privacy'])
 
 /**
  * Client-only progressive enhancement: loads Wowhead's tooltip script once
- * (never on / or /about) and re-scans links after each client navigation.
+ * (never on pages without item links) and re-scans links after each client navigation.
  */
 export function WowheadTooltips() {
   const router = useRouter()

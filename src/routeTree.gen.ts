@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegionRouteImport } from './routes/$region'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ImpressumRouteImport } from './routes/impressum'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegionIndexRouteImport } from './routes/$region/index'
 import { Route as RegionHeatmapRouteImport } from './routes/$region/heatmap'
 import { Route as RegionRealmsRouteImport } from './routes/$region/realms'
@@ -31,6 +33,16 @@ const RegionRoute = RegionRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpressumRoute = ImpressumRouteImport.update({
+  id: '/impressum',
+  path: '/impressum',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegionIndexRoute = RegionIndexRouteImport.update({
@@ -63,6 +75,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$region': typeof RegionRouteWithChildren
   '/about': typeof AboutRoute
+  '/impressum': typeof ImpressumRoute
+  '/privacy': typeof PrivacyRoute
   '/$region/heatmap': typeof RegionHeatmapRoute
   '/$region/realms': typeof RegionRealmsRoute
   '/$region/': typeof RegionIndexRoute
@@ -72,6 +86,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/impressum': typeof ImpressumRoute
+  '/privacy': typeof PrivacyRoute
   '/$region/heatmap': typeof RegionHeatmapRoute
   '/$region/realms': typeof RegionRealmsRoute
   '/$region': typeof RegionIndexRoute
@@ -83,6 +99,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$region': typeof RegionRouteWithChildren
   '/about': typeof AboutRoute
+  '/impressum': typeof ImpressumRoute
+  '/privacy': typeof PrivacyRoute
   '/$region/heatmap': typeof RegionHeatmapRoute
   '/$region/realms': typeof RegionRealmsRoute
   '/$region/': typeof RegionIndexRoute
@@ -95,6 +113,8 @@ export interface FileRouteTypes {
     | '/'
     | '/$region'
     | '/about'
+    | '/impressum'
+    | '/privacy'
     | '/$region/heatmap'
     | '/$region/realms'
     | '/$region/'
@@ -104,6 +124,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/impressum'
+    | '/privacy'
     | '/$region/heatmap'
     | '/$region/realms'
     | '/$region'
@@ -114,6 +136,8 @@ export interface FileRouteTypes {
     | '/'
     | '/$region'
     | '/about'
+    | '/impressum'
+    | '/privacy'
     | '/$region/heatmap'
     | '/$region/realms'
     | '/$region/'
@@ -125,6 +149,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RegionRoute: typeof RegionRouteWithChildren
   AboutRoute: typeof AboutRoute
+  ImpressumRoute: typeof ImpressumRoute
+  PrivacyRoute: typeof PrivacyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -148,6 +174,20 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impressum': {
+      id: '/impressum'
+      path: '/impressum'
+      fullPath: '/impressum'
+      preLoaderRoute: typeof ImpressumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$region/': {
@@ -211,6 +251,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RegionRoute: RegionRouteWithChildren,
   AboutRoute: AboutRoute,
+  ImpressumRoute: ImpressumRoute,
+  PrivacyRoute: PrivacyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

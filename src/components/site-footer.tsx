@@ -11,11 +11,23 @@ export function SiteFooter() {
           </p>
           <p className="max-w-prose">{NOT_AFFILIATED}</p>
         </div>
-        <p>
-          <Link to="/about" className="underline">
-            About and data sources
-          </Link>
-        </p>
+        <ul className="flex flex-wrap gap-x-4 gap-y-1">
+          <li>
+            <Link to="/about" className="underline">
+              About and data sources
+            </Link>
+          </li>
+          <li>
+            <Link to="/privacy" className="underline">
+              Privacy
+            </Link>
+          </li>
+          <li>
+            <Link to="/impressum" className="underline">
+              Impressum
+            </Link>
+          </li>
+        </ul>
       </div>
     </footer>
   )
