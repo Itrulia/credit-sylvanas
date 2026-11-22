@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { DAILY_CHANGE_SQL } from './heatmap.ts'
 import { OWN_HISTORY_SQL } from './history.ts'
 import { CURRENT_SQL } from './item.ts'
-import { RISING_SQL } from './rising.ts'
+import { RISING_DAYS_SQL, RISING_SQL } from './rising.ts'
 import { REGIONS_SQL } from './status.ts'
 
 // Without sqlite_stat1 the planner picks the (region, day, item_id) primary key
@@ -33,5 +33,15 @@ describe('status reads', () => {
   // imports is never pruned and grows with every realm scan
   it('use the imports status index', async () => {
     expect(await plan(REGIONS_SQL)).toMatch(/INDEX imports_status/)
+  })
+})
+
+describe('rising day count', () => {
+  it('probes the primary key per day instead of scanning the region', async () => {
+    const detail = await plan(RISING_DAYS_SQL, 'us')
+    expect(detail).not.toMatch(/SCAN region_snapshots/)
+    expect(detail).toMatch(
+      /SEARCH region_snapshots EXISTS USING PRIMARY KEY \(region=\? AND day=\?\)/,
+    )
   })
 })

@@ -61,40 +61,20 @@ const columns = (region: Region): DataColumn<RisingRow>[] => [
 export interface RisingTableProps {
   region: Region
   rows: RisingRow[]
-  /** distinct daily updates in the region, today included (status.days) */
+  /** region days with snapshots in the 30 before the latest (rising.ts) */
   days: number
   lastDay: number | null
 }
 
 export function RisingTable({ region, rows, days, lastDay }: RisingTableProps) {
   const name = REGION_INFO[region].name
-  const earlier = Math.max(0, days - 1)
   return (
     <div className="space-y-3">
       <p className="text-sm">
         Up at least 5% in a week and selling at least 1.25 times their usual
         amount per day. <InfoPopover term="rising" />
       </p>
-      {earlier < NEED ? (
-        <div className="rounded-md border border-dashed p-4 text-sm">
-          <p className="font-semibold">
-            Starts on{' '}
-            {lastDay !== null
-              ? formatDate(lastDay + NEED - earlier)
-              : 'the 15th daily update'}{' '}
-            ({earlier} of {NEED} days so far).
-          </p>
-          <p>Sales need {NEED} earlier daily updates to compare with.</p>
-        </div>
-      ) : rows.length === 0 ? (
-        <p className="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm">
-          <Icon name="info" className="mt-0.5 text-muted-foreground" />
-          <span>
-            No item is rising with demand today. Nothing in {name} is up 5% on
-            the week while also selling more than usual.
-          </span>
-        </p>
-      ) : (
+      {rows.length > 0 ? (
         <DataTable
           caption={`Top ${rows.length} ${name} items rising in price while selling more than usual`}
           captionHidden
@@ -103,13 +83,33 @@ export function RisingTable({ region, rows, days, lastDay }: RisingTableProps) {
           data={rows}
           getRowId={(row) => String(row.id)}
         />
+      ) : days < NEED ? (
+        <div className="rounded-md border border-dashed p-4 text-sm">
+          <p className="font-semibold">
+            Starts on{' '}
+            {lastDay !== null
+              ? formatDate(lastDay + NEED - days)
+              : 'the 15th daily update'}{' '}
+            ({days} of {NEED} earlier daily updates so far).
+          </p>
+          <p>Sales need {NEED} earlier daily updates to compare with.</p>
+        </div>
+      ) : (
+        <p className="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm">
+          <Icon name="info" className="mt-0.5 text-muted-foreground" />
+          <span>
+            No item is rising with demand today. In {name}, nothing that trades
+            at least 1g a day and has two weeks of sales is up 5% on the week
+            while selling more than usual.
+          </span>
+        </p>
       )}
     </div>
   )
 }
 
 /** Reads the streamed query; the route prefetches it without waiting. */
-export function Rising(props: Omit<RisingTableProps, 'rows'>) {
+export function Rising(props: Omit<RisingTableProps, 'rows' | 'days'>) {
   const { data } = useSuspenseQuery(risingQuery({ region: props.region }))
-  return <RisingTable {...props} rows={data} />
+  return <RisingTable {...props} rows={data.rows} days={data.days} />
 }

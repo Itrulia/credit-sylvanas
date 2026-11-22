@@ -112,27 +112,26 @@ function Market() {
             days={status.days}
           />
         </section>
+        <section aria-labelledby="rising" className="space-y-3 lg:col-span-7">
+          <h2 id="rising" tabIndex={-1} className="text-title">
+            Rising with demand
+          </h2>
+          <SectionBoundary headingId="rising">
+            <Suspense
+              fallback={
+                <div
+                  aria-busy="true"
+                  className="h-64 rounded-md border bg-muted"
+                >
+                  <span className="sr-only">Loading rising items…</span>
+                </div>
+              }
+            >
+              <Rising region={region} lastDay={status.lastDay} />
+            </Suspense>
+          </SectionBoundary>
+        </section>
       </div>
-      <section aria-labelledby="rising" className="space-y-3">
-        <h2 id="rising" tabIndex={-1} className="text-title">
-          Rising with demand
-        </h2>
-        <SectionBoundary headingId="rising">
-          <Suspense
-            fallback={
-              <div aria-busy="true" className="h-64 rounded-md border bg-muted">
-                <span className="sr-only">Loading rising items…</span>
-              </div>
-            }
-          >
-            <Rising
-              region={region}
-              days={status.days}
-              lastDay={status.lastDay}
-            />
-          </Suspense>
-        </SectionBoundary>
-      </section>
       <section aria-labelledby="market-map" className="space-y-3">
         <h2 id="market-map" tabIndex={-1} className="text-title">
           Market map

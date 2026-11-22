@@ -62,6 +62,12 @@ export interface MoversResult {
   available: { d1: boolean; d7: boolean; d7From: number | null }
 }
 
+export interface RisingResult {
+  rows: RisingRow[]
+  /** region days with snapshots in the 30 days before the latest */
+  days: number
+}
+
 export interface RisingRow {
   id: number
   name: string

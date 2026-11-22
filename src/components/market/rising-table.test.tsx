@@ -56,17 +56,35 @@ describe('RisingTable', () => {
   })
 
   it('says when it starts while the region has under 14 earlier days', async () => {
-    withRouter(<RisingTable region="eu" rows={[]} days={5} lastDay={NOV_22} />)
+    withRouter(<RisingTable region="eu" rows={[]} days={4} lastDay={NOV_22} />)
     expect(
-      await screen.findByText(/Starts on 2 Dec 2026 \(4 of 14 days so far\)/),
+      await screen.findByText(
+        /Starts on 2 Dec 2026 \(4 of 14 earlier daily updates so far\)/,
+      ),
     ).toBeTruthy()
     expect(screen.queryByRole('table')).toBeNull()
   })
 
-  it('says so plainly when nothing qualifies', async () => {
+  it('shows rows even when the day count says there is too little history', async () => {
+    withRouter(
+      <RisingTable
+        region="eu"
+        rows={[row(1, 0.1)]}
+        days={2}
+        lastDay={NOV_22}
+      />,
+    )
+    expect(await screen.findByRole('table')).toBeTruthy()
+    expect(screen.queryByText(/Starts on/)).toBeNull()
+  })
+
+  it('says so plainly when nothing qualifies, naming the cutoffs', async () => {
     withRouter(<RisingTable region="eu" rows={[]} days={30} lastDay={NOV_22} />)
     expect(
       await screen.findByText(/No item is rising with demand today/),
+    ).toBeTruthy()
+    expect(
+      screen.getByText(/trades at least 1g a day and has two weeks of sales/),
     ).toBeTruthy()
     expect(screen.queryByRole('table')).toBeNull()
   })

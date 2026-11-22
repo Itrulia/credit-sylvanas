@@ -4,7 +4,7 @@ import { db } from '../db/client.ts'
 import { hottest } from '../queries/hottest.ts'
 import { movers } from '../queries/movers.ts'
 import { rising } from '../queries/rising.ts'
-import type { HotRow, MoversResult, RisingRow } from '../types.ts'
+import type { HotRow, MoversResult, RisingResult } from '../types.ts'
 import { cachePublic } from './cache.ts'
 import { HottestInput, MoversInput, RegionInput } from './inputs.ts'
 
@@ -49,7 +49,7 @@ export const marketMapQuery = (input: RegionInput) =>
 
 export const getRising = createServerFn({ method: 'GET' })
   .validator(RegionInput)
-  .handler(async ({ data }): Promise<RisingRow[]> => {
+  .handler(async ({ data }): Promise<RisingResult> => {
     cachePublic()
     return rising(db(), data)
   })
