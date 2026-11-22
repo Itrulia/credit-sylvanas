@@ -3,9 +3,10 @@ import { m } from '#/i18n'
 export const SITE = 'Credit Sylvanas'
 export const SITE_URL = 'https://credit-sylvanas.app'
 
-/** Canonical and og:url for a path, always on the apex domain without the query. */
-export function canonicalLinks(pathname: string) {
-  const href = `${SITE_URL}${pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname}`
+/** Canonical and og:url on the apex domain. The query is dropped except ?page past 1, which lists other items. */
+export function canonicalLinks(pathname: string, page?: number) {
+  const path = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname
+  const href = `${SITE_URL}${path}${page && page > 1 ? `?page=${page}` : ''}`
   return {
     links: [{ rel: 'canonical', href }],
     meta: [{ property: 'og:url', content: href }],

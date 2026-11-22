@@ -33,7 +33,13 @@ const Devtools = import.meta.env.DEV
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     head: ({ matches }) => {
-      const canonical = canonicalLinks(matches.at(-1)?.pathname ?? '/')
+      const leaf = matches.at(-1)
+      // only the items list validates page; every other param stays out of the canonical
+      const search: { page?: unknown } = leaf?.search ?? {}
+      const canonical = canonicalLinks(
+        leaf?.pathname ?? '/',
+        typeof search.page === 'number' ? search.page : undefined,
+      )
       return {
         meta: [
           { charSet: 'utf-8' },

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { Route as Root } from './__root'
 import { Route as Market } from './$region/index'
 import { Route as Items } from './$region/items/index'
 import { Route as Heatmap } from './$region/heatmap'
@@ -42,5 +43,25 @@ describe('region page heads', () => {
   it('realms page is noindex while src/config/realms.ts is empty', () => {
     const meta = run(Realms, 'eu').meta ?? []
     expect(meta).toContainEqual({ name: 'robots', content: 'noindex' })
+  })
+})
+
+describe('root head', () => {
+  const rootHead = (search: unknown) =>
+    (
+      Root.options.head as (ctx: unknown) => {
+        links?: Array<Partial<Record<string, string>>>
+      }
+    )({ matches: [{ pathname: '/eu/items', search }] })
+
+  it('keeps the items page number in the canonical', () => {
+    expect(rootHead({ page: 3, sort: 'name' }).links).toContainEqual({
+      rel: 'canonical',
+      href: 'https://credit-sylvanas.app/eu/items?page=3',
+    })
+    expect(rootHead({ page: 1 }).links).toContainEqual({
+      rel: 'canonical',
+      href: 'https://credit-sylvanas.app/eu/items',
+    })
   })
 })

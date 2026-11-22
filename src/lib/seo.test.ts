@@ -22,4 +22,27 @@ describe('canonicalLinks', () => {
       'https://credit-sylvanas.app/',
     )
   })
+
+  it('keeps ?page=N past page 1 and drops every other param', () => {
+    expect(canonicalLinks('/eu/items', 1).links[0].href).toBe(
+      'https://credit-sylvanas.app/eu/items',
+    )
+    expect(canonicalLinks('/eu/items', 3)).toEqual({
+      links: [
+        {
+          rel: 'canonical',
+          href: 'https://credit-sylvanas.app/eu/items?page=3',
+        },
+      ],
+      meta: [
+        {
+          property: 'og:url',
+          content: 'https://credit-sylvanas.app/eu/items?page=3',
+        },
+      ],
+    })
+    expect(canonicalLinks('/eu/items/', 2).links[0].href).toBe(
+      'https://credit-sylvanas.app/eu/items?page=2',
+    )
+  })
 })
