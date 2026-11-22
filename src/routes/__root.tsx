@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
 import { PageviewTracker } from '#/components/pageview-tracker'
+import { RouteFocus } from '#/components/route-focus'
 import { SitePalette } from '#/components/search/site-palette'
 import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
@@ -79,6 +80,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         </SitePalette>
         <WowheadTooltips />
         <PageviewTracker />
+        <RouteFocus />
         <Suspense>
           <Devtools />
         </Suspense>
