@@ -12,7 +12,7 @@ import {
   resolveWindow,
 } from '#/components/market/market'
 import { SectionBoundary } from '#/components/section-boundary'
-import { REGION_INFO } from '#/config/regions'
+import { REGION_INFO, regionLabel } from '#/config/regions'
 import { dayOf } from '#/lib/format'
 import { MARKET_DEFAULTS, marketSearch } from '#/lib/search'
 import { pageHead } from '#/lib/seo'
@@ -53,7 +53,7 @@ export const Route = createFileRoute('/$region/')({
     }
   },
   head: ({ params }) => {
-    const region = params.region.toUpperCase()
+    const region = regionLabel(params.region)
     return pageHead(
       m.market.headTitle({ region }),
       m.market.headDescription({ region }),

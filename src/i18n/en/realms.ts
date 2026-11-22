@@ -5,7 +5,7 @@ export const realms = {
     `Realms · ${region} Forever AH`,
   headDescription: ({ region }: { region: string }) =>
     `Pick a ${region} Forever realm to see realm prices.`,
-  pageTitle: () => 'Realms',
+  pageTitle: ({ region }: { region: string }) => `${region} realms`,
   rulesetLabel: () => 'Ruleset',
 
   rulesetAll: () => 'All',

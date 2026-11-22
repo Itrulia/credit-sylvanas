@@ -10,7 +10,7 @@ export const items = {
     `Item prices · ${region} Forever AH`,
   headDescription: ({ region }: { region: string }) =>
     `Search and sort every item on the ${region} Forever auction house by market value, sale rate and daily sales.`,
-  pageTitle: () => 'Item prices',
+  pageTitle: ({ region }: { region: string }) => `${region} item prices`,
 
   countLabel: itemCount,
   countMatchingLabel: ({

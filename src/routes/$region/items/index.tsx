@@ -13,6 +13,7 @@ import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { ITEMS_DEFAULTS, itemsSearch } from '#/lib/search'
 import type { Region } from '#/lib/search'
+import { REGION_INFO, regionLabel } from '#/config/regions'
 import { pageHead } from '#/lib/seo'
 import { listItemsQuery } from '#/server/fns/items'
 import type { ListInput } from '#/server/fns/inputs'
@@ -44,7 +45,7 @@ export const Route = createFileRoute('/$region/items/')({
     }
   },
   head: ({ params }) => {
-    const name = params.region.toUpperCase()
+    const name = regionLabel(params.region)
     return pageHead(
       m.items.headTitle({ region: name }),
       m.items.headDescription({ region: name }),
@@ -69,7 +70,9 @@ function Items() {
   return (
     <div className="page-wrap space-y-4 py-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <h1 className="text-display">{m.items.pageTitle()}</h1>
+        <h1 className="text-display">
+          {m.items.pageTitle({ region: REGION_INFO[region].name })}
+        </h1>
         <ItemsSearchInput
           q={q}
           className="md:w-96"

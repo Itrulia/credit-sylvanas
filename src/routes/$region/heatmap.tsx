@@ -12,7 +12,7 @@ import { HeatmapControls } from '#/components/heatmap/heatmap-controls'
 import { MomentumGrid } from '#/components/heatmap/momentum-grid'
 import { SectionBoundary } from '#/components/section-boundary'
 import { StatePanel } from '#/components/state-panel'
-import { REGION_INFO } from '#/config/regions'
+import { REGION_INFO, regionLabel } from '#/config/regions'
 import { m } from '#/i18n'
 import { track } from '#/lib/analytics'
 import { HEATMAP_DEFAULTS, heatmapSearch } from '#/lib/search'
@@ -32,7 +32,7 @@ export const Route = createFileRoute('/$region/heatmap')({
     await context.queryClient.ensureQueryData(heatmapQuery(input))
   },
   head: ({ params }) => {
-    const name = params.region.toUpperCase()
+    const name = regionLabel(params.region)
     return pageHead(
       m.heatmap.headTitle({ region: name }),
       m.heatmap.headDescription({ region: name }),
@@ -53,7 +53,9 @@ function Heatmaps() {
   return (
     <div className="page-wrap space-y-8 py-6">
       <header className="space-y-1">
-        <h1 className="text-display">{m.heatmap.pageTitle()}</h1>
+        <h1 className="text-display">
+          {m.heatmap.pageTitle({ region: name })}
+        </h1>
         {realm !== undefined && (
           <p className="text-sm text-muted-foreground">
             {m.heatmap.realmNote()}

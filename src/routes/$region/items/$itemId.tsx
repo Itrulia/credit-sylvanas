@@ -6,7 +6,7 @@ import {
 import type { NotFoundRouteProps } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { REGION_INFO } from '#/config/regions'
+import { REGION_INFO, regionLabel } from '#/config/regions'
 import { findRealm } from '#/config/realms'
 import { Freshness } from '#/components/freshness'
 import { FavouriteButton } from '#/components/item/favourite-button'
@@ -66,7 +66,7 @@ export const Route = createFileRoute('/$region/items/$itemId')({
     if (!loaderData) {
       return {}
     }
-    const region = params.region.toUpperCase()
+    const region = regionLabel(params.region)
     const { name, mv, spd } = loaderData
     return pageHead(
       m.item.headTitle({ name, region }),

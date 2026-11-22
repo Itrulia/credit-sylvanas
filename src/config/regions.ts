@@ -16,6 +16,10 @@ export const REGION_INFO: Record<
 export const isRegion = (value: string): value is RegionCode =>
   (REGIONS as readonly string[]).includes(value)
 
+// head() gets the raw param; a non-region one 404s, so the fallback only satisfies the type
+export const regionLabel = (code: string) =>
+  isRegion(code) ? REGION_INFO[code].name : code.toUpperCase()
+
 // Shown greyed out in the nav and on the home page, never routed or ingested.
 // The D1 schema still accepts kr and tw: moving one into REGIONS (with its
 // REGION_INFO) turns it on.

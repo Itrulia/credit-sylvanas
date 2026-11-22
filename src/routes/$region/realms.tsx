@@ -4,6 +4,7 @@ import { RULESET_LABEL, RealmList } from '#/components/realms/realm-list'
 import type { RealmsFilter } from '#/components/realms/realm-list'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
 import { RulesetFilter, realmsSearch } from '#/lib/search'
+import { REGION_INFO, regionLabel } from '#/config/regions'
 import { pageHead } from '#/lib/seo'
 import { m } from '#/i18n'
 
@@ -12,7 +13,7 @@ export const Route = createFileRoute('/$region/realms')({
   validateSearch: realmsSearch,
   search: { middlewares: [stripSearchParams({ ruleset: 'all' })] },
   head: ({ params }) => {
-    const name = params.region.toUpperCase()
+    const name = regionLabel(params.region)
     return pageHead(
       m.realms.headTitle({ region: name }),
       m.realms.headDescription({ region: name }),
@@ -29,7 +30,9 @@ function Realms() {
   return (
     <div className="page-wrap space-y-6 py-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="text-display">{m.realms.pageTitle()}</h1>
+        <h1 className="text-display">
+          {m.realms.pageTitle({ region: REGION_INFO[region].name })}
+        </h1>
         {/* a filter over nothing is noise: no ruleset control while realms.ts is empty */}
         {realms.length > 0 && (
           <ToggleGroup

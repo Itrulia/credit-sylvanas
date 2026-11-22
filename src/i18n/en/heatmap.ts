@@ -17,7 +17,7 @@ export const heatmap = {
     `Heatmaps · ${region} Forever AH`,
   headDescription: ({ region }: { region: string }) =>
     `See where the top ${region} Forever auction house items cost more or less than in other regions and than their 60-day average. Pricing data from TradeSkillMaster.`,
-  pageTitle: () => 'Price heatmaps',
+  pageTitle: ({ region }: { region: string }) => `${region} price heatmaps`,
   realmNote: () => 'Heatmaps are region-wide.',
   emptyTitle: ({ region }: { region: string }) =>
     `Not enough trading in ${region} to build a heatmap.`,
