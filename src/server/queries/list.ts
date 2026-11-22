@@ -13,6 +13,7 @@ const SORT: Record<ItemSort, string> = {
   avgSalePrice: 's.avg_sale_price',
   soldPerDay: 's.sold_per_day',
   saleRate: 's.sale_rate',
+  goldPerDay: 's.sold_per_day * s.avg_sale_price',
 }
 
 export interface ListArgs {

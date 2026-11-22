@@ -173,7 +173,7 @@ export function HottestTable({
         <Link
           to="/$region/items"
           params={{ region }}
-          search={{ sort: 'soldPerDay' }}
+          search={{ sort: hot === 'gold' ? 'goldPerDay' : 'soldPerDay' }}
           className="inline-flex min-h-6 items-center gap-1 text-sm font-medium underline pointer-coarse:min-h-11"
         >
           See all items

@@ -73,6 +73,7 @@ export const ItemSort = z.enum([
   'avgSalePrice',
   'soldPerDay',
   'saleRate',
+  'goldPerDay',
 ])
 export type ItemSort = z.infer<typeof ItemSort>
 export const SortDir = z.enum(['asc', 'desc'])

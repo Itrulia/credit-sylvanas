@@ -19,6 +19,7 @@ const SORT_LABEL: Record<ItemSort, string> = {
   avgSalePrice: 'average sale price',
   soldPerDay: 'units sold per day',
   saleRate: 'sale rate',
+  goldPerDay: 'gold traded per day',
 }
 
 /** Clicking the active column flips it. A new column starts high to low, names A to Z. */
@@ -143,6 +144,18 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
       },
       cell: ({ row }) =>
         formatPct(row.original.saleRate, { decimals: 0, sign: false }),
+    },
+    {
+      id: 'goldPerDay',
+      header: 'Gold per day',
+      meta: { ...money, info: 'goldPerDay' },
+      cell: ({ row }) => (
+        <Money
+          copper={Math.round(row.original.spd * row.original.asp)}
+          variant="compact"
+          align
+        />
+      ),
     },
   ]
 }

@@ -69,6 +69,7 @@ it('renders the region columns with aria-sort and calls onSort', async () => {
     'Avg. sale price',
     'Sold per day',
     'Sale rate',
+    'Gold per day',
   ])
   // same names and definitions as the glossary and item page
   expect(

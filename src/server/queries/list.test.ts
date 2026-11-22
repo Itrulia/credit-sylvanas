@@ -60,6 +60,16 @@ describe('listItems', () => {
     expect(vsPage2.rows.at(-1)?.id).toBe(1)
   })
 
+  it('sorts by gold per day, sold per day times average sale price', async () => {
+    await seedDay('us', D, [
+      { id: 1, spd: 10, asp: 100 },
+      { id: 2, spd: 1, asp: 5_000 },
+      { id: 3, spd: 100, asp: 20 },
+    ])
+    const rows = await listItems(db, { ...args, sort: 'goldPerDay' })
+    expect(rows.rows.map((r) => r.id)).toEqual([2, 3, 1])
+  })
+
   it('adds the latest realm scan when a realm is set', async () => {
     await seedDay('us', D, [{ id: 1 }, { id: 2 }])
     const t = D * 86_400
