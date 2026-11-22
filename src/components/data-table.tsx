@@ -133,7 +133,7 @@ export function DataTable<TData extends RowData>({
                         type="button"
                         onClick={() => onSort(header.column.id)}
                         className={cn(
-                          'inline-flex min-h-6 items-center gap-1 uppercase',
+                          'inline-flex min-h-6 items-center gap-1 uppercase pointer-coarse:min-h-11',
                           right && 'flex-row-reverse',
                         )}
                       >

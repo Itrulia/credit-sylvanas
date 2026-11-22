@@ -56,7 +56,7 @@ export function ChartFigure({
             aria-expanded={open}
             aria-controls={tableId}
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex min-h-6 items-center gap-1 text-sm underline"
+            className="inline-flex min-h-6 items-center gap-1 text-sm underline pointer-coarse:min-h-11"
           >
             <Icon name={open ? 'expand_less' : 'expand_more'} />
             {open ? 'Hide table' : 'Show as table'}

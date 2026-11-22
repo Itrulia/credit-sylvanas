@@ -59,7 +59,7 @@ export function RegionStrip({
                     faction: undefined,
                   })}
                   aria-current={r.region === region ? 'page' : undefined}
-                  className="inline-flex min-h-6 items-center underline"
+                  className="inline-flex min-h-6 min-w-11 items-center underline pointer-coarse:min-h-11"
                 >
                   {REGION_INFO[r.region].name}
                 </Link>

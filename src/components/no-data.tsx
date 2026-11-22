@@ -50,7 +50,7 @@ export function NoData({ region, status }: NoDataProps) {
                 <Link
                   to="/$region"
                   params={{ region: r }}
-                  className="underline"
+                  className="inline-flex min-h-6 min-w-11 items-center underline pointer-coarse:min-h-11"
                 >
                   {REGION_INFO[r].name}
                 </Link>

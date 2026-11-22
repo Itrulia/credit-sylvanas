@@ -132,7 +132,7 @@ export function HottestTable({
         }
       }}
     >
-      <TabsList className="pointer-coarse:h-11" aria-label="Rank by">
+      <TabsList className="pointer-coarse:h-11!" aria-label="Rank by">
         <TabsTrigger value="gold">Most gold traded</TabsTrigger>
         <TabsTrigger value="traded">Most sold</TabsTrigger>
       </TabsList>
@@ -159,7 +159,7 @@ export function HottestTable({
           to="/$region/items"
           params={{ region }}
           search={{ sort: 'soldPerDay' }}
-          className="inline-flex min-h-6 items-center gap-1 text-sm font-medium underline"
+          className="inline-flex min-h-6 items-center gap-1 text-sm font-medium underline pointer-coarse:min-h-11"
         >
           See all items
         </Link>

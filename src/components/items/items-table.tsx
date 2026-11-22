@@ -80,7 +80,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
               target="_blank"
               rel="noreferrer"
               aria-label={`View ${itemName(name, id)} on Wowhead (opens Wowhead)`}
-              className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground pointer-coarse:size-11"
             >
               <Icon name="open_in_new" />
             </a>
