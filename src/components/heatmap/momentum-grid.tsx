@@ -47,7 +47,7 @@ export function MomentumGrid({ region, rows, busy }: MomentumGridProps) {
                   id={row.id}
                   name={row.name}
                   region={region}
-                  className="line-clamp-2 font-medium"
+                  className="font-medium"
                 />
                 <Delta value={row.vsHist} mode="vsHist" />
               </li>

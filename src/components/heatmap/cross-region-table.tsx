@@ -120,7 +120,7 @@ export function CrossRegionTable({
           id={row.original.id}
           name={row.original.name}
           region={region}
-          className="line-clamp-2 min-w-36"
+          className="max-w-56 min-w-36 sm:max-w-80"
         />
       ),
     },

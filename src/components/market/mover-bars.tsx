@@ -60,12 +60,7 @@ export function MoverChart({ region, dir, by, window, rows }: MoverChartProps) {
                   scope="row"
                   className="w-[46%] py-1.5 pr-3 text-left align-middle font-normal"
                 >
-                  <ItemLink
-                    id={r.id}
-                    name={r.name}
-                    region={region}
-                    className="line-clamp-2"
-                  />
+                  <ItemLink id={r.id} name={r.name} region={region} />
                 </th>
                 <td aria-hidden="true" className="py-1.5 align-middle">
                   <div

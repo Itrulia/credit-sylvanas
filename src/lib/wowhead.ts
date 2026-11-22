@@ -13,3 +13,18 @@ export const WOWHEAD_CONFIG = {
 /** Names can be empty in TSM files; never render a blank link. */
 export const itemName = (name: string, id: number) =>
   name.trim() || `Item #${id}`
+
+const stopPropagation = (e: Event) => e.stopPropagation()
+
+/**
+ * Callback ref for the name inside an item link. Wowhead opens tooltips from
+ * one mouseover listener on document, so stopping the event here limits the
+ * tooltip to the icon it inserts next to the name.
+ */
+export function iconOnlyTooltip(el: HTMLElement | null) {
+  if (!el) {
+    return
+  }
+  el.addEventListener('mouseover', stopPropagation)
+  return () => el.removeEventListener('mouseover', stopPropagation)
+}

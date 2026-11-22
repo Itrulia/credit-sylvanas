@@ -86,7 +86,7 @@ export function useItemSearchGroups(query: string): DynamicGroup[] {
               id={row.id}
               name={row.name}
               region={region}
-              className="truncate"
+              className="min-w-0"
             />
             <span className="flex shrink-0 items-center gap-3 text-xs font-normal text-muted-foreground">
               <Money

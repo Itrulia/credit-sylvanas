@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { Region } from '#/lib/search'
-import { itemName, wowheadData } from '#/lib/wowhead'
+import { iconOnlyTooltip, itemName, wowheadData } from '#/lib/wowhead'
 import { cn } from '#/lib/utils'
 
 export interface ItemLinkProps {
@@ -29,9 +29,15 @@ export function ItemLink({
       params={{ region, itemId: String(id) }}
       data-wowhead={wowheadData(id)}
       data-wh-icon-size={iconSize}
-      className={cn('hover:underline', className)}
+      title={itemName(name, id)}
+      className={cn(
+        'inline-flex max-w-full min-w-0 items-center align-bottom hover:underline',
+        className,
+      )}
     >
-      <span>{itemName(name, id)}</span>
+      <span ref={iconOnlyTooltip} className="min-w-0 truncate">
+        {itemName(name, id)}
+      </span>
     </Link>
   )
 }

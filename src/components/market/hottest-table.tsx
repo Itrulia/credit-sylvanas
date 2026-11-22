@@ -56,7 +56,7 @@ function columns(region: Region, showChange: boolean): DataColumn<HotRow>[] {
           id={row.original.id}
           name={row.original.name}
           region={region}
-          className="line-clamp-2"
+          className="max-w-56 sm:max-w-80"
         />
       ),
       meta: { rowHeader: true, cellClassName: 'min-w-36' },
