@@ -14,7 +14,7 @@ Workers runtime does. Charts are the exception: recharts through the shadcn
   Workers Paid.
 - Cloudflare D1 behind the binding `DB`, no ORM, async only
   (`prepare().bind().all()/first()/run()`, `batch()` for bulk writes).
-  Cloudflare R2 bucket `worgen-tsm-archive` behind `ARCHIVE`, private.
+  Cloudflare R2 bucket `credit-sylvanas-tsm-archive` behind `ARCHIVE`, private.
 - TanStack Router (file-based, `src/routes`), Query with
   `@tanstack/react-router-ssr-query`, Table, Form, Pacer (debounce),
   Hotkeys (`useHotkey`); zod v4.

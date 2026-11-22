@@ -1,4 +1,4 @@
-# Worgen of Booty Bay
+# Credit Sylvanas
 
 Public, login-free price site for World of Warcraft "Forever" auction houses,
 built on TradeSkillMaster (TSM) public CSV data. It is one TanStack Start app
