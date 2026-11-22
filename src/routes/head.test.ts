@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Route as Root } from './__root'
+import { Route as Home } from './index'
 import { Route as Market } from './$region/index'
 import { Route as Items } from './$region/items/index'
 import { Route as Heatmap } from './$region/heatmap'
@@ -9,7 +10,10 @@ import { Route as Item } from './$region/items/$itemId'
 // vi.mock is hoisted: route modules import server fns, and head() never touches the D1 binding
 vi.mock('cloudflare:workers', () => ({ env: {} }))
 
-type Head = { meta?: Array<Partial<Record<string, string>>> }
+type Head = {
+  meta?: Array<Partial<Record<string, string>>>
+  scripts?: Array<{ children?: string }>
+}
 const run = (route: { options: { head?: unknown } }, region: string) =>
   (route.options.head as (ctx: unknown) => Head)({ params: { region } })
 
@@ -32,10 +36,17 @@ describe('region page heads', () => {
 
   it('item page says NA, never US', () => {
     const head = (Item.options.head as (ctx: unknown) => Head)({
-      params: { region: 'us' },
+      params: { region: 'us', itemId: '12360' },
       loaderData: { name: 'Arcanite Bar', mv: 10000, spd: 5 },
     })
     const text = (head.meta ?? []).map((m) => m.title ?? m.content).join(' ')
+    const crumbs = JSON.parse(head.scripts?.[0]?.children ?? '{}')
+    expect(crumbs.itemListElement.map((c: { name: string }) => c.name)).toEqual(
+      ['NA auction house', 'Items', 'Arcanite Bar'],
+    )
+    expect(crumbs.itemListElement[2].item).toBe(
+      'https://credit-sylvanas.app/us/items/12360',
+    )
     expect(text).toContain('NA Forever')
     expect(text).not.toMatch(/\bUS\b/)
   })
@@ -92,5 +103,13 @@ describe('root head', () => {
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       ]),
     )
+  })
+})
+
+it('home page names the site in WebSite JSON-LD', () => {
+  const head = (Home.options.head as () => Head)()
+  expect(JSON.parse(head.scripts?.[0]?.children ?? '{}')).toMatchObject({
+    '@type': 'WebSite',
+    name: 'Credit Sylvanas',
   })
 })

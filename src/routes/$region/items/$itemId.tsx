@@ -26,7 +26,7 @@ import { formatMoney, moneyText } from '#/lib/money'
 import { ITEM_DEFAULTS, ItemIdParam, itemSearch } from '#/lib/search'
 import type { Region } from '#/lib/search'
 import { rememberRecent } from '#/lib/saved-items'
-import { pageHead } from '#/lib/seo'
+import { breadcrumbLd, pageHead } from '#/lib/seo'
 import { itemName } from '#/lib/wowhead'
 import { itemHistoryQuery, itemQuery } from '#/server/fns/item'
 import { regionStatusQuery } from '#/server/fns/status'
@@ -68,7 +68,8 @@ export const Route = createFileRoute('/$region/items/$itemId')({
     }
     const region = regionLabel(params.region)
     const { name, mv, spd } = loaderData
-    return pageHead(
+    const base = `/${params.region}`
+    const head = pageHead(
       m.item.headTitle({ name, region }),
       m.item.headDescription({
         name,
@@ -77,6 +78,16 @@ export const Route = createFileRoute('/$region/items/$itemId')({
         sold: formatNumber(spd, spd < 10 ? 1 : 0),
       }),
     )
+    return {
+      ...head,
+      scripts: [
+        breadcrumbLd([
+          { name: m.market.heading({ region }), path: base },
+          { name: m.shell.navItems(), path: `${base}/items` },
+          { name, path: `${base}/items/${params.itemId}` },
+        ]),
+      ],
+    }
   },
   component: ItemDetail,
   notFoundComponent: ItemMissing,

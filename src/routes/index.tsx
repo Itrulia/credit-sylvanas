@@ -3,12 +3,15 @@ import { DISABLED_REGIONS, REGIONS, REGION_INFO } from '#/config/regions'
 import type { RegionCode } from '#/config/regions'
 import { Credit } from '#/components/credit'
 import { Icon } from '#/components/icon'
-import { pageHead } from '#/lib/seo'
+import { pageHead, websiteLd } from '#/lib/seo'
 import { m } from '#/i18n'
 
 export const Route = createFileRoute('/')({
   ssr: true,
-  head: () => pageHead(m.home.title(), m.home.description()),
+  head: () => ({
+    ...pageHead(m.home.title(), m.home.description()),
+    scripts: [websiteLd()],
+  }),
   component: Home,
 })
 

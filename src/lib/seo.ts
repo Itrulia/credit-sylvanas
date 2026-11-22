@@ -30,3 +30,33 @@ export function pageHead(title: string, description?: string, noindex = false) {
     ],
   }
 }
+
+// '<' as \u003c keeps a name like "</script>" from closing the tag; JSON.parse reads it back
+function ldScript(data: object) {
+  return {
+    type: 'application/ld+json',
+    children: JSON.stringify(data).replace(/</g, '\\u003c'),
+  }
+}
+
+/** WebSite markup for the home page: Google reads the site name from it. */
+export const websiteLd = () =>
+  ldScript({
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE,
+    url: `${SITE_URL}/`,
+  })
+
+export function breadcrumbLd(trail: Array<{ name: string; path: string }>) {
+  return ldScript({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map(({ name, path }, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name,
+      item: `${SITE_URL}${path}`,
+    })),
+  })
+}
