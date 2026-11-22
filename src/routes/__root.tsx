@@ -12,6 +12,7 @@ import { SiteFooter } from '#/components/site-footer'
 import { SiteHeader } from '#/components/site-header'
 import { WowheadTooltips } from '#/components/wowhead-tooltips'
 import { ICON_FONT_HREF, TEXT_FONTS_HREF } from '#/lib/icons'
+import { canonicalLinks } from '#/lib/seo'
 import { THEME_SCRIPT } from '#/lib/theme'
 import appCss from '../styles.css?url'
 
@@ -22,24 +23,29 @@ const Devtools = import.meta.env.DEV
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
-    head: () => ({
-      meta: [
-        { charSet: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      ],
-      links: [
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
-          crossOrigin: 'anonymous',
-        },
-        // text fonts swap, icons block (no flash of the "search" ligature word): separate stylesheets
-        { rel: 'stylesheet', href: TEXT_FONTS_HREF },
-        { rel: 'stylesheet', href: ICON_FONT_HREF },
-        { rel: 'stylesheet', href: appCss },
-      ],
-    }),
+    head: ({ matches }) => {
+      const canonical = canonicalLinks(matches.at(-1)?.pathname ?? '/')
+      return {
+        meta: [
+          { charSet: 'utf-8' },
+          { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+          ...canonical.meta,
+        ],
+        links: [
+          ...canonical.links,
+          { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+          {
+            rel: 'preconnect',
+            href: 'https://fonts.gstatic.com',
+            crossOrigin: 'anonymous',
+          },
+          // text fonts swap, icons block (no flash of the "search" ligature word): separate stylesheets
+          { rel: 'stylesheet', href: TEXT_FONTS_HREF },
+          { rel: 'stylesheet', href: ICON_FONT_HREF },
+          { rel: 'stylesheet', href: appCss },
+        ],
+      }
+    },
     shellComponent: RootDocument,
   },
 )

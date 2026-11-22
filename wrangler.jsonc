@@ -7,6 +7,12 @@
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
   "upload_source_maps": true,
+  // www 301s to the apex in src/server/www-redirect.ts
+  "routes": [
+    { "pattern": "credit-sylvanas.app", "custom_domain": true },
+    { "pattern": "www.credit-sylvanas.app", "custom_domain": true },
+  ],
+  "vars": { "CF_ZONE_ID": "1470133806d42c3c2c019ffc63d13ad0" },
   "d1_databases": [
     {
       "binding": "DB",
@@ -17,7 +23,9 @@
     },
   ],
   // private raw-CSV archive. A human runs `wrangler r2 bucket create credit-sylvanas-tsm-archive` once.
-  "r2_buckets": [{ "binding": "ARCHIVE", "bucket_name": "credit-sylvanas-tsm-archive" }],
+  "r2_buckets": [
+    { "binding": "ARCHIVE", "bucket_name": "credit-sylvanas-tsm-archive" },
+  ],
   // must match REGION_CRON and REALM_CRON in src/server/ingest/jobs.ts character for character
   "triggers": { "crons": ["30 19 * * *", "15 */3 * * *"] },
 }

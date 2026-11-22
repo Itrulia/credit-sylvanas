@@ -8,6 +8,8 @@ interface Config {
   triggers: { crons: string[] }
   d1_databases: { binding: string; database_name: string }[]
   r2_buckets: { binding: string; bucket_name: string }[]
+  routes: { pattern: string; custom_domain: boolean }[]
+  vars: Record<string, string>
 }
 
 const config = parseJsonc(readFileSync('wrangler.jsonc', 'utf8')) as Config
@@ -21,9 +23,20 @@ it('declares both cron constants exactly', () => {
 it('binds DB and ARCHIVE and points main at the custom entry', () => {
   expect(config.main).toBe('src/server.ts')
   expect(config.d1_databases).toEqual([
-    expect.objectContaining({ binding: 'DB', database_name: 'credit-sylvanas-prices' }),
+    expect.objectContaining({
+      binding: 'DB',
+      database_name: 'credit-sylvanas-prices',
+    }),
   ])
   expect(config.r2_buckets).toEqual([
     { binding: 'ARCHIVE', bucket_name: 'credit-sylvanas-tsm-archive' },
   ])
+})
+
+it('serves the apex and www as custom domains', () => {
+  expect(config.routes).toEqual([
+    { pattern: 'credit-sylvanas.app', custom_domain: true },
+    { pattern: 'www.credit-sylvanas.app', custom_domain: true },
+  ])
+  expect(config.vars.CF_ZONE_ID).toBe('1470133806d42c3c2c019ffc63d13ad0')
 })
