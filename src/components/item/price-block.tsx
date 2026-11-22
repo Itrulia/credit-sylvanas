@@ -37,7 +37,7 @@ export function PriceBlock({ current }: { current: ItemCurrent }) {
       <div className="flex flex-col gap-4">
         <dl className="flex flex-col gap-1">
           <dt className="flex items-center gap-1 text-label">
-            {m.item.marketValueLabel()}
+            {m.shell.glossaryMarketValueLabel()}
             <InfoPopover term="marketValue" />
           </dt>
           <dd className="flex flex-wrap items-baseline gap-x-3 gap-y-1">

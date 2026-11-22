@@ -2,12 +2,9 @@ import { readFileSync, readdirSync } from 'node:fs'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
 
-/**
- * Files that still hold inline copy. Extraction removes a file from here once
- * its text lives in src/i18n/en; the list must end empty.
- */
-const ALLOWLIST: Array<string> = [
-]
+// Every file is clean. Keep this empty: move new copy into src/i18n/en instead
+// of listing a file here.
+const ALLOWLIST: Array<string> = []
 
 const SKIP = [
   /\.test\.tsx$/,

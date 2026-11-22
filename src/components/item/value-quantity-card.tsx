@@ -114,7 +114,7 @@ export function ValueQuantityCard({
                   },
                   {
                     key: 'mb',
-                    label: m.item.lowestBuyoutLabel(),
+                    label: m.shell.glossaryMinBuyoutLabel(),
                     color: C.mv,
                     dash: '2 3',
                     value: <Money copper={r.minBuyout ?? null} />,
@@ -123,20 +123,20 @@ export function ValueQuantityCard({
               : [
                   {
                     key: 'mv',
-                    label: m.item.marketValueLabel(),
+                    label: m.shell.glossaryMarketValueLabel(),
                     color: C.mv,
                     value: <Money copper={r.mv} />,
                   },
                   {
                     key: 'hist',
-                    label: m.item.histLabel(),
+                    label: m.shell.glossaryHistoricalLabel(),
                     color: C.hist,
                     dash: '4 3',
                     value: <Money copper={r.hist ?? null} />,
                   },
                   {
                     key: 'spd',
-                    label: m.item.soldPerDayLabel(),
+                    label: m.shell.glossarySoldPerDayLabel(),
                     color: C.spd,
                     value: formatNumber(r.spd ?? 0, 1),
                   },
@@ -165,13 +165,13 @@ export function ValueQuantityCard({
                 ? [
                     m.item.dayColumn(),
                     m.item.realmValueLabel(),
-                    m.item.lowestBuyoutLabel(),
+                    m.shell.glossaryMinBuyoutLabel(),
                   ]
                 : [
                     m.item.dayColumn(),
-                    m.item.marketValueLabel(),
-                    m.item.histLabel(),
-                    m.item.soldPerDayLabel(),
+                    m.shell.glossaryMarketValueLabel(),
+                    m.shell.glossaryHistoricalLabel(),
+                    m.shell.glossarySoldPerDayLabel(),
                   ]
             }
             rows={[...rows].reverse().map((r) => ({
@@ -197,8 +197,10 @@ export function ValueQuantityCard({
         )}
       >
         <div className="flex justify-between">
-          <p className="text-label">{m.item.marketValueLabel()}</p>
-          {!isRealm && <p className="text-label">{m.item.soldPerDayLabel()}</p>}
+          <p className="text-label">{m.shell.glossaryMarketValueLabel()}</p>
+          {!isRealm && (
+            <p className="text-label">{m.shell.glossarySoldPerDayLabel()}</p>
+          )}
         </div>
         <ChartContainer
           config={{}}
@@ -248,7 +250,7 @@ export function ValueQuantityCard({
               <Bar
                 yAxisId="spd"
                 dataKey="spd"
-                name={m.item.soldPerDayLabel()}
+                name={m.shell.glossarySoldPerDayLabel()}
                 fill={C.spd}
                 isAnimationActive={false}
               />
@@ -258,7 +260,7 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="minBuyout"
-                  name={m.item.lowestBuyoutLabel()}
+                  name={m.shell.glossaryMinBuyoutLabel()}
                   stroke={C.mv}
                   strokeWidth={1.5}
                   strokeDasharray="2 3"
@@ -282,7 +284,7 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="hist"
-                  name={m.item.histLabel()}
+                  name={m.shell.glossaryHistoricalLabel()}
                   stroke={C.hist}
                   strokeWidth={1.5}
                   strokeDasharray="4 3"
@@ -293,7 +295,7 @@ export function ValueQuantityCard({
                 <Line
                   yAxisId="mv"
                   dataKey="mv"
-                  name={m.item.marketValueLabel()}
+                  name={m.shell.glossaryMarketValueLabel()}
                   stroke={C.mv}
                   strokeWidth={2}
                   dot={endDot(n, C.mv, C.tomato, short)}

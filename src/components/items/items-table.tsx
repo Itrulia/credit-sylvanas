@@ -15,7 +15,7 @@ import type { ListRow } from '#/server/types'
 const SORT_LABEL: Record<ItemSort, () => string> = {
   name: m.items.sortName,
   marketValue: m.items.sortMarketValue,
-  historical: m.items.sortHistorical,
+  historical: m.shell.glossaryHistoricalLabel,
   vsHist: m.items.sortVsHist,
   avgSalePrice: m.items.sortAvgSalePrice,
   soldPerDay: m.items.sortSoldPerDay,
@@ -55,7 +55,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
         },
         {
           id: 'minBuyout',
-          header: m.items.columnLowestBuyout(),
+          header: m.shell.glossaryMinBuyoutLabel(),
           meta: { align: 'right' },
           cell: ({ row }) =>
             row.original.minBuyout ? (
@@ -104,14 +104,14 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     },
     {
       id: 'marketValue',
-      header: m.items.columnMarketValue(),
+      header: m.shell.glossaryMarketValueLabel(),
       meta: { ...money, info: 'marketValue' },
       cell: ({ row }) => <Money copper={row.original.mv} align />,
     },
     ...realm,
     {
       id: 'historical',
-      header: m.items.columnHistorical(),
+      header: m.shell.glossaryHistoricalLabel(),
       meta: { ...money, info: 'historical' },
       cell: ({ row }) => <Money copper={row.original.hist} align />,
     },
@@ -123,13 +123,13 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     },
     {
       id: 'avgSalePrice',
-      header: m.items.columnAvgSalePrice(),
+      header: m.shell.glossaryAvgSalePriceLabel(),
       meta: { ...money, info: 'avgSalePrice' },
       cell: ({ row }) => <Money copper={row.original.asp} align />,
     },
     {
       id: 'soldPerDay',
-      header: m.items.columnSoldPerDay(),
+      header: m.shell.glossarySoldPerDayLabel(),
       meta: {
         align: 'right',
         sortable: true,
@@ -140,7 +140,7 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
     },
     {
       id: 'saleRate',
-      header: m.items.columnSaleRate(),
+      header: m.shell.glossarySaleRateLabel(),
       meta: {
         align: 'right',
         sortable: true,

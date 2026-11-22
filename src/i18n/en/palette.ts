@@ -30,8 +30,12 @@ export const palette = {
   navHeatmaps: () => 'Heatmaps',
   navRealms: () => 'Realms',
   navAbout: () => 'About',
+  // never shown: space-separated extra words the fuzzy search matches
+  navMarketKeywords: () => 'home hottest movers',
+  navItemsKeywords: () => 'browse prices search',
+  navHeatmapsKeywords: () => 'regions compare',
+  navAboutKeywords: () => 'data sources glossary',
   switchRegion: ({ region }: { region: string }) => `Switch to ${region}`,
-  realmAll: () => 'All realms (region)',
   realmFaction: ({ realm, faction }: { realm: string; faction: string }) =>
     `${realm} (${faction})`,
 

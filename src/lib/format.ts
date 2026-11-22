@@ -1,6 +1,5 @@
 import { m } from '#/i18n'
 import { LOCALE } from '#/i18n/locale'
-import { plural as pluralForm } from '#/i18n/plural'
 
 // The site locale, never the viewer's, so server and client render the same string.
 const nf = new Intl.NumberFormat(LOCALE)
@@ -83,9 +82,3 @@ export const isoFromDay = (day: number) =>
 
 export const dayOf = (unixSeconds: number) =>
   Math.floor(unixSeconds / DAY_SECONDS)
-
-/** plural(3, 'item', 'items') -> "3 items" */
-export function plural(n: number, one: string, other: string) {
-  const count = nf.format(n)
-  return pluralForm(n, { one: `${count} ${one}`, other: `${count} ${other}` })
-}

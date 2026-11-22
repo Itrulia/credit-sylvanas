@@ -21,6 +21,10 @@ export const shell = {
 
   // region switcher
   regionNavLabel: () => 'Region',
+  regionNameEu: () => 'Europe',
+  regionNameUs: () => 'Americas & Oceania',
+  regionNameKr: () => 'Korea',
+  regionNameTw: () => 'Taiwan',
   regionComingLater: ({ region }: { region: string }) =>
     `${region}: coming later`,
 

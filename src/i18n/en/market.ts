@@ -24,7 +24,6 @@ export const market = {
 
   // shared table headers
   itemHeader: () => 'Item',
-  marketValueHeader: () => 'Market value',
   vsHistHeader: () => 'vs 60-day avg',
   changeHeader: () => 'Change',
   soldPerDayHeader: () => 'Sold/day',

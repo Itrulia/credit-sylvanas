@@ -13,5 +13,9 @@ export const format = {
     year: string
     time: string
   }) => `${day} ${month} ${year}, ${time} UTC`,
+  /** Screen-reader price parts, joined with spaces: "1234 gold 5 silver 7 copper". */
+  moneyGold: ({ n }: { n: number }) => `${n} gold`,
+  moneySilver: ({ n }: { n: number }) => `${n} silver`,
+  moneyCopper: ({ n }: { n: number }) => `${n} copper`,
   itemFallback: ({ id }: { id: number }) => `Item #${id}`,
 } satisfies Catalog

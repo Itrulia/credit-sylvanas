@@ -49,7 +49,6 @@ export const items = {
   numericMissTitle: ({ id, region }: { id: string; region: string }) =>
     `No item #${id} in ${region}.`,
   numericMissLink: () => 'Look it up on Wowhead',
-  numericMissLinkHint: () => '(opens Wowhead)',
   noMatchTitle: ({ q, region }: { q: string; region: string }) =>
     `No items match "${q}" in ${region}.`,
   noMatchHint: () =>
@@ -67,7 +66,6 @@ export const items = {
   tableLabel: ({ region }: { region: string }) => `${region} items`,
   sortName: () => 'item name',
   sortMarketValue: () => 'market value',
-  sortHistorical: () => '60-day average',
   sortVsHist: () => 'market value against the 60-day average',
   sortAvgSalePrice: () => 'average sale price',
   sortSoldPerDay: () => 'units sold per day',
@@ -79,14 +77,8 @@ export const items = {
   orderHighestFirst: () => 'highest first',
 
   columnItem: () => 'Item',
-  columnMarketValue: () => 'Market value',
   columnRealmMarketValue: () => 'Realm market value',
-  columnLowestBuyout: () => 'Lowest buyout',
-  columnHistorical: () => '60-day average',
   columnVsHist: () => 'vs 60-day avg',
-  columnAvgSalePrice: () => 'Avg. sale price',
-  columnSoldPerDay: () => 'Sold per day',
-  columnSaleRate: () => 'Sale rate',
   columnGoldPerDay: () => 'Gold per day',
   realmNotListed: () => 'Not listed on this realm',
   noListings: () => 'No listings',

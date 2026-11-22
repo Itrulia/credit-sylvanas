@@ -93,7 +93,7 @@ export function ItemsEmpty({
           >
             {m.items.numericMissLink()}
             <Icon name="open_in_new" />
-            <span className="sr-only">{m.items.numericMissLinkHint()}</span>
+            <span className="sr-only">{m.shell.wowheadOpens()}</span>
           </a>
         </p>
       </StatePanel>

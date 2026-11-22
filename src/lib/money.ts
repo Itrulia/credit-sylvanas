@@ -1,3 +1,4 @@
+import { m } from '#/i18n'
 import { LOCALE } from '#/i18n/locale'
 
 // Prices are integer copper everywhere; this is the one place they become g/s/c.
@@ -84,7 +85,11 @@ export function formatMoney(copper: number, variant: MoneyVariant = 'full') {
 export const moneyText = (parts: MoneyPart[]) =>
   parts.map((p) => `${p.amount}${p.unit}`).join(' ')
 
-const WORDS: Record<CoinUnit, string> = { g: 'gold', s: 'silver', c: 'copper' }
+const WORDS: Record<CoinUnit, (p: { n: number }) => string> = {
+  g: m.format.moneyGold,
+  s: m.format.moneySilver,
+  c: m.format.moneyCopper,
+}
 
 export function moneyLabel(copper: number) {
   const { g, s, c } = split(Math.max(0, Math.round(copper)))
@@ -96,6 +101,6 @@ export function moneyLabel(copper: number) {
     ] as const
   )
     .filter(([n]) => n > 0)
-    .map(([n, u]) => `${n} ${WORDS[u]}`)
-  return parts.length ? parts.join(' ') : '0 copper'
+    .map(([n, u]) => WORDS[u]({ n }))
+  return parts.length ? parts.join(' ') : m.format.moneyCopper({ n: 0 })
 }

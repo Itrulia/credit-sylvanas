@@ -35,7 +35,7 @@ export function RegionStrip({
         <thead className="sr-only">
           <tr>
             <th scope="col">{m.item.regionColumn()}</th>
-            <th scope="col">{m.item.marketValueLabel()}</th>
+            <th scope="col">{m.shell.glossaryMarketValueLabel()}</th>
             <th scope="col">{m.item.vsOtherRegionsColumn()}</th>
           </tr>
         </thead>

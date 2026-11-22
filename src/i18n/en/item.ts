@@ -64,7 +64,6 @@ export const item = {
 
   // price block
   priceHeading: () => 'Current price',
-  marketValueLabel: () => 'Market value',
   vsHistLabel: () => 'vs 60-day average',
   noRecentSales: () => 'No recent sales',
 
@@ -80,17 +79,7 @@ export const item = {
   realmsHeading: () => 'Realm prices',
   realmsCaption: () => 'Realm prices for this item',
   realmColumn: () => 'Realm',
-  factionColumn: () => 'Faction',
-  rulesetColumn: () => 'Ruleset',
-  lowestBuyoutLabel: () => 'Lowest buyout',
-  latestScanColumn: () => 'Latest scan value',
   noListings: () => 'No listings',
-  factionAlliance: () => 'Alliance',
-  factionHorde: () => 'Horde',
-  rulesetNormal: () => 'Normal',
-  rulesetPvp: () => 'PvP',
-  rulesetRp: () => 'RP',
-  rulesetRpPvp: () => 'RP-PvP',
 
   // statistics grid and card shell
   statsHeading: () => 'Statistics',
@@ -105,8 +94,6 @@ export const item = {
   tableCaption: ({ title, scope }: { title: string; scope: string }) =>
     `${title}, ${scope}`,
   dayColumn: () => 'Day',
-  soldPerDayLabel: () => 'Sold per day',
-  histLabel: () => '60-day average',
 
   // card 1: market value and quantity
   valueTitle: () => 'Market value and quantity',

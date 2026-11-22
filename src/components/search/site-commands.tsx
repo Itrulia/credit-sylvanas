@@ -44,19 +44,19 @@ const PAGES = [
     id: 'market',
     title: m.palette.navMarket,
     to: '/$region',
-    keywords: ['home', 'hottest', 'movers'],
+    keywords: m.palette.navMarketKeywords,
   },
   {
     id: 'items',
     title: m.palette.navItems,
     to: '/$region/items',
-    keywords: ['browse', 'prices', 'search'],
+    keywords: m.palette.navItemsKeywords,
   },
   {
     id: 'heatmaps',
     title: m.palette.navHeatmaps,
     to: '/$region/heatmap',
-    keywords: ['regions', 'compare'],
+    keywords: m.palette.navHeatmapsKeywords,
   },
 ] as const
 
@@ -80,7 +80,7 @@ export function useSiteCommands(): Command[] {
       id: `nav-${page.id}`,
       group: m.palette.groupNavigate(),
       title: page.title(),
-      keywords: [...page.keywords],
+      keywords: page.keywords().split(' '),
       icon: chevron,
       perform: () => void navigate({ to: page.to, params: { region } }),
     }))
@@ -98,7 +98,7 @@ export function useSiteCommands(): Command[] {
       id: 'nav-about',
       group: m.palette.groupNavigate(),
       title: m.palette.navAbout(),
-      keywords: ['data', 'sources', 'glossary'],
+      keywords: m.palette.navAboutKeywords().split(' '),
       icon: chevron,
       perform: () => void navigate({ to: '/about' }),
     })
@@ -128,7 +128,7 @@ export function useSiteCommands(): Command[] {
           {
             id: 'realm-all',
             group: m.palette.groupRealm(),
-            title: m.palette.realmAll(),
+            title: m.shell.realmAll(),
             perform: () =>
               void navigate({
                 to: '.',

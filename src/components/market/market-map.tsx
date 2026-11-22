@@ -60,7 +60,7 @@ function listColumns(region: Region, metric: MapMetric): DataColumn<HotRow>[] {
     },
     {
       id: 'mv',
-      header: m.market.marketValueHeader(),
+      header: m.shell.glossaryMarketValueLabel(),
       cell: ({ row }) => (
         <Money copper={row.original.mv} variant="compact" align />
       ),

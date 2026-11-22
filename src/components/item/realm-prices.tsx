@@ -7,12 +7,15 @@ import { m } from '#/i18n'
 import type { RealmPrice } from '#/server/types'
 
 const RULESET = {
-  normal: m.item.rulesetNormal,
-  pvp: m.item.rulesetPvp,
-  rp: m.item.rulesetRp,
-  'rp-pvp': m.item.rulesetRpPvp,
+  normal: m.realms.rulesetNormal,
+  pvp: m.realms.rulesetPvp,
+  rp: m.realms.rulesetRp,
+  'rp-pvp': m.realms.rulesetRpPvp,
 }
-const FACTION = { alliance: m.item.factionAlliance, horde: m.item.factionHorde }
+const FACTION = {
+  alliance: m.realms.factionAlliance,
+  horde: m.realms.factionHorde,
+}
 
 /** Realm prices for the configured realms; absent while realms.ts is empty. */
 export function RealmPrices({
@@ -49,19 +52,19 @@ export function RealmPrices({
                 {m.item.realmColumn()}
               </th>
               <th scope="col" className="py-1 text-left">
-                {m.item.factionColumn()}
+                {m.shell.factionLabel()}
               </th>
               <th scope="col" className="py-1 text-left">
-                {m.item.rulesetColumn()}
+                {m.realms.rulesetLabel()}
               </th>
               <th scope="col" className="py-1 text-right">
-                {m.item.marketValueLabel()}
+                {m.shell.glossaryMarketValueLabel()}
               </th>
               <th scope="col" className="py-1 text-right">
-                {m.item.lowestBuyoutLabel()}
+                {m.shell.glossaryMinBuyoutLabel()}
               </th>
               <th scope="col" className="py-1 text-right">
-                {m.item.latestScanColumn()}
+                {m.shell.glossaryRecentLabel()}
               </th>
             </tr>
           </thead>

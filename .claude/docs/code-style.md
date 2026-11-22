@@ -21,7 +21,10 @@ UI copy lives in `src/i18n/en/<area>.ts` and is read through
 `m.<area>.<key>()` from `#/i18n`. Never write user-facing text inline.
 Messages return plain strings; counts go through `plural()`, and a sentence
 with a link is split into parts the component composes around `<Link>`.
-`src/i18n/no-hardcoded-copy.test.ts` enforces it.
+`src/i18n/no-hardcoded-copy.test.ts` enforces it for JSX only, so text built
+in `.ts` helpers (head titles, sr-only labels, search keywords) needs the same
+care. A term shown in several places gets one key: TSM metric names are the
+`m.shell.glossary*Label` keys, factions and rulesets live in `m.realms`.
 
 ## React
 

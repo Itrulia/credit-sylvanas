@@ -72,7 +72,7 @@ export function columns(
     {
       id: 'mv',
       header: () => (
-        <Head label={m.market.marketValueHeader()} term="marketValue" />
+        <Head label={m.shell.glossaryMarketValueLabel()} term="marketValue" />
       ),
       cell: ({ row }) => (
         <Money copper={row.original.mv} variant="compact" align />

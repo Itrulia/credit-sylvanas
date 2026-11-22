@@ -250,8 +250,8 @@ export function HeatmapCard({
               head={[
                 useHourly ? m.item.weekdayHourColumn() : m.item.dayColumn(),
                 kind === 'value'
-                  ? m.item.marketValueLabel()
-                  : m.item.soldPerDayLabel(),
+                  ? m.shell.glossaryMarketValueLabel()
+                  : m.shell.glossarySoldPerDayLabel(),
                 m.item.vsMedianColumn(),
               ]}
               rows={rows}

@@ -7,7 +7,6 @@ import {
   formatDayLong,
   formatPct,
   isoFromDay,
-  plural,
 } from './format'
 
 const NOV22 = Date.UTC(2026, 10, 22, 4, 10) / 1000
@@ -28,10 +27,5 @@ describe('format', () => {
     expect(formatDate(day)).toBe('22 Nov 2026')
     expect(formatDayLong(day)).toBe('Sun 22 Nov 2026')
     expect(isoFromDay(day)).toBe('2026-11-22')
-  })
-
-  it('pluralises', () => {
-    expect(plural(1, 'item', 'items')).toBe('1 item')
-    expect(plural(4812, 'item', 'items')).toBe('4,812 items')
   })
 })
