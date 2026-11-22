@@ -141,6 +141,23 @@ describe('summary sentences', () => {
     )
   })
 
+  it('calls a flat series steady instead of a 0% rise', () => {
+    const pts = [
+      { day: d('2026-11-01'), mv: 1, spd: 2 },
+      { day: d('2026-11-30'), mv: 1, spd: 2 },
+    ]
+    expect(valueSummary(pts)).toBe(
+      'Market value held steady at 1c over 30 days. Low 1c on 1 Nov. Sold about 2 a day on average.',
+    )
+  })
+
+  it('says no weekday stands out when every slot sits at the median', () => {
+    const grid = dailyGrid(days('2026-11-02', 14, () => 5))
+    expect(heatmapSummary(grid, '90d')).toBe(
+      'Every day sits within 0.5% of the 90-day median, so no weekday stands out.',
+    )
+  })
+
   it('compares the region with the daily cross-region median', () => {
     const own = [
       { day: 1, mv: 110 },

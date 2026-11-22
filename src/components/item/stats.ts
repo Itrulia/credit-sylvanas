@@ -152,6 +152,8 @@ export function dotRadius(value: number, ref: number | null) {
   return Math.min(11, Math.max(3, 7 * Math.sqrt(value / ref)))
 }
 
+// within +-0.5% counts as flat, as in <Delta>
+const FLAT = 0.005
 const money = (copper: number) => moneyText(formatMoney(copper))
 const pct = (ratio: number) => formatPct(ratio, { sign: false })
 const side = (ratio: number) => (ratio < 0 ? 'below' : 'above')
@@ -172,7 +174,9 @@ export function valueSummary(
   const low = points.reduce((a, b) => (b.mv < a.mv ? b : a))
   const verb = change < 0 ? 'fell' : 'rose'
   const parts = [
-    `Market value ${verb} ${pct(change)} over ${n} days, from ${money(first.mv)} to ${money(last.mv)}.`,
+    Math.abs(change) < FLAT
+      ? `Market value held steady at ${money(last.mv)} over ${n} days.`
+      : `Market value ${verb} ${pct(change)} over ${n} days, from ${money(first.mv)} to ${money(last.mv)}.`,
     `Low ${money(low.mv)} on ${formatDay(low.day)}.`,
   ]
   const sales = points.flatMap((p) => (p.spd === undefined ? [] : [p.spd]))
@@ -249,6 +253,11 @@ export function heatmapSummary(grid: DotGrid, range: StatRange) {
   const lo = slots.reduce((a, b) => (b.value < a.value ? b : a))
   const hiR = hi.value / ref - 1
   const loR = lo.value / ref - 1
+  if (Math.abs(hiR) < FLAT && Math.abs(loR) < FLAT) {
+    return grid.layout === 'hourly'
+      ? 'Every slot sits within 0.5% of the median, so no time stands out.'
+      : `Every day sits within 0.5% of the ${RANGE_DAYS[range]}-day median, so no weekday stands out.`
+  }
   const scope =
     grid.layout === 'hourly'
       ? 'the median'
