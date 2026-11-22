@@ -1,10 +1,16 @@
 import { useMemo } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { REGION_INFO } from '#/config/regions'
-import { favouriteItems, recentItems, useSavedItems } from '#/lib/saved-items'
+import {
+  favouriteItems,
+  isFavourite,
+  recentItems,
+  useSavedItems,
+} from '#/lib/saved-items'
 import type { SavedItem } from '#/lib/saved-items'
 import { itemName } from '#/lib/wowhead'
 import type { Command, DynamicGroup } from '../command-palette/command'
+import { searchCommands } from '../command-palette/search-commands'
 import { Icon } from '../icon'
 import type { IconName } from '#/lib/icons'
 
@@ -31,33 +37,46 @@ export function savedItemCommand(
   }
 }
 
-/** Recently viewed items, only while the query is empty. */
-export function useRecentGroups(query: string): DynamicGroup[] {
-  const navigate = useNavigate()
-  const recent = useSavedItems(recentItems)
-  if (query.trim() || !recent.length) {
-    return []
-  }
-  return [
-    {
-      id: 'recent',
-      label: 'Recent',
-      commands: recent.map((item) =>
-        savedItemCommand(item, 'Recent', 'history', navigate),
-      ),
-    },
-  ]
-}
+const FAVOURITES_WHILE_EMPTY = 5
 
-/** Favourites as plain commands, so the fuzzy search matches them too. */
-export function useFavouriteCommands(): Command[] {
+/**
+ * Recent and a few favourites while the query is empty; once the visitor
+ * types, every favourite that fuzzy-matches. The item page you are on is
+ * never listed as Recent.
+ */
+export function useSavedItemGroups(query: string): DynamicGroup[] {
   const navigate = useNavigate()
+  const params = useParams({ strict: false })
+  const recent = useSavedItems(recentItems)
   const favourites = useSavedItems(favouriteItems)
-  return useMemo(
+  const favouriteCommands = useMemo(
     () =>
       favourites.map((item) =>
         savedItemCommand(item, 'Favourites', 'star', navigate),
       ),
     [favourites, navigate],
   )
+  if (query.trim()) {
+    const commands = searchCommands(favouriteCommands, query).map(
+      (match) => match.command,
+    )
+    return [{ id: 'favourites', label: 'Favourites', commands }]
+  }
+  const shownRecent = recent.filter(
+    (item) =>
+      item.region !== params.region || String(item.itemId) !== params.itemId,
+  )
+  const shownFavourites = favouriteCommands
+    .filter((_, i) => !isFavourite(recent, favourites[i]))
+    .slice(0, FAVOURITES_WHILE_EMPTY)
+  return [
+    {
+      id: 'recent',
+      label: 'Recent',
+      commands: shownRecent.map((item) =>
+        savedItemCommand(item, 'Recent', 'history', navigate),
+      ),
+    },
+    { id: 'favourites', label: 'Favourites', commands: shownFavourites },
+  ]
 }

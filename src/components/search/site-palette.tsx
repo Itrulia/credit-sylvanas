@@ -1,11 +1,10 @@
-import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { track } from '#/lib/analytics'
 import type { Command } from '../command-palette/command'
 import { CommandPalette } from '../command-palette/command-palette'
 import { CommandPaletteProvider } from '../command-palette/command-palette-provider'
 import { useItemSearchGroups } from './item-search-group'
-import { useFavouriteCommands, useRecentGroups } from './saved-item-groups'
+import { useSavedItemGroups } from './saved-item-groups'
 import { useSiteCommands } from './site-commands'
 
 const trackOpen = () => track('palette_open')
@@ -14,15 +13,13 @@ const trackRun = (command: Command) =>
   track('palette_select', { group: command.group })
 // a module-level hook: the provider calls it on every render
 const useDynamicGroups = (query: string) => [
-  ...useRecentGroups(query),
+  ...useSavedItemGroups(query),
   ...useItemSearchGroups(query),
 ]
 
 /** The site's Mod+K palette: saved items, page, region and realm commands plus live item search. */
 export function SitePalette({ children }: { children: ReactNode }) {
-  const favourites = useFavouriteCommands()
-  const site = useSiteCommands()
-  const commands = useMemo(() => [...favourites, ...site], [favourites, site])
+  const commands = useSiteCommands()
   return (
     <CommandPaletteProvider
       commands={commands}

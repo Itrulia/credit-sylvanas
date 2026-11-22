@@ -333,6 +333,22 @@ describe('saved items', () => {
     type('arc')
     expect(screen.queryByRole('option', { name: /Arcanite Bar/ })).toBeNull()
   })
+
+  it('leaves the item page you are on out of Recent', async () => {
+    localStorage.setItem(
+      'recent-items',
+      JSON.stringify([
+        { region: 'eu', itemId: 12360, name: 'Arcanite Bar' },
+        { region: 'us', itemId: 12360, name: 'Arcanite Bar US' },
+      ]),
+    )
+    setup('/eu/items/12360')
+    await openPalette()
+    expect(
+      screen.getAllByRole('option', { name: /Arcanite Bar/ }),
+    ).toHaveLength(1)
+    expect(selected()).toMatch(/Arcanite Bar US/)
+  })
 })
 
 describe('favourites', () => {
@@ -372,5 +388,44 @@ describe('favourites', () => {
     type('arcanit')
     press('Enter')
     await waitFor(() => expect(location(router)).toBe('/eu/items/12360'))
+  })
+
+  it('shows five favourites not already in Recent while empty, and searches them all', async () => {
+    search.mockResolvedValue([])
+    const names = [
+      'Alpha',
+      'Bravo',
+      'Charlie',
+      'Delta',
+      'Echo',
+      'Foxtrot',
+      'Golf',
+    ]
+    localStorage.setItem(
+      'favourite-items',
+      JSON.stringify(
+        names.map((name, i) => ({ region: 'us', itemId: i + 1, name })),
+      ),
+    )
+    localStorage.setItem(
+      'recent-items',
+      JSON.stringify([{ region: 'us', itemId: 1, name: 'Alpha' }]),
+    )
+    setup('/us')
+    await openPalette()
+    const shown = names.filter((name) =>
+      screen.queryByRole('option', { name: new RegExp(`^${name}`) }),
+    )
+    expect(shown).toEqual([
+      'Alpha',
+      'Bravo',
+      'Charlie',
+      'Delta',
+      'Echo',
+      'Foxtrot',
+    ])
+    expect(screen.getAllByRole('option', { name: /^Alpha/ })).toHaveLength(1)
+    type('golf')
+    expect(screen.getByRole('option', { name: /^Golf/ })).toBeTruthy()
   })
 })
