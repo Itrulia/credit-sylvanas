@@ -73,7 +73,12 @@ function columns(region: Region, withRealm: boolean): DataColumn<ListRow>[] {
         const { id, name } = row.original
         return (
           <span className="inline-flex items-center gap-1">
-            <ItemLink id={id} name={name} region={region} />
+            <ItemLink
+              id={id}
+              name={name}
+              region={region}
+              className="max-w-56 sm:max-w-80"
+            />
             {/* the item link already gets the icon; Wowhead iconizes any
                 wowhead.com href, so mark this one as already processed */}
             <a
