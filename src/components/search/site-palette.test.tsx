@@ -292,3 +292,45 @@ describe('item search group', () => {
     expect(screen.getByRole('combobox')).toBeTruthy()
   })
 })
+
+describe('saved items', () => {
+  const groupLabels = () =>
+    screen
+      .getAllByRole('group')
+      .map(
+        (g) =>
+          document.getElementById(g.getAttribute('aria-labelledby')!)
+            ?.textContent,
+      )
+
+  afterEach(() => localStorage.clear())
+
+  it('lists recently viewed items first while the query is empty', async () => {
+    localStorage.setItem(
+      'recent-items',
+      JSON.stringify([
+        { region: 'eu', itemId: 12360, name: 'Arcanite Bar' },
+        { region: 'us', itemId: 2, name: '' },
+      ]),
+    )
+    const router = setup('/us')
+    await openPalette()
+    expect(groupLabels()).toEqual(['Recent', 'Navigate', 'Region'])
+    expect(screen.getByRole('option', { name: /Item #2/ })).toBeTruthy()
+    expect(selected()).toMatch(/Arcanite Bar/)
+    press('Enter')
+    await waitFor(() => expect(location(router)).toBe('/eu/items/12360'))
+  })
+
+  it('hides Recent once the visitor types', async () => {
+    search.mockResolvedValue([])
+    localStorage.setItem(
+      'recent-items',
+      JSON.stringify([{ region: 'eu', itemId: 12360, name: 'Arcanite Bar' }]),
+    )
+    setup('/us')
+    await openPalette()
+    type('arc')
+    expect(screen.queryByRole('option', { name: /Arcanite Bar/ })).toBeNull()
+  })
+})

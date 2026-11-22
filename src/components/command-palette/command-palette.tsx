@@ -61,20 +61,23 @@ export function CommandPalette() {
     const fixed = groupMatches(searchCommands(commands, query)).map((g) => ({
       id: g.group,
       label: g.group,
-      matches: g.matches,
+      matches: g.matches.map(({ command, indices }) => ({ command, indices })),
     }))
-    let index = fixed.reduce((n, g) => n + g.matches.length, 0)
-    const extra = dynamic.map((g) => ({
-      id: g.id,
-      label: g.label,
-      status: g.status,
-      matches: g.commands.map((command) => ({
-        command,
-        indices: [],
-        index: index++,
-      })),
+    const extra = dynamic
+      .filter((g) => g.commands.length || g.status)
+      .map((g) => ({
+        id: g.id,
+        label: g.label,
+        status: g.status,
+        matches: g.commands.map((command) => ({ command, indices: [] })),
+      }))
+    // an empty query shows dynamic groups (recent items) first; typing puts them after the commands
+    const ordered = query.trim() ? [...fixed, ...extra] : [...extra, ...fixed]
+    let index = 0
+    return ordered.map((g) => ({
+      ...g,
+      matches: g.matches.map((match) => ({ ...match, index: index++ })),
     }))
-    return [...fixed, ...extra.filter((g) => g.matches.length || g.status)]
   }, [commands, dynamic, query])
 
   const displayed = useMemo(

@@ -23,6 +23,7 @@ import { formatDate, formatNumber } from '#/lib/format'
 import { formatMoney, moneyText } from '#/lib/money'
 import { ITEM_DEFAULTS, ItemIdParam, itemSearch } from '#/lib/search'
 import type { Region } from '#/lib/search'
+import { rememberRecent } from '#/lib/saved-items'
 import { pageHead } from '#/lib/seo'
 import { itemName } from '#/lib/wowhead'
 import { itemHistoryQuery, itemQuery } from '#/server/fns/item'
@@ -81,6 +82,12 @@ function ItemDetail() {
   const { data } = useSuspenseQuery(itemQuery(input))
   const { data: status } = useSuspenseQuery(regionStatusQuery({ region }))
   useEffect(() => track('item_view', { itemId, region }), [itemId, region])
+  const storedName = data.item?.name
+  useEffect(() => {
+    if (storedName !== undefined) {
+      rememberRecent({ region, itemId, name: storedName })
+    }
+  }, [itemId, region, storedName])
   if (!data.item || !data.current) {
     return null
   }

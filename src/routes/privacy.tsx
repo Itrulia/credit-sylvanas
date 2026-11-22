@@ -22,10 +22,11 @@ function Privacy() {
       intro={
         <p>
           {SITE} has no accounts, sets no cookies and never asks for your name.
-          Your browser remembers the last region you opened, in its local
-          storage, so pages without a region open on it. That stays on your
-          device. This notice follows the Swiss Federal Act on Data Protection
-          (FADP). Last updated {REVIEWED}.
+          Your browser keeps the last region you opened and the last three items
+          you viewed in its local storage, so pages without a region open on it
+          and the search lists those items. That stays on your device and is
+          never sent to us or anyone else. This notice follows the Swiss Federal
+          Act on Data Protection (FADP). Last updated {REVIEWED}.
         </p>
       }
     >

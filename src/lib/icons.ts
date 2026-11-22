@@ -10,10 +10,12 @@ export const ICON_NAMES = [
   'error',
   'expand_less',
   'expand_more',
+  'history',
   'info',
   'menu',
   'open_in_new',
   'search',
+  'star',
   'unfold_more',
   'warning',
 ] as const

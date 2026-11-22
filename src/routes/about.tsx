@@ -41,8 +41,8 @@ function About() {
       <ProseSection title="Where the data comes from">
         <p>
           Every price comes from the public data files that TradeSkillMaster
-          publishes. Region prices update once a day. We download each file
-          once per update.
+          publishes. Region prices update once a day. We download each file once
+          per update.
         </p>
         <p>
           We keep every daily snapshot, so price history grows from the day we
@@ -77,8 +77,10 @@ function About() {
 
       <ProseSection title="Privacy">
         <p>
-          No accounts and no cookies. We host every font ourselves. Three
-          outside services are involved:
+          No accounts and no cookies. We host every font ourselves. Your last
+          region and the items you viewed recently stay in your browser's local
+          storage and are never sent anywhere. Three outside services are
+          involved:
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>
