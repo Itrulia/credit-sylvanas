@@ -153,34 +153,27 @@ describe('summary sentences', () => {
       { day: 1, mv: 110 },
       { day: 2, mv: 110 },
     ]
-    const others = [
+    const eu = (mv: number) => [
       {
         region: 'eu' as const,
         points: [
-          { day: 1, mv: 100 },
-          { day: 2, mv: 100 },
-        ],
-      },
-      {
-        region: 'kr' as const,
-        points: [
-          { day: 1, mv: 100 },
-          { day: 2, mv: 100 },
+          { day: 1, mv },
+          { day: 2, mv },
         ],
       },
     ]
-    expect(compareSummary(own, others, 'us', 30)).toBe(
-      'In the last 30 days US averaged 10.0% above the median of 3 regions.',
+    expect(compareSummary(own, eu(90), 'us', 30)).toBe(
+      'In the last 30 days US averaged 10.0% above the median of 2 regions.',
     )
     expect(
       compareSummary(
         own.map((p) => ({ ...p, mv: p.mv - 25 })),
-        others,
+        eu(115),
         'us',
         7,
       ),
     ).toBe(
-      'In the last 7 days US averaged 15.0% below the median of 3 regions.',
+      'In the last 7 days US averaged 15.0% below the median of 2 regions.',
     )
   })
 

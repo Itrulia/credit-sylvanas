@@ -55,20 +55,17 @@ describe('RegionCompareCard', () => {
     expect(screen.getByText(/Only US has a price history/)).toBeTruthy()
   })
 
-  it('compares regions with a legend in fixed order and a matching table', async () => {
+  it('compares regions with a legend and a matching table', async () => {
     render(
       <RegionCompareCard
         {...base}
         points={points(10)}
-        others={[
-          { region: 'kr', points: other(10) },
-          { region: 'eu', points: other(10) },
-        ]}
+        others={[{ region: 'eu', points: other(10, 9_000) }]}
       />,
     )
     expect(
       screen.getByText(
-        'In the last 10 days US averaged 10.0% above the median of 3 regions.',
+        'In the last 10 days US averaged 10.0% above the median of 2 regions.',
       ),
     ).toBeTruthy()
     const legend = screen.getByRole('list', { name: 'Regions' })
@@ -76,14 +73,14 @@ describe('RegionCompareCard', () => {
       within(legend)
         .getAllByRole('listitem')
         .map((li) => li.textContent),
-    ).toEqual(['US (this region)', 'EU', 'KR'])
+    ).toEqual(['US (this region)', 'EU'])
     await userEvent.click(screen.getByRole('button', { name: 'Show as table' }))
     const table = screen.getByRole('table')
     expect(
       within(table)
         .getAllByRole('columnheader')
         .map((h) => h.textContent),
-    ).toEqual(['Day', 'US', 'EU', 'KR'])
+    ).toEqual(['Day', 'US', 'EU'])
     expect(within(table).getAllByRole('row')).toHaveLength(11)
   })
 

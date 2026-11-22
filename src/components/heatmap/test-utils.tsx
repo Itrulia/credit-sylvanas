@@ -43,8 +43,6 @@ export function heatRow(
     cells: {
       us: cell(10_000, 0.1),
       eu: cell(9_000, -0.1),
-      kr: null,
-      tw: null,
     },
     spread: 0.2,
     ...over,

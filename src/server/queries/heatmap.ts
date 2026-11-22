@@ -1,9 +1,12 @@
 import '@tanstack/react-start/server-only'
+import { REGIONS } from '../../config/regions.ts'
 import { indexCells, spreadOf } from '../../lib/heatmap.ts'
 import type { Region } from '../../lib/search.ts'
 import type { DailyChange, HeatRow, HeatmapResult } from '../types.ts'
 import { hottest } from './hottest.ts'
 import { regionStatus } from './status.ts'
+
+const REGION_ORDER: readonly Region[] = REGIONS
 
 export interface CrossRegionCell {
   itemId: number
@@ -24,7 +27,7 @@ export async function crossRegion(
 ): Promise<{ cells: CrossRegionCell[]; regionsWithData: Region[] }> {
   const today = Math.floor(nowMs / 86_400_000)
   // one index seek per region instead of a GROUP BY over the whole table
-  const cur = `WITH r(region) AS (VALUES ('us'), ('eu'), ('kr'), ('tw')),
+  const cur = `WITH r(region) AS (VALUES ${REGION_ORDER.map((r) => `('${r}')`).join(', ')}),
     cur AS (SELECT region, (SELECT max(day) FROM region_snapshots s WHERE s.region = r.region) AS d FROM r)`
   const [cells, regions] = await db.batch<
     Record<string, number | string | null>
@@ -74,8 +77,6 @@ export async function dailyChange(
     .all<{ item_id: number; day: number; d1: number | null }>()
   return rows.results.map((r) => ({ itemId: r.item_id, day: r.day, d1: r.d1 }))
 }
-
-const REGION_ORDER: Region[] = ['us', 'eu', 'kr', 'tw']
 
 /** getHeatmap logic: top n by gold, then each region's latest price, index and spread. */
 export async function buildHeatmap(

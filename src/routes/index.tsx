@@ -19,8 +19,6 @@ export const Route = createFileRoute('/')({
 const REGION_BAR: Record<RegionCode, string> = {
   us: 'bg-region-us',
   eu: 'bg-region-eu',
-  kr: 'bg-region-kr',
-  tw: 'bg-region-tw',
 }
 
 function Home() {

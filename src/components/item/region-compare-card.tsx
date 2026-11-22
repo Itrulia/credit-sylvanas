@@ -29,8 +29,6 @@ import {
 const DASH: Record<Region, string | undefined> = {
   us: undefined,
   eu: '6 3',
-  kr: '2 3',
-  tw: '8 3 2 3',
 }
 
 interface Series {

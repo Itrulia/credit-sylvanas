@@ -12,11 +12,9 @@ const REALMS = [{ region: 'us', slug: 'r', name: 'R', ruleset: 'pvp' }] as const
 
 describe('getItem', () => {
   it('returns the item, its current snapshot and the cross-region strip', async () => {
-    await seedDay('kr', D - 90, [{ id: 1, mv: 1 }]) // 91 days old: not in the strip
     await seedDay('us', D - 1, [{ id: 1, name: 'Arcanite Bar', mv: 100 }])
     await seedDay('us', D, [{ id: 2 }])
     await seedDay('eu', D, [{ id: 1, mv: 300 }])
-    await seedDay('tw', D, [{ id: 1, mv: 200 }])
     const r = await getItem(db, { region: 'us', itemId: 1 }, NOW)
     expect(r.item).toEqual({ id: 1, name: 'Arcanite Bar' })
     expect(r.current).toMatchObject({ mv: 100, day: D - 1 })
@@ -24,13 +22,21 @@ describe('getItem', () => {
     expect(r.regions.map((c) => [c.region, c.mv])).toEqual([
       ['us', 100],
       ['eu', 300],
-      ['kr', null],
-      ['tw', 200],
     ])
     expect(r.regions[0].index).toBeCloseTo(-0.5)
-    expect(r.regions[2].index).toBeNull()
     expect(r.realm).toBeNull()
     expect(r.realms).toEqual([])
+  })
+
+  it('leaves a region out of the strip when its row is 91 days old', async () => {
+    await seedDay('eu', D - 90, [{ id: 1, mv: 1 }])
+    await seedDay('us', D, [{ id: 1, mv: 100 }])
+    const r = await getItem(db, { region: 'us', itemId: 1 }, NOW)
+    expect(r.regions.map((c) => [c.region, c.mv])).toEqual([
+      ['us', 100],
+      ['eu', null],
+    ])
+    expect(r.regions[1].index).toBeNull()
   })
 
   it('has no current snapshot when the region last listed it more than 90 days ago', async () => {

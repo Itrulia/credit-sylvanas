@@ -5,30 +5,21 @@ const cell = (mv: number) => ({ mv, hist: mv })
 
 describe('indexCells', () => {
   it('compares each region with the median of listing regions', () => {
-    const out = indexCells({
-      us: cell(100),
-      eu: cell(200),
-      kr: cell(300),
-      tw: null,
-    })
-    expect(out.us?.index).toBeCloseTo(-0.5)
-    expect(out.eu?.index).toBeCloseTo(0)
-    expect(out.kr?.index).toBeCloseTo(0.5)
-    expect(out.tw).toBeNull()
+    const out = indexCells({ us: cell(100), eu: cell(200) })
+    expect(out.us?.index).toBeCloseTo(-1 / 3)
+    expect(out.eu?.index).toBeCloseTo(1 / 3)
   })
 
   it('is null with fewer than 2 listings', () => {
-    const out = indexCells({ us: cell(100), eu: null, kr: null, tw: null })
+    const out = indexCells({ us: cell(100), eu: null })
     expect(out.us?.index).toBeNull()
   })
 })
 
 describe('spreadOf', () => {
   it('is (max - min) / median', () => {
-    expect(
-      spreadOf({ us: cell(100), eu: cell(200), kr: cell(300), tw: null }),
-    ).toBeCloseTo(1)
-    expect(spreadOf({ us: cell(100), eu: null, kr: null, tw: null })).toBeNull()
+    expect(spreadOf({ us: cell(100), eu: cell(200) })).toBeCloseTo(100 / 150)
+    expect(spreadOf({ us: cell(100), eu: null })).toBeNull()
   })
 })
 

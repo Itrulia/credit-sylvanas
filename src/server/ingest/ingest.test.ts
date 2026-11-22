@@ -6,7 +6,7 @@ import euCsv from '../__fixtures__/region-items-eu.csv?raw'
 import realmCsv from '../__fixtures__/realm-items.csv?raw'
 import { clearArchive, resetTables } from '../test/reset.ts'
 import { sentEtag, stubFetch } from '../test/stub-fetch.ts'
-import { REGION_HEADER } from './csv.ts'
+import { REALM_HEADER, REGION_HEADER } from './csv.ts'
 import { sha256Hex } from './archive.ts'
 import { runIngest } from './ingest.ts'
 import { REALM_CRON, REGION_CRON, runScheduled } from './jobs.ts'
@@ -39,6 +39,19 @@ function regionFile(n: number, iso: string, name = (i: number) => `Item ${i}`) {
   return [REGION_HEADER, ...lines].join('\n') + '\n'
 }
 
+// realm jobs are the ingest path that must not own item names
+const REALMS = [
+  { region: 'us', slug: 'test', name: 'Test', ruleset: 'pvp' },
+] as const
+const REALM_A = 'forever/us/realm/test-alliance/items.csv'
+function realmFile(n: number, name: (i: number) => string) {
+  const lines = Array.from(
+    { length: n },
+    (_, i) => `${i + 1},${name(i + 1)},100,90,90,0,2026-11-22T08:58:00Z`,
+  )
+  return [REALM_HEADER, ...lines].join('\n') + '\n'
+}
+
 describe('runIngest', () => {
   it('imports region files, records provenance and archives the raw file', async () => {
     await clearArchive()
@@ -54,10 +67,8 @@ describe('runIngest', () => {
     expect(results.map((r) => [r.status, r.reason])).toEqual([
       ['imported', null],
       ['imported', null],
-      ['failed', 'no such file'],
-      ['failed', 'no such file'],
     ])
-    expect(fetchFn).toHaveBeenCalledTimes(4)
+    expect(fetchFn).toHaveBeenCalledTimes(2)
 
     const [us] = await imports()
     const key = 'forever/us/region/items/2026-11-20T08:54:05Z.csv.gz'
@@ -117,7 +128,7 @@ describe('runIngest', () => {
       now: NOW + 3_600_000,
     })
     expect(sentEtag(fetchFn, 0)).toBeNull()
-    expect(sentEtag(fetchFn, 4)).toBe('"broken"')
+    expect(sentEtag(fetchFn, 2)).toBe('"broken"')
     const rows = await imports()
     expect(
       rows
@@ -161,7 +172,7 @@ describe('runIngest', () => {
         now: NOW + 90_000_000,
       })
       // the last good file's ETag, never the one that failed to store
-      expect(sentEtag(day2, 4)).toBe('"1"')
+      expect(sentEtag(day2, 2)).toBe('"1"')
       expect(retry.status).toBe('imported')
     },
   )
@@ -174,7 +185,7 @@ describe('runIngest', () => {
       now: NOW + 1000,
     })
     expect(second).toMatchObject({ status: 'skipped', reason: 'not modified' })
-    expect(sentEtag(fetchFn, 4)).toBe('"same"')
+    expect(sentEtag(fetchFn, 2)).toBe('"same"')
   })
 
   it('skips an unchanged updatedAt without writing to R2', async () => {
@@ -279,7 +290,6 @@ describe('runIngest', () => {
   })
 
   it('lets only us and eu overwrite item names', async () => {
-    const KR = 'forever/kr/region/items.csv'
     await runIngest(
       db,
       archive,
@@ -288,21 +298,28 @@ describe('runIngest', () => {
           body: regionFile(2, '2026-11-20T08:00:00Z', (i) => `US ${i}`),
           etag: '"u"',
         },
-        [KR]: {
-          body: regionFile(3, '2026-11-20T08:00:00Z', (i) => `KR ${i}`),
-          etag: '"k"',
-        },
       }),
       { kind: 'region', now: NOW },
+    )
+    await runIngest(
+      db,
+      archive,
+      stubFetch({
+        [REALM_A]: { body: realmFile(3, (i) => `Realm ${i}`), etag: '"r"' },
+      }),
+      { kind: 'realm', now: NOW, realms: REALMS },
     )
     const names = await db
       .prepare('SELECT name FROM items ORDER BY id')
       .all<{ name: string }>()
-    expect(names.results.map((r) => r.name)).toEqual(['US 1', 'US 2', 'KR 3'])
+    expect(names.results.map((r) => r.name)).toEqual([
+      'US 1',
+      'US 2',
+      'Realm 3',
+    ])
   })
 
   it('accepts empty names but never lets one overwrite a known name', async () => {
-    const KR = 'forever/kr/region/items.csv'
     await runIngest(
       db,
       archive,
@@ -313,19 +330,24 @@ describe('runIngest', () => {
           ),
           etag: '"u"',
         },
-        [KR]: {
-          body: regionFile(2, '2026-11-20T08:00:00Z', (i) =>
-            i === 1 ? 'KR 1' : '',
-          ),
-          etag: '"k"',
-        },
       }),
       { kind: 'region', now: NOW },
+    )
+    await runIngest(
+      db,
+      archive,
+      stubFetch({
+        [REALM_A]: {
+          body: realmFile(2, (i) => (i === 1 ? 'Realm 1' : '')),
+          etag: '"r"',
+        },
+      }),
+      { kind: 'realm', now: NOW, realms: REALMS },
     )
     const names = await db
       .prepare('SELECT name FROM items ORDER BY id')
       .all<{ name: string }>()
-    expect(names.results.map((r) => r.name)).toEqual(['KR 1', 'US 2'])
+    expect(names.results.map((r) => r.name)).toEqual(['Realm 1', 'US 2'])
   })
 
   it('writes a 2,500-row file in three chunks inside one batch', async () => {
@@ -500,7 +522,7 @@ describe('runScheduled', () => {
       fetchFn,
     )
     expect(results[0].status).toBe('imported')
-    expect(fetchFn).toHaveBeenCalledTimes(4)
+    expect(fetchFn).toHaveBeenCalledTimes(2)
   })
 
   it('makes no request for REALM_CRON with no realms', async () => {

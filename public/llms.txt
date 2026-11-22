@@ -1,6 +1,6 @@
 # Credit Sylvanas
 
-> Credit Sylvanas is a free, non-commercial website that shows World of Warcraft Forever auction house prices for the US, EU, Korea and Taiwan regions, using the public data files published by TradeSkillMaster. It is a fan project and is not affiliated with TradeSkillMaster, Blizzard Entertainment or Wowhead.
+> Credit Sylvanas is a free, non-commercial website that shows World of Warcraft Forever auction house prices for the US and EU regions, using the public data files published by TradeSkillMaster. It is a fan project and is not affiliated with TradeSkillMaster, Blizzard Entertainment or Wowhead.
 
 Prices are shown in gold, silver and copper (1 gold = 100 silver = 10,000 copper). Region prices update once a day. Market value is what an item usually sells for right now, based on auction listings over the last couple of weeks. The 60-day average is market value averaged over about 60 days. Sold per day is the average number of units sold per day across the region. Charts and tables cover the last 90 days.
 
@@ -14,16 +14,10 @@ Last reviewed 2026-11-22.
 
 - [US market](https://credit-sylvanas.app/us): Most traded items, biggest price moves and hottest items on the US auction house.
 - [EU market](https://credit-sylvanas.app/eu): Most traded items, biggest price moves and hottest items on the EU auction house.
-- [KR market](https://credit-sylvanas.app/kr): Most traded items, biggest price moves and hottest items on the Korean auction house.
-- [TW market](https://credit-sylvanas.app/tw): Most traded items, biggest price moves and hottest items on the Taiwanese auction house.
 - [US items](https://credit-sylvanas.app/us/items): Search and sort every US item by market value, sale rate and daily sales.
 - [EU items](https://credit-sylvanas.app/eu/items): Search and sort every EU item by market value, sale rate and daily sales.
-- [KR items](https://credit-sylvanas.app/kr/items): Search and sort every Korean item by market value, sale rate and daily sales.
-- [TW items](https://credit-sylvanas.app/tw/items): Search and sort every Taiwanese item by market value, sale rate and daily sales.
 - [US heatmaps](https://credit-sylvanas.app/us/heatmap): How US prices compare with the other regions, and daily price changes for traded items.
 - [EU heatmaps](https://credit-sylvanas.app/eu/heatmap): How EU prices compare with the other regions, and daily price changes for traded items.
-- [KR heatmaps](https://credit-sylvanas.app/kr/heatmap): How Korean prices compare with the other regions, and daily price changes for traded items.
-- [TW heatmaps](https://credit-sylvanas.app/tw/heatmap): How Taiwanese prices compare with the other regions, and daily price changes for traded items.
 
 ## About
 

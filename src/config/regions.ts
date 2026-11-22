@@ -1,4 +1,6 @@
-export const REGIONS = ['us', 'eu', 'kr', 'tw'] as const
+// KR and TW are switched off for now. The D1 schema still accepts them, so
+// adding them back here (with their REGION_INFO) turns them on everywhere.
+export const REGIONS = ['us', 'eu'] as const
 export type RegionCode = (typeof REGIONS)[number]
 
 export const REGION_INFO: Record<
@@ -7,8 +9,6 @@ export const REGION_INFO: Record<
 > = {
   us: { code: 'us', name: 'US', fullName: 'Americas & Oceania' },
   eu: { code: 'eu', name: 'EU', fullName: 'Europe' },
-  kr: { code: 'kr', name: 'KR', fullName: 'Korea' },
-  tw: { code: 'tw', name: 'TW', fullName: 'Taiwan' },
 }
 
 export const isRegion = (value: string): value is RegionCode =>

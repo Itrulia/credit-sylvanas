@@ -1,10 +1,11 @@
 import '@tanstack/react-start/server-only'
 import type { RealmConfig } from '../../config/realms.ts'
+import { REGIONS } from '../../config/regions.ts'
 import { median } from '../../lib/median.ts'
 import type { Faction, Region } from '../../lib/search.ts'
 import type { ItemResult, RealmPrice, RegionCell } from '../types.ts'
 
-const ORDER: Region[] = ['us', 'eu', 'kr', 'tw']
+const ORDER: readonly Region[] = REGIONS
 
 export interface ItemArgs {
   region: Region

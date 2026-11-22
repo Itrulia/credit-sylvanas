@@ -182,19 +182,19 @@ describe('site commands', () => {
   it('keeps the item when switching region on item detail', async () => {
     const router = setup('/us/items/12360?mvRange=7d')
     await openPalette()
-    type('switch to kr')
+    type('switch to eu')
     press('Enter')
     await waitFor(() =>
-      expect(location(router)).toBe('/kr/items/12360?mvRange=7d'),
+      expect(location(router)).toBe('/eu/items/12360?mvRange=7d'),
     )
   })
 
   it('goes to the region market from the landing page', async () => {
     const router = setup('/')
     await openPalette()
-    type('switch to tw')
+    type('switch to eu')
     press('Enter')
-    await waitFor(() => expect(location(router)).toBe('/tw'))
+    await waitFor(() => expect(location(router)).toBe('/eu'))
   })
 
   it('returns focus to the trigger on Escape', async () => {

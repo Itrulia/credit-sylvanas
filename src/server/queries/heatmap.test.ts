@@ -15,8 +15,7 @@ const D = 20_000
 const NOW = D * 86_400_000 + 12 * 3_600_000
 
 describe('crossRegion', () => {
-  it("reads each region's latest day and ignores regions past 90 days", async () => {
-    await seedDay('kr', D - 90, [{ id: 1, mv: 5 }])
+  it("reads each region's latest day", async () => {
     await seedDay('us', D - 1, [
       { id: 1, mv: 1 },
       { id: 2, mv: 1 },
@@ -30,6 +29,16 @@ describe('crossRegion', () => {
     expect(r.regionsWithData.sort()).toEqual(['eu', 'us'])
     expect(r.cells.map((c) => [c.itemId, c.region, c.mv]).sort()).toEqual([
       [1, 'eu', 200],
+      [1, 'us', 100],
+    ])
+  })
+
+  it('ignores a region whose latest day is past 90 days', async () => {
+    await seedDay('eu', D - 90, [{ id: 1, mv: 5 }])
+    await seedDay('us', D, [{ id: 1, mv: 100 }])
+    const r = await crossRegion(db, [1], NOW)
+    expect(r.regionsWithData).toEqual(['us'])
+    expect(r.cells.map((c) => [c.itemId, c.region, c.mv])).toEqual([
       [1, 'us', 100],
     ])
   })
@@ -72,12 +81,11 @@ describe('buildHeatmap', () => {
       { id: 2, mv: 100, ...liquid, spd: 1 },
     ])
     await seedDay('eu', D, [{ id: 1, mv: 300 }])
-    await seedDay('kr', D, [{ id: 1, mv: 200 }])
     const r = await buildHeatmap(db, { region: 'us', n: 10 }, NOW)
-    expect(r.regionsWithData).toEqual(['us', 'eu', 'kr'])
+    expect(r.regionsWithData).toEqual(['us', 'eu'])
     expect(r.rows.map((x) => x.id)).toEqual([1, 2])
     expect(r.rows[0].cells.us?.index).toBeCloseTo(-0.5)
-    expect(r.rows[0].cells.tw).toBeNull()
+    expect(r.rows[1].cells.eu).toBeNull()
     expect(r.rows[0].spread).toBeCloseTo(1)
     expect(r.rows[1].spread).toBeNull()
     expect(r.rows[1].cells.us?.index).toBeNull()

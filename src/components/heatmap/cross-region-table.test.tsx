@@ -16,7 +16,7 @@ const rows = [
 const base = {
   region: 'us' as const,
   rows,
-  regionsWithData: ['us', 'eu', 'kr'] as const,
+  regionsWithData: ['us', 'eu'] as const,
   n: 25 as const,
   sort: 'volume' as const,
   metric: 'index' as const,
@@ -36,22 +36,26 @@ describe('CrossRegionTable', () => {
     expect(screen.queryByRole('table')).toBeNull()
   })
 
-  it('hatches a missing cell and a region with no data', async () => {
-    renderInRouter(<CrossRegionTable {...base} />)
+  it('hatches a cell for an item the other region does not list', async () => {
+    const unlisted = heatRow(1, 'Arcanite Bar', {
+      spread: null,
+      goldVolume: 300,
+      cells: { us: rows[0].cells.us, eu: null },
+    })
+    renderInRouter(
+      <CrossRegionTable {...base} rows={[unlisted, rows[1], rows[2]]} />,
+    )
     const first = (
       await screen.findByRole('rowheader', { name: 'Arcanite Bar' })
     ).closest('tr')!
     const cells = within(first).getAllByRole('cell')
-    // KR has data but not this item; TW has no data at all
-    expect(cells[2].className).toContain('hatch')
-    expect(cells[2].textContent).toContain('Not listed in KR')
-    expect(cells[3].textContent).toContain('No TW prices yet')
+    expect(cells[1].className).toContain('hatch')
+    expect(cells[1].textContent).toContain('Not listed in EU')
     const headers = screen
       .getAllByRole('columnheader')
       .map((th) => th.textContent)
     expect(headers).toContain('US (this region)')
-    expect(headers).toContain('TW (no data yet)')
-    expect(headers).toContain('KR')
+    expect(headers).toContain('EU')
   })
 
   it('sorts by spread with nulls last and marks aria-sort', async () => {

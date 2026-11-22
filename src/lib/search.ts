@@ -1,8 +1,9 @@
 import { z } from 'zod'
+import { REGIONS } from '../config/regions.ts'
 
 // Every field with a default is `X.default(d).catch(d)`: `.catch()` alone keeps
 // the key required in <Link> and stops stripSearchParams from stripping it.
-export const Region = z.enum(['us', 'eu', 'kr', 'tw'])
+export const Region = z.enum(REGIONS)
 export type Region = z.infer<typeof Region>
 export const Faction = z.enum(['alliance', 'horde'])
 export type Faction = z.infer<typeof Faction>
