@@ -1,5 +1,4 @@
 import {
-  Link,
   Outlet,
   createFileRoute,
   notFound,
@@ -8,16 +7,14 @@ import {
 } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { REGION_INFO, isRegion } from '#/config/regions'
+import { isRegion } from '#/config/regions'
 import { findRealm } from '#/config/realms'
 import { ContextBar } from '#/components/context-bar'
-import { DateTime } from '#/components/freshness'
 import { ErrorPage } from '#/components/error-page'
+import { NoData } from '#/components/no-data'
 import { StaleBanner, isStale } from '#/components/stale-banner'
-import { StatePanel } from '#/components/state-panel'
 import { noDataError, noDataRegion } from '#/lib/errors'
 import { contextSearch } from '#/lib/search'
-import { SITE } from '#/lib/seo'
 import type { Region } from '#/lib/search'
 import { regionStatusQuery } from '#/server/fns/status'
 
@@ -81,45 +78,12 @@ function RegionLayout() {
 function RegionError(props: ErrorComponentProps) {
   const region = noDataRegion(props.error)
   if (region && isRegion(region)) {
-    return <NoData region={region} />
+    return <RegionNoData region={region} />
   }
   return <ErrorPage {...props} />
 }
 
-function NoData({ region }: { region: Region }) {
+function RegionNoData({ region }: { region: Region }) {
   const { data: status } = useSuspenseQuery(regionStatusQuery({ region }))
-  const name = REGION_INFO[region].name
-  const others = status.regionsWithData.filter((r) => r !== region)
-  return (
-    <div className="page-wrap py-8">
-      <title>{`No ${name} prices yet · ${SITE}`}</title>
-      <StatePanel as="h1" icon="info" title={`No ${name} prices yet`}>
-        <p>
-          We haven't saved a price update for {name}. Last successful import:{' '}
-          {status.fetchedAt ? <DateTime unix={status.fetchedAt} /> : 'none yet'}
-          . Try another region in the meantime.
-        </p>
-        {others.length > 0 && (
-          <ul className="flex gap-3">
-            {others.map((r) => (
-              <li key={r}>
-                <Link
-                  to="/$region"
-                  params={{ region: r }}
-                  className="underline"
-                >
-                  {REGION_INFO[r].name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-        {import.meta.env.DEV && (
-          <p className="text-muted-foreground">
-            Dev only: run pnpm db:seed to load local data.
-          </p>
-        )}
-      </StatePanel>
-    </div>
-  )
+  return <NoData region={region} status={status} />
 }
