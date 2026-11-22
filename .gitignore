@@ -13,3 +13,5 @@ dist-ssr
 .seed/
 __unconfig*
 todos.json
+src/paraglide
+project.inlang/cache

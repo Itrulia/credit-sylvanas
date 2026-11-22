@@ -1,0 +1,845 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "format_dateTime": "{day} {month} {year}, {time} UTC",
+  "format_itemFallback": "Item #{id}",
+  "format_moneyCopper": "{n} copper",
+  "format_moneyGold": "{n} gold",
+  "format_moneySilver": "{n} silver",
+  "heatmap_acrossCaption": "Top {n} {region} items, market value in each region against the other regions. Sorted by {sort}.",
+  "heatmap_acrossCaptionFiltered": "Top {count} items (only {count} pass the trading filter), market value in each region against the other regions. Sorted by {sort}.",
+  "heatmap_acrossIntro": "Top {count} items by gold traded per day in {region}. Each cell compares that region's market value with the median of every region that lists it. Regions have separate economies. A higher price means the item is scarcer there.",
+  "heatmap_acrossLegendCheaper": "Cheaper than other regions",
+  "heatmap_acrossLegendPricier": "Pricier than other regions",
+  "heatmap_acrossNeedsTwoBody": "Only {region} has prices so far. The other two heatmaps still work.",
+  "heatmap_acrossNeedsTwoTitle": "Cross-region comparison needs two regions.",
+  "heatmap_acrossTitle": "Across regions",
+  "heatmap_binAtLeast": "{pct}% or more",
+  "heatmap_binAtMost": "{pct}% or less",
+  "heatmap_binRange": "{from} to {to}%",
+  "heatmap_cellNoPrices": "No {region} prices yet",
+  "heatmap_cellNoSpread": "Needs two regions",
+  "heatmap_cellNotListed": "Not listed in {region}",
+  "heatmap_controlsItemsLabel": "Items",
+  "heatmap_controlsShowLabel": "Show",
+  "heatmap_dailyCaption": "Market value change since the previous daily update for the top {count} {region} items, last {days} days.",
+  "heatmap_dailyIntro": "Market value change since the previous daily update, last 14 days.",
+  "heatmap_dailyLegendFell": "Fell",
+  "heatmap_dailyLegendRose": "Rose",
+  "heatmap_dailyLoading": "Loading daily changes…",
+  "heatmap_dailyNeedsWeekTitle": "Daily changes need a week of daily updates.",
+  "heatmap_dailyStartsTitle": "Daily changes start on {date}.",
+  "heatmap_dailyTitle": "Day by day",
+  "heatmap_dailyWaitBody": "We've saved {days} of 7 daily updates for {region}. Until then, the 60-day heatmap above works from day one.",
+  "heatmap_emptyBody": "Items need about one sale every two days to count.",
+  "heatmap_emptyLink": "Browse all items",
+  "heatmap_emptyTitle": "Not enough trading in {region} to build a heatmap.",
+  "heatmap_headDescription": "See where the top {region} Forever auction house items cost more or less than in other regions and than their 60-day average. Pricing data from TradeSkillMaster.",
+  "heatmap_headTitle": "Heatmaps · {region} Forever AH",
+  "heatmap_itemColumn": "Item",
+  "heatmap_metricIndex": "vs other regions",
+  "heatmap_metricPrice": "Price",
+  "heatmap_momentumIntro": "Today's market value against each item's own 60-day average in {region}. Pricier first.",
+  "heatmap_momentumLegendCheaper": "Cheaper than usual",
+  "heatmap_momentumLegendPricier": "Pricier than usual",
+  "heatmap_momentumSummary": [
+    {
+      "declarations": [
+        "input n",
+        "input count",
+        "input up",
+        "input down",
+        "input flat",
+        "local nPlural = n: plural"
+      ],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "{count} item: {up} pricier than usual, {down} cheaper, {flat} about usual.",
+        "nPlural=*": "{count} items: {up} pricier than usual, {down} cheaper, {flat} about usual."
+      }
+    }
+  ],
+  "heatmap_momentumSummaryWithMissing": [
+    {
+      "declarations": [
+        "input n",
+        "input count",
+        "input up",
+        "input down",
+        "input flat",
+        "input none",
+        "local nPlural = n: plural"
+      ],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "{count} item: {up} pricier than usual, {down} cheaper, {flat} about usual, {none} without a 60-day average.",
+        "nPlural=*": "{count} items: {up} pricier than usual, {down} cheaper, {flat} about usual, {none} without a 60-day average."
+      }
+    }
+  ],
+  "heatmap_momentumTitle": "Against the 60-day average",
+  "heatmap_pageTitle": "{region} price heatmaps",
+  "heatmap_realmNote": "Heatmaps are region-wide.",
+  "heatmap_regionCurrent": "(this region)",
+  "heatmap_regionNoData": "(no data yet)",
+  "heatmap_sortName": "name",
+  "heatmap_sortSpread": "spread",
+  "heatmap_sortVolume": "gold traded per day",
+  "heatmap_sortedAsc": "Sorted by {sort}, A to Z first.",
+  "heatmap_sortedDesc": "Sorted by {sort}, highest first.",
+  "heatmap_spreadLabel": "Spread",
+  "home_creditTail": ", imported once a day.",
+  "home_description": "Daily World of Warcraft Forever auction house prices for EU and NA, with price history. Pricing data from TradeSkillMaster.",
+  "home_howItWorks": "How it works",
+  "home_intro": "Pick a region to see what items sell for today and how their prices changed over the last 90 days.",
+  "home_regionCta": "{region} market",
+  "home_regionUnavailable": "Not available yet",
+  "home_regionsLabel": "Regions",
+  "home_title": "WoW Forever auction house prices",
+  "item_compareRealmTitle": "This realm vs region",
+  "item_compareRegionsTitle": "Other regions",
+  "item_compareSummary": [
+    {
+      "declarations": [
+        "input days",
+        "input region",
+        "input pct",
+        "input k",
+        "input side",
+        "local daysPlural = days: plural",
+        "local kPlural = k: plural"
+      ],
+      "selectors": ["daysPlural", "side", "kPlural"],
+      "match": {
+        "daysPlural=one, side=below, kPlural=one": "In the last {days} day {region} averaged {pct} below the median of {k} region.",
+        "daysPlural=one, side=below, kPlural=*": "In the last {days} day {region} averaged {pct} below the median of {k} regions.",
+        "daysPlural=one, side=*, kPlural=one": "In the last {days} day {region} averaged {pct} above the median of {k} region.",
+        "daysPlural=one, side=*, kPlural=*": "In the last {days} day {region} averaged {pct} above the median of {k} regions.",
+        "daysPlural=*, side=below, kPlural=one": "In the last {days} days {region} averaged {pct} below the median of {k} region.",
+        "daysPlural=*, side=below, kPlural=*": "In the last {days} days {region} averaged {pct} below the median of {k} regions.",
+        "daysPlural=*, side=*, kPlural=one": "In the last {days} days {region} averaged {pct} above the median of {k} region.",
+        "daysPlural=*, side=*, kPlural=*": "In the last {days} days {region} averaged {pct} above the median of {k} regions."
+      }
+    }
+  ],
+  "item_compareTableScope": "market value by day",
+  "item_dayColumn": "Day",
+  "item_droppedBody": "Showing the last known prices from {date}.",
+  "item_droppedTitle": "Not seen in {region} in the latest update ({date}).",
+  "item_elsewhereHeadTitle": "{name} isn't on the {region} auction house · {site}",
+  "item_elsewhereListLead": "It's listed in:",
+  "item_elsewhereListSeparator": ", ",
+  "item_elsewhereListTail": ".",
+  "item_elsewhereTitle": "{name} isn't on the {region} auction house.",
+  "item_endLabelAvg": "Avg",
+  "item_endLabelBuyout": "Buyout",
+  "item_endLabelRealm": "Realm",
+  "item_endLabelValue": "Value",
+  "item_favouriteButton": "Favourite",
+  "item_fillsInNote": "We save one snapshot a day, so this chart fills in over time. Check back tomorrow for the first trend.",
+  "item_headDescription": "{name} on the {region} Forever auction house: market value {value}, sells about {sold} a day. Price history updated daily.",
+  "item_headTitle": "{name} price · {region} Forever AH",
+  "item_heatmapDailySummary": [
+    {
+      "declarations": [
+        "input hi",
+        "input hiPct",
+        "input lo",
+        "input loPct",
+        "input days",
+        "input hiSide",
+        "input loSide"
+      ],
+      "selectors": ["hiSide", "loSide"],
+      "match": {
+        "hiSide=below, loSide=below": "Highest on {hi}, {hiPct} below the {days}-day median. Lowest on {lo}, {loPct} below. TSM values average several days, so this does not point to a best weekday.",
+        "hiSide=below, loSide=*": "Highest on {hi}, {hiPct} below the {days}-day median. Lowest on {lo}, {loPct} above. TSM values average several days, so this does not point to a best weekday.",
+        "hiSide=*, loSide=below": "Highest on {hi}, {hiPct} above the {days}-day median. Lowest on {lo}, {loPct} below. TSM values average several days, so this does not point to a best weekday.",
+        "hiSide=*, loSide=*": "Highest on {hi}, {hiPct} above the {days}-day median. Lowest on {lo}, {loPct} above. TSM values average several days, so this does not point to a best weekday."
+      }
+    }
+  ],
+  "item_heatmapFirstWeek": "The first full week ends {date}.",
+  "item_heatmapFlatDaily": "Every day sits within 0.5% of the {days}-day median.",
+  "item_heatmapFlatHourly": "Every slot sits within 0.5% of the median, so no time stands out.",
+  "item_heatmapHourlyCaption": [
+    {
+      "declarations": [
+        "input realm",
+        "input days",
+        "local daysPlural = days: plural"
+      ],
+      "selectors": ["daysPlural"],
+      "match": {
+        "daysPlural=one": "Each square is the average for that weekday and hour (UTC) on {realm}, from {days} day of scans.",
+        "daysPlural=*": "Each square is the average for that weekday and hour (UTC) on {realm}, from {days} days of scans."
+      }
+    }
+  ],
+  "item_heatmapHourlySummary": [
+    {
+      "declarations": [
+        "input hi",
+        "input hiPct",
+        "input lo",
+        "input loPct",
+        "input hiSide",
+        "input loSide"
+      ],
+      "selectors": ["hiSide", "loSide"],
+      "match": {
+        "hiSide=below, loSide=below": "Highest on {hi}, {hiPct} below the median. Lowest on {lo}, {loPct} below.",
+        "hiSide=below, loSide=*": "Highest on {hi}, {hiPct} below the median. Lowest on {lo}, {loPct} above.",
+        "hiSide=*, loSide=below": "Highest on {hi}, {hiPct} above the median. Lowest on {lo}, {loPct} below.",
+        "hiSide=*, loSide=*": "Highest on {hi}, {hiPct} above the median. Lowest on {lo}, {loPct} above."
+      }
+    }
+  ],
+  "item_heatmapNeedsWeek": "The heatmap needs a week of daily updates.",
+  "item_heatmapPickRange": "Pick 30D or 90D to see more.",
+  "item_heatmapProgress": "We have {n} of {min} for this item in {region}.",
+  "item_heatmapSalesCaption": "Each square is one day and shows how far its sales sit from the {days}-day median: redder means more sales than usual, bluer fewer.",
+  "item_heatmapSalesTitle": "Heatmap: sales",
+  "item_heatmapValueCaption": "Each square is one day and shows how far it sits from the {days}-day median: redder above, bluer below.",
+  "item_heatmapValueTitle": "Heatmap: market value",
+  "item_historyNote": [
+    {
+      "declarations": ["input n", "input date", "local nPlural = n: plural"],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "{n} day of history (since {date}).",
+        "nPlural=*": "{n} days of history (since {date})."
+      }
+    }
+  ],
+  "item_historyStarts": "Price history starts {date}.",
+  "item_hourSlot": [
+    {
+      "declarations": ["input weekday", "input hour"],
+      "selectors": ["weekday"],
+      "match": {
+        "weekday=0": "Mon {hour}:00 UTC",
+        "weekday=1": "Tue {hour}:00 UTC",
+        "weekday=2": "Wed {hour}:00 UTC",
+        "weekday=3": "Thu {hour}:00 UTC",
+        "weekday=4": "Fri {hour}:00 UTC",
+        "weekday=5": "Sat {hour}:00 UTC",
+        "weekday=*": "Sun {hour}:00 UTC"
+      }
+    }
+  ],
+  "item_hourlyPending": [
+    {
+      "declarations": [
+        "input realm",
+        "input min",
+        "input n",
+        "local minPlural = min: plural"
+      ],
+      "selectors": ["minPlural"],
+      "match": {
+        "minPlural=one": "Hourly view for {realm} starts after {min} day of scans ({n} so far).",
+        "minPlural=*": "Hourly view for {realm} starts after {min} days of scans ({n} so far)."
+      }
+    }
+  ],
+  "item_hourlySlotLabel": [
+    {
+      "declarations": ["input weekday", "input hour"],
+      "selectors": ["weekday"],
+      "match": {
+        "weekday=0": "Mondays at {hour}:00 UTC",
+        "weekday=1": "Tuesdays at {hour}:00 UTC",
+        "weekday=2": "Wednesdays at {hour}:00 UTC",
+        "weekday=3": "Thursdays at {hour}:00 UTC",
+        "weekday=4": "Fridays at {hour}:00 UTC",
+        "weekday=5": "Saturdays at {hour}:00 UTC",
+        "weekday=*": "Sundays at {hour}:00 UTC"
+      }
+    }
+  ],
+  "item_idLabel": "#{id}",
+  "item_medianHourReference": "the median hour",
+  "item_noListings": "No listings",
+  "item_noRealmScans": "No scans for {realm} in this range.",
+  "item_noRecentSales": "No recent sales",
+  "item_noSalesBody": [
+    {
+      "declarations": [
+        "input region",
+        "input days",
+        "local daysPlural = days: plural"
+      ],
+      "selectors": ["daysPlural"],
+      "match": {
+        "daysPlural=one": "TSM saw no {region} sales for this item in the last {days} day.",
+        "daysPlural=*": "TSM saw no {region} sales for this item in the last {days} days."
+      }
+    }
+  ],
+  "item_noSalesTitle": "No recorded sales in this range.",
+  "item_notListedReason": "Not listed in {region}",
+  "item_onlyPointDate": "on {date}.",
+  "item_onlyRegionHistory": "Only {region} has a price history for this item so far.",
+  "item_otherRegionsHint": "Other regions appear here once they list it on two daily updates.",
+  "item_perDay": "{n} a day",
+  "item_priceHeading": "Current price",
+  "item_rangeLong": [
+    {
+      "declarations": ["input days", "local daysPlural = days: plural"],
+      "selectors": ["daysPlural"],
+      "match": {
+        "daysPlural=one": "{days} day",
+        "daysPlural=*": "{days} days"
+      }
+    }
+  ],
+  "item_rangeMedianReference": "the {days}-day median",
+  "item_rangeNote": [
+    {
+      "declarations": ["input n", "local nPlural = n: plural"],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "Showing all {n} day we have.",
+        "nPlural=*": "Showing all {n} days we have."
+      }
+    }
+  ],
+  "item_rangeSelectLabel": "Range for {title}",
+  "item_rangeShort": "{days}D",
+  "item_realmColumn": "Realm",
+  "item_realmCompareHint": "The comparison appears after the second day of realm scans.",
+  "item_realmCompareSummary": [
+    {
+      "declarations": [
+        "input realm",
+        "input pct",
+        "input region",
+        "input side"
+      ],
+      "selectors": ["side"],
+      "match": {
+        "side=below": "{realm} averaged {pct} below the {region} market value.",
+        "side=*": "{realm} averaged {pct} above the {region} market value."
+      }
+    }
+  ],
+  "item_realmHistoryStarts": "{realm} history starts {date}.",
+  "item_realmNoScans": "{realm} has no scans for this item yet.",
+  "item_realmValueLabel": "Realm market value",
+  "item_realmsCaption": "Realm prices for this item",
+  "item_realmsHeading": "Realm prices",
+  "item_regionAverageNote": "Region prices average every {region} realm. Prices on your realm may differ.",
+  "item_regionColumn": "Region",
+  "item_regionSeries": "{region} region",
+  "item_regionsCaption": "Market value in each region against the other regions",
+  "item_regionsHeading": "All regions",
+  "item_regionsLegend": "Regions",
+  "item_salesRegionOnly": "Sales are only published per region.",
+  "item_searchItemsLink": "Search items",
+  "item_seriesLegend": "Series",
+  "item_statsHeading": "Statistics",
+  "item_statsLoading": "Loading statistics…",
+  "item_tableCaption": "{title}, {scope}",
+  "item_thisRegionSeries": "{region} (this region)",
+  "item_unknownBody": "It may not be tradable, or nobody has listed it yet.",
+  "item_unknownHeadTitle": "Item #{id} not found · {site}",
+  "item_unknownTitle": "We don't have prices for item #{id}.",
+  "item_valueChanged": [
+    {
+      "declarations": [
+        "input pct",
+        "input n",
+        "input from",
+        "input to",
+        "input direction",
+        "local nPlural = n: plural"
+      ],
+      "selectors": ["direction", "nPlural"],
+      "match": {
+        "direction=fell, nPlural=one": "Market value fell {pct} over {n} day, from {from} to {to}.",
+        "direction=fell, nPlural=*": "Market value fell {pct} over {n} days, from {from} to {to}.",
+        "direction=*, nPlural=one": "Market value rose {pct} over {n} day, from {from} to {to}.",
+        "direction=*, nPlural=*": "Market value rose {pct} over {n} days, from {from} to {to}."
+      }
+    }
+  ],
+  "item_valueLow": "Low {value} on {date}.",
+  "item_valueSold": "Sold about {n} a day on average.",
+  "item_valueSteady": [
+    {
+      "declarations": ["input value", "input n", "local nPlural = n: plural"],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "Market value held steady at {value} over {n} day.",
+        "nPlural=*": "Market value held steady at {value} over {n} days."
+      }
+    }
+  ],
+  "item_valueTitle": "Market value and quantity",
+  "item_volatileBadge": "Volatile",
+  "item_vsHistLabel": "vs 60-day average",
+  "item_vsMedianColumn": "vs median",
+  "item_vsOtherRegionsColumn": "vs other regions",
+  "item_weekdayHourColumn": "Weekday and hour",
+  "item_weekdayShort": [
+    {
+      "declarations": ["input weekday"],
+      "selectors": ["weekday"],
+      "match": {
+        "weekday=0": "Mon",
+        "weekday=1": "Tue",
+        "weekday=2": "Wed",
+        "weekday=3": "Thu",
+        "weekday=4": "Fri",
+        "weekday=5": "Sat",
+        "weekday=*": "Sun"
+      }
+    }
+  ],
+  "items_columnGoldPerDay": "Gold per day",
+  "items_columnItem": "Item",
+  "items_columnRealmMarketValue": "Realm market value",
+  "items_columnVsHist": "vs 60-day avg",
+  "items_countLabel": [
+    {
+      "declarations": ["input n", "input count", "local nPlural = n: plural"],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "{count} item",
+        "nPlural=*": "{count} items"
+      }
+    }
+  ],
+  "items_countMatchingLabel": [
+    {
+      "declarations": [
+        "input n",
+        "input count",
+        "input q",
+        "local nPlural = n: plural"
+      ],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "{count} item matching \"{q}\"",
+        "nPlural=*": "{count} items matching \"{q}\""
+      }
+    }
+  ],
+  "items_headDescription": "Search and sort every item on the {region} Forever auction house by market value, sale rate and daily sales.",
+  "items_headTitle": "Item prices · {region} Forever AH",
+  "items_mostSoldHeading": "Most sold right now",
+  "items_noListings": "No listings",
+  "items_noMatchHint": "Check the spelling, try part of the name (\"Arcanite\" instead of \"Arcanite Bar\"), or search by item ID.",
+  "items_noMatchTitle": "No items match \"{q}\" in {region}.",
+  "items_numericMissLink": "Look it up on Wowhead",
+  "items_numericMissTitle": "No item #{id} in {region}.",
+  "items_orderAToZ": "A to Z",
+  "items_orderHighestFirst": "highest first",
+  "items_orderLowestFirst": "lowest first",
+  "items_orderZToA": "Z to A",
+  "items_pageTitle": "{region} item prices",
+  "items_pagerLabel": "Pages",
+  "items_pagerNext": "Next page",
+  "items_pagerNextShort": "Next",
+  "items_pagerPrevShort": "Prev",
+  "items_pagerPrevious": "Previous page",
+  "items_pagerRange": "Showing {from}–{to} of {total}",
+  "items_pastEndBackLink": "Back to page 1",
+  "items_pastEndBody": [
+    {
+      "declarations": [
+        "input countText",
+        "input pages",
+        "input pageCount",
+        "local pagesPlural = pages: plural"
+      ],
+      "selectors": ["pagesPlural"],
+      "match": {
+        "pagesPlural=one": "{countText} fit on {pageCount} page.",
+        "pagesPlural=*": "{countText} fit on {pageCount} pages."
+      }
+    }
+  ],
+  "items_pastEndTitle": "There is no page {page}.",
+  "items_realmNotListed": "Not listed on this realm",
+  "items_searchLabel": "Search items",
+  "items_searchPlaceholder": "Item name or ID, e.g. Arcanite Bar",
+  "items_sortAvgSalePrice": "average sale price",
+  "items_sortGoldPerDay": "gold traded per day",
+  "items_sortMarketValue": "market value",
+  "items_sortName": "item name",
+  "items_sortSaleRate": "sale rate",
+  "items_sortSoldPerDay": "units sold per day",
+  "items_sortVsHist": "market value against the 60-day average",
+  "items_tableCaption": "{region} items by {sortLabel}, {order}",
+  "items_tableLabel": "{region} items",
+  "items_wowheadLinkLabel": "View {name} on Wowhead (opens Wowhead)",
+  "legal_aboutCreditTitle": "Credit",
+  "legal_aboutDataLogText": "Each time we fetch a price file, we log when it happened, which scan it held, how many rows it had and a short fingerprint of the file. A skipped row means the file hadn't changed since the last fetch.",
+  "legal_aboutDataLogTitle": "Data log",
+  "legal_aboutHeadDescription": "How {site} gets its prices, what each number means and how often it updates.",
+  "legal_aboutHeadTitle": "About and data sources",
+  "legal_aboutIntro": "{site} shows what items sell for on the World of Warcraft Forever auction houses in the EU and NA regions. All prices are in gold, silver and copper.",
+  "legal_aboutNoApiText": "There's no API, export or download here, because TradeSkillMaster's terms don't allow republishing their data in bulk.",
+  "legal_aboutNoApiTitle": "No API or downloads",
+  "legal_aboutNumbersTitle": "What the numbers mean",
+  "legal_aboutPrivacyCloudflare": "Cloudflare hosts the site. Its servers see your IP address when you load a page, and our request and error logs are deleted after 7 days.",
+  "legal_aboutPrivacyMoreLead": "The",
+  "legal_aboutPrivacyMoreLink": "privacy notice",
+  "legal_aboutPrivacyMoreTail": "has the details and your rights.",
+  "legal_aboutPrivacyText": "No accounts and no cookies. We host every font ourselves. Your last region, the items you viewed recently and your favourites stay in your browser's local storage and are never sent anywhere. Three outside services are involved:",
+  "legal_aboutPrivacyTitle": "Privacy",
+  "legal_aboutPrivacyUmami": "Umami counts page views and a few actions from its EU servers, without cookies and without storing IP addresses. It never gets your search terms, and it counts nothing if your browser sends Do Not Track.",
+  "legal_aboutPrivacyWowhead": "Wowhead's tooltip script adds item icons and tooltips. It loads on every price page, but not on this page, the home page or the legal pages.",
+  "legal_aboutSourceFiles": "Every price comes from the public data files that TradeSkillMaster publishes. Region prices update once a day. We download each file once per update.",
+  "legal_aboutSourceHistory": "We keep every daily snapshot, so price history grows from the day we started. Charts and tables show the last 90 days. The pages with prices, and the data log below, say when each update was scanned and imported.",
+  "legal_aboutSourceTitle": "Where the data comes from",
+  "legal_aboutTitle": "About this site",
+  "legal_dataLogCaption": "Recent price imports",
+  "legal_dataLogEmptyText": "The first daily price update hasn't run.",
+  "legal_dataLogEmptyTitle": "No imports yet.",
+  "legal_dataLogFetched": "Fetched",
+  "legal_dataLogFingerprint": "Fingerprint",
+  "legal_dataLogLoading": "Loading the data log…",
+  "legal_dataLogReason": "Reason",
+  "legal_dataLogRegion": "Region",
+  "legal_dataLogRegionRealm": "{region} · {realm}",
+  "legal_dataLogRows": "Rows",
+  "legal_dataLogScan": "TSM scan",
+  "legal_dataLogStatus": "Status",
+  "legal_dataLogStatusFailed": "Failed",
+  "legal_dataLogStatusImported": "Imported",
+  "legal_dataLogStatusSkipped": "Skipped",
+  "legal_emailLabel": "Email:",
+  "legal_impressumHeadDescription": "Who runs {site}, how to reach us, and the trademark and link notes.",
+  "legal_impressumHeadTitle": "Impressum",
+  "legal_impressumIntro": "{site} is a non-commercial fan project. It has no paid features and no ads.",
+  "legal_impressumLinksText": "We link to TradeSkillMaster and Wowhead. Their owners are responsible for what those pages say. If we learn that a page we link to breaks the law, we remove the link.",
+  "legal_impressumLinksTitle": "Links to other sites",
+  "legal_impressumNotAffiliatedText": "{site} is not affiliated with or endorsed by TradeSkillMaster, Blizzard Entertainment or Wowhead.",
+  "legal_impressumNotAffiliatedTitle": "Not affiliated",
+  "legal_impressumOperator": "{site}, a non-commercial fan project.",
+  "legal_impressumOperatorTitle": "Operator",
+  "legal_impressumSourceText": "TradeSkillMaster publishes the files we read. We don't change the prices, but we can't promise they are complete or current.",
+  "legal_impressumSourceTitle": "Data source",
+  "legal_impressumTitle": "Impressum",
+  "legal_impressumTrademarksText": "World of Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. Other names belong to their owners.",
+  "legal_impressumTrademarksTitle": "Trademarks",
+  "legal_privacyFontsText": "We host every font ourselves, so your browser never contacts Google or another font service.",
+  "legal_privacyFontsTitle": "Fonts",
+  "legal_privacyHeadDescription": "What {site} and the services it uses learn about you, and your rights under Swiss data protection law.",
+  "legal_privacyHeadTitle": "Privacy",
+  "legal_privacyHostingLogs": "Our server logs record requests and errors so we can fix problems. Cloudflare deletes them after 7 days.",
+  "legal_privacyHostingText": "Cloudflare, Inc. hosts the site and delivers every page. To do that and to block attacks, its servers process your IP address, the page you ask for, your browser's user agent and the time. Cloudflare is a US company and may process this data outside Switzerland, including in the USA.",
+  "legal_privacyHostingTitle": "Hosting: Cloudflare",
+  "legal_privacyIntro": "{site} has no accounts, sets no cookies and never asks for your name. Your browser keeps the last region you opened, the last three items you viewed and the items you starred as favourites in its local storage, so pages without a region open on it and the search lists those items. That stays on your device and is never sent to us or anyone else. This notice follows the Swiss Federal Act on Data Protection (FADP). Last updated {reviewed}.",
+  "legal_privacyPurposeText": "To deliver the site, keep it secure and running, and see which pages and features get used. We don't sell data, show ads or build profiles of visitors.",
+  "legal_privacyPurposeTitle": "Why we process data",
+  "legal_privacyResponsibleLead": "{site}, a non-commercial fan project (see the",
+  "legal_privacyResponsibleLink": "Impressum",
+  "legal_privacyResponsibleTail": ").",
+  "legal_privacyResponsibleTitle": "Who is responsible",
+  "legal_privacyRightsComplaint": "You can also complain to the Federal Data Protection and Information Commissioner (FDPIC).",
+  "legal_privacyRightsText": "You can ask what data about you we hold, and ask us to correct or delete it. We hold almost nothing that identifies a person, but we will check and answer. Write to the email address above.",
+  "legal_privacyRightsTitle": "Your rights",
+  "legal_privacyStatsDetails": "Umami sets no cookies and doesn't store your IP address. We never send it what you type into search, and the query part of a page address is left out. If your browser sends Do Not Track, nothing is counted. The counts are anonymous, and we keep them for as long as the site runs.",
+  "legal_privacyStatsText": "Umami Cloud counts page views from servers in the EU. It also counts a few actions, such as switching region, sorting a table or opening an item, so we can see which features people use.",
+  "legal_privacyStatsTitle": "Visitor statistics: Umami",
+  "legal_privacyTitle": "Privacy",
+  "legal_privacyTooltipsText": "Every page except the home page, About, the Impressum and this one loads Wowhead's tooltip script from wow.zamimg.com to show item icons and tooltips. Your browser then connects to Wowhead, which sees your IP address and the page you are on. Wowhead's own privacy policy covers that data.",
+  "legal_privacyTooltipsTitle": "Item tooltips: Wowhead",
+  "market_changeHeader": "Change",
+  "market_goldPerDayHeader": "Gold/day",
+  "market_headDescription": "Daily WoW Forever auction house prices for {region}: most traded items, biggest price moves and price history. Pricing data from TradeSkillMaster.",
+  "market_headTitle": "{region} Forever auction house prices",
+  "market_heading": "{region} auction house",
+  "market_hottestCaption": [
+    {
+      "declarations": ["input n", "input region", "input hot"],
+      "selectors": ["hot"],
+      "match": {
+        "hot=gold": "Top {n} {region} items by gold traded per day",
+        "hot=*": "Top {n} {region} items by units sold per day"
+      }
+    }
+  ],
+  "market_hottestEmpty": "Not enough trading in {region} to rank items yet. Items need about one sale every two days to count.",
+  "market_hottestHeading": "Hottest",
+  "market_hottestLabel": "Hottest {region} items",
+  "market_hottestRanked": [
+    {
+      "declarations": ["input region", "input hot"],
+      "selectors": ["hot"],
+      "match": {
+        "hot=gold": "Ranked by gold traded per day across {region}.",
+        "hot=*": "Ranked by units sold per day across {region}."
+      }
+    }
+  ],
+  "market_hottestTabGold": "Most gold traded",
+  "market_hottestTabSold": "Most sold",
+  "market_introPriceD1": "Today's market value compared with the previous daily update.",
+  "market_introPriceD7": "Today's market value compared with 7 days ago.",
+  "market_introPriceVsHist": "Today's market value compared with the 60-day average.",
+  "market_introSalesD1": "Change in units sold per day since the previous daily update.",
+  "market_introSalesD7": "Change in units sold per day since 7 days ago.",
+  "market_itemHeader": "Item",
+  "market_listView": "List view",
+  "market_mapEmpty": "Not enough trading in {region} to draw a market map yet. Items need about one sale every two days to count.",
+  "market_mapHeading": "Market map",
+  "market_mapIntroD1": "Tile size is gold traded per day. Colour is the market value change since the previous daily update.",
+  "market_mapIntroVsHist": "Tile size is gold traded per day. Colour is today's price against the 60-day average.",
+  "market_mapLegendCheaper": "Cheaper than usual",
+  "market_mapLegendFell": "Fell",
+  "market_mapLegendPricier": "Pricier than usual",
+  "market_mapLegendRose": "Rose",
+  "market_mapListCaption": "Top {n} {region} items by gold traded per day",
+  "market_mapListLabel": "Market map list, {region}",
+  "market_mapLoading": "Loading market map…",
+  "market_mapSlow": "Still loading. This is taking longer than usual.",
+  "market_mapSummaryD1": "Top {n} items by gold traded per day. {up} rose since the previous daily update, {down} fell.",
+  "market_mapSummaryVsHist": "Top {n} items by gold traded per day. {up} above usual, {down} below.",
+  "market_mapTileTitle": "{name}, {change}",
+  "market_measureLabel": "Measure",
+  "market_measurePopularity": "Popularity",
+  "market_measurePrice": "Price",
+  "market_moverCaption": [
+    {
+      "declarations": [
+        "input n",
+        "input region",
+        "input by",
+        "input dir",
+        "input window"
+      ],
+      "selectors": ["by", "dir", "window"],
+      "match": {
+        "by=price, dir=1, window=vs_hist": "Top {n} {region} items by price increase, against the 60-day average.",
+        "by=price, dir=1, window=d1": "Top {n} {region} items by price increase, since the previous daily update.",
+        "by=price, dir=1, window=*": "Top {n} {region} items by price increase, over the last 7 days.",
+        "by=price, dir=*, window=vs_hist": "Top {n} {region} items by price decrease, against the 60-day average.",
+        "by=price, dir=*, window=d1": "Top {n} {region} items by price decrease, since the previous daily update.",
+        "by=price, dir=*, window=*": "Top {n} {region} items by price decrease, over the last 7 days.",
+        "by=*, dir=1, window=vs_hist": "Top {n} {region} items by popularity increase, against the 60-day average.",
+        "by=*, dir=1, window=d1": "Top {n} {region} items by popularity increase, since the previous daily update.",
+        "by=*, dir=1, window=*": "Top {n} {region} items by popularity increase, over the last 7 days.",
+        "by=*, dir=*, window=vs_hist": "Top {n} {region} items by popularity decrease, against the 60-day average.",
+        "by=*, dir=*, window=d1": "Top {n} {region} items by popularity decrease, since the previous daily update.",
+        "by=*, dir=*, window=*": "Top {n} {region} items by popularity decrease, over the last 7 days."
+      }
+    }
+  ],
+  "market_moverDecrease": "Biggest decrease",
+  "market_moverFew": "Only {n} items moved more than 0.5%.",
+  "market_moverIncrease": "Biggest increase",
+  "market_moverNothing": [
+    {
+      "declarations": ["input window"],
+      "selectors": ["window"],
+      "match": {
+        "window=vs_hist": "Nothing moved more than 0.5% against the 60-day average.",
+        "window=d1": "Nothing moved more than 0.5% since the previous daily update.",
+        "window=*": "Nothing moved more than 0.5% over the last 7 days."
+      }
+    }
+  ],
+  "market_moverPerDay": "{from} → {to} a day",
+  "market_movesHeading": "Biggest moves",
+  "market_popularityNeed": "Sales need two daily updates to compare.",
+  "market_popularityStartsLater": "Popularity changes start on the second daily update.",
+  "market_popularityStartsOn": "Popularity changes start on {date}.",
+  "market_rankByLabel": "Rank by",
+  "market_rankHeader": "Rank",
+  "market_reasonD1Later": "Last update: available after the second daily update.",
+  "market_reasonD1On": "Last update: available after the second daily update ({date}).",
+  "market_reasonD7Later": "7 days: available from the eighth daily update ({days} of 7 days so far).",
+  "market_reasonD7On": "7 days: available from {date} ({days} of 7 days so far).",
+  "market_reasonNoSalesAverage": "TSM has no 60-day sales average.",
+  "market_regionWideNote": "Market overview is region-wide.",
+  "market_risingCaption": "Top {n} {region} items rising in price while selling more than usual",
+  "market_risingChangeHeader": "7 days",
+  "market_risingEmpty": "No item is rising with demand today. In {region}, nothing that trades at least 1g a day and has two weeks of sales is up 5% on the week while selling more than usual.",
+  "market_risingHeading": "Rising with demand",
+  "market_risingIntro": "Up at least 5% in a week and selling at least 1.25 times their usual amount per day.",
+  "market_risingLabel": "{region} items rising with demand",
+  "market_risingLift": "{lift}× usual",
+  "market_risingLoading": "Loading rising items…",
+  "market_risingNeed": "Sales need {need} earlier daily updates to compare with.",
+  "market_risingStartsLater": "Starts on the 15th daily update ({days} of {need} earlier daily updates so far).",
+  "market_risingStartsOn": "Starts on {date} ({days} of {need} earlier daily updates so far).",
+  "market_seeAllItems": "See all items",
+  "market_soldPerDayHeader": "Sold/day",
+  "market_vsHistHeader": "vs 60-day avg",
+  "market_windowD1": "Last update",
+  "market_windowD7": "7 days",
+  "market_windowLabel": "Window",
+  "market_windowVsHist": "vs 60-day avg",
+  "palette_dialogTitle": "Search or jump to",
+  "palette_groupFavourites": "Favourites",
+  "palette_groupItems": "Items in {region}",
+  "palette_groupNavigate": "Navigate",
+  "palette_groupRealm": "Realm",
+  "palette_groupRecent": "Recent",
+  "palette_groupRegion": "Region",
+  "palette_hintClose": "to close",
+  "palette_hintMove": "to move",
+  "palette_hintOpen": "to open",
+  "palette_inputLabel": "Search items or jump to a page",
+  "palette_inputPlaceholder": "Item name or ID, e.g. Arcanite Bar",
+  "palette_itemNoMatch": "No item matches \"{q}\" in {region}.",
+  "palette_itemSearchAll": "Search all items",
+  "palette_itemSearchFailed": "Item search failed",
+  "palette_itemSearching": "Searching…",
+  "palette_itemSoldPerDay": "{n} sold/day",
+  "palette_keyEnter": "Enter",
+  "palette_keyEsc": "Esc",
+  "palette_navAbout": "About",
+  "palette_navAboutKeywords": "data sources glossary",
+  "palette_navHeatmaps": "Heatmaps",
+  "palette_navHeatmapsKeywords": "regions compare",
+  "palette_navItems": "Items",
+  "palette_navItemsKeywords": "browse prices search",
+  "palette_navMarket": "Market",
+  "palette_navMarketKeywords": "home hottest movers",
+  "palette_navRealms": "Realms",
+  "palette_noResultsLead": "No results for ",
+  "palette_noResultsStatus": "No results for {query}",
+  "palette_realmFaction": "{realm} ({faction})",
+  "palette_resultCount": [
+    {
+      "declarations": ["input n", "local nPlural = n: plural"],
+      "selectors": ["nPlural"],
+      "match": {
+        "nPlural=one": "{n} result",
+        "nPlural=*": "{n} results"
+      }
+    }
+  ],
+  "palette_resultsLabel": "Results",
+  "palette_switchRegion": "Switch to {region}",
+  "palette_triggerLabel": "Search or jump to…",
+  "realms_emptyBody": "TSM publishes no Forever realm list, so we add realms by hand. Region prices cover every realm in {region}.",
+  "realms_emptyMarketLink": "Go to {region} market",
+  "realms_emptyTitle": "No realms on the books yet.",
+  "realms_factionAlliance": "Alliance",
+  "realms_factionHorde": "Horde",
+  "realms_factionLinkLabel": "{realm} {faction}",
+  "realms_filteredEmptyShowAll": "Show all realm types",
+  "realms_filteredEmptyTitle": "No {ruleset} realms added for {region}.",
+  "realms_headDescription": "Realm prices on the {region} Forever auction house, by realm and faction.",
+  "realms_headTitle": "Realms · {region} Forever AH",
+  "realms_listLabel": "{region} realms",
+  "realms_pageTitle": "{region} realms",
+  "realms_rulesetAll": "All",
+  "realms_rulesetLabel": "Ruleset",
+  "realms_rulesetNormal": "Normal",
+  "realms_rulesetPvp": "PvP",
+  "realms_rulesetRp": "RP",
+  "realms_rulesetRpPvp": "RP-PvP",
+  "shell_chartHideTable": "Hide table",
+  "shell_chartShowTable": "Show as table",
+  "shell_contactPending": "We haven't published a contact address yet. It will appear here.",
+  "shell_creditLead": "Pricing data from",
+  "shell_creditLink": "TradeSkillMaster",
+  "shell_deltaAboveHist": "{value} percent above 60-day average",
+  "shell_deltaAboveRef": "{value} percent above {reference}",
+  "shell_deltaBelowHist": "{value} percent below 60-day average",
+  "shell_deltaBelowRef": "{value} percent below {reference}",
+  "shell_deltaDefaultReference": "the cross-region median",
+  "shell_deltaDown": "down {value} percent",
+  "shell_deltaHistSame": "about the same as the 60-day average",
+  "shell_deltaNoHistory": "Not enough history yet",
+  "shell_deltaRefSame": "about the same as {reference}",
+  "shell_deltaUnchanged": "unchanged",
+  "shell_deltaUp": "up {value} percent",
+  "shell_docTitle": "{page} · {site}",
+  "shell_errorBody": "We've logged the error. Try again, or come back in a few minutes.",
+  "shell_errorDocPage": "Something broke",
+  "shell_errorTitle": "Something broke on our side.",
+  "shell_factionAlliance": "alliance",
+  "shell_factionHorde": "horde",
+  "shell_factionLabel": "Faction",
+  "shell_footerAbout": "About and data sources",
+  "shell_footerImpressum": "Impressum",
+  "shell_footerPrivacy": "Privacy",
+  "shell_freshnessImportedLead": ", imported",
+  "shell_freshnessScanLead": "Prices from TSM scan",
+  "shell_glossaryAvgSalePriceLabel": "Avg. sale price",
+  "shell_glossaryAvgSalePriceText": "What buyers actually paid on average when this item sold.",
+  "shell_glossaryChangeLabel": "Change",
+  "shell_glossaryChangeText": "Market value change since the previous daily update.",
+  "shell_glossaryGoldPerDayLabel": "Gold per day",
+  "shell_glossaryGoldPerDayText": "Sold per day times average sale price.",
+  "shell_glossaryHistoricalLabel": "60-day average",
+  "shell_glossaryHistoricalText": "Market value averaged over about 60 days. Compare it with market value to spot spikes and dips.",
+  "shell_glossaryIndexLabel": "vs other regions",
+  "shell_glossaryIndexText": "How this region's market value compares with the median of the regions that list the item (US, EU, KR and TW). +20% means 20% pricier than the typical region.",
+  "shell_glossaryMarketValueLabel": "Market value",
+  "shell_glossaryMarketValueText": "What this usually sells for right now, based on auction listings over the last couple of weeks.",
+  "shell_glossaryMinBuyoutLabel": "Lowest buyout",
+  "shell_glossaryMinBuyoutText": "Cheapest buyout on this realm at the last scan.",
+  "shell_glossaryPopularityLabel": "Popularity",
+  "shell_glossaryPopularityText": "Change in units sold per day. Only items that sold at least one a day before the change count.",
+  "shell_glossaryRecentLabel": "Latest scan value",
+  "shell_glossaryRecentText": "Market value from the most recent scan only. Reacts fast but can be noisy.",
+  "shell_glossaryRisingLabel": "Rising with demand",
+  "shell_glossaryRisingText": "Market value at least 5% above 7 days ago, and today's sold per day at least 1.25 times the item's average over the previous 30 days. The item needs 14 days of data in those 30 and about 1g traded a day to count.",
+  "shell_glossarySaleRateLabel": "Sale rate",
+  "shell_glossarySaleRateText": "Share of listings that sell. 25% means about 1 in 4 auctions finds a buyer.",
+  "shell_glossarySoldPerDayLabel": "Sold per day",
+  "shell_glossarySoldPerDayText": "Average units sold per day across the region.",
+  "shell_glossarySpreadLabel": "Spread",
+  "shell_glossarySpreadText": "Gap between the cheapest and priciest region, as a share of the median. A high spread means the same item costs very different amounts by region.",
+  "shell_glossaryVolatileLabel": "Volatile",
+  "shell_glossaryVolatileText": "Market value is under a fifth or over five times the 60-day average. Prices like that often swing back, so check recent sales before you buy or sell.",
+  "shell_glossaryVsHistLabel": "vs 60-day avg",
+  "shell_glossaryVsHistText": "How today's market value compares with the 60-day average. +20% means 20% pricier than usual.",
+  "shell_infoLabel": "What is {term}?",
+  "shell_mainNavLabel": "Main",
+  "shell_menuOpenLabel": "Open menu",
+  "shell_menuTitle": "Menu",
+  "shell_navHeatmaps": "Heatmaps",
+  "shell_navItems": "Items",
+  "shell_navMarket": "Market",
+  "shell_navRealms": "Realms",
+  "shell_noData": "No data",
+  "shell_noDataBody": "This site hasn't finished its first daily price update. Prices appear here after it runs.",
+  "shell_noDataDevHint": "Dev only: run pnpm db:seed to load local data.",
+  "shell_noDataNoneYet": "none yet",
+  "shell_noDataRegionLead": "We haven't saved a price update for {region}. Last successful import:",
+  "shell_noDataRegionTail": ". Try another region in the meantime.",
+  "shell_noDataRegionTitle": "No {region} prices yet",
+  "shell_noDataTitle": "No prices yet",
+  "shell_notAffiliated": "Credit Sylvanas is a fan project. It is not affiliated with or endorsed by TradeSkillMaster or Blizzard Entertainment. World of Warcraft is a trademark of Blizzard Entertainment, Inc.",
+  "shell_notFoundBody": "That page doesn't exist. Try searching for an item instead.",
+  "shell_notFoundDocPage": "Page not found",
+  "shell_notFoundMarketLink": "Go to {region} market",
+  "shell_notFoundRealmLink": "See {region} region prices",
+  "shell_notFoundRealmTitle": "We don't track \"{value}\" yet.",
+  "shell_notFoundRegionList": "Prices are available for {regions}.",
+  "shell_notFoundRegionTitle": "There's no \"{value}\" region.",
+  "shell_notFoundTitle": "Page not found.",
+  "shell_realmAll": "All realms (region)",
+  "shell_realmNoneBody": "Forever realm names aren't published anywhere, so we haven't added any realms. Region prices below cover every {region} realm.",
+  "shell_realmNoneTitle": "Realm prices aren't available yet.",
+  "shell_realmSelected": "Realm: {name}",
+  "shell_regionComingLater": "{region}: coming later",
+  "shell_regionNameEu": "Europe",
+  "shell_regionNameKr": "Korea",
+  "shell_regionNameTw": "Taiwan",
+  "shell_regionNameUs": "Americas & Oceania",
+  "shell_regionNavLabel": "Region",
+  "shell_retry": "Try again",
+  "shell_searchLabel": "Search",
+  "shell_sectionErrorBody": "Try again in a moment.",
+  "shell_sectionErrorTitle": "These prices didn't load.",
+  "shell_shareImageAlt": "Credit Sylvanas: WoW Forever auction house prices for EU and NA, with daily updates and 90 days of price history",
+  "shell_skipLink": "Skip to content",
+  "shell_staleBody": "Last update: {date}. We're showing the last good data until the next update arrives.",
+  "shell_staleTitle": "Prices may be out of date.",
+  "shell_tableScrollLabel": "{label}, scrolls sideways",
+  "shell_wordmarkAccent": "Sylvanas",
+  "shell_wordmarkLead": "Credit",
+  "shell_wowheadOpens": "(opens Wowhead)",
+  "shell_wowheadView": "View on Wowhead"
+}

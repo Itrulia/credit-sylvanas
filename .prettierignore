@@ -3,3 +3,5 @@ pnpm-lock.yaml
 yarn.lock
 worker-configuration.d.ts
 src/routeTree.gen.ts
+src/paraglide
+project.inlang/cache

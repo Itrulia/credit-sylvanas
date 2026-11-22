@@ -4,6 +4,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
+import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import type { Plugin } from 'vite'
 
 // never invent the address: the legal pages say it is pending until it is set
@@ -30,6 +31,14 @@ export default defineConfig({
     // must come before tanstackStart(): runs the SSR environment in workerd
     cloudflare({ viteEnvironment: { name: 'ssr' } }),
     tailwindcss(),
+    // flags must match the `i18n` script in package.json
+    paraglideVitePlugin({
+      project: './project.inlang',
+      outdir: './src/paraglide',
+      outputStructure: 'message-modules',
+      emitTsDeclarations: true,
+      strategy: ['baseLocale'],
+    }),
     tanstackStart({
       prerender: {
         enabled: true,

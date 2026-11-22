@@ -20,6 +20,9 @@ Workers runtime does. Charts are the exception: recharts through the shadcn
   Hotkeys (`useHotkey`); zod v4.
 - Tailwind CSS 4, shadcn/ui (new-york, Radix). Dialogs are shadcn `Dialog`;
   cmdk is not used.
+- Paraglide JS 3 (`@inlang/paraglide-js`, messages in `messages/en.json`,
+  plugin `@inlang/plugin-message-format` loaded from `node_modules`, so
+  compiling never fetches a CDN).
 - Vitest 5, ESLint 9 (`@tanstack/eslint-config`), Prettier 3.
 
 `@tanstack/*` and `recharts` are pinned to exact versions. Start 1.169.x
