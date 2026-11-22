@@ -144,14 +144,6 @@ export function hourlyGrid(scans: readonly { t: number; mv: number }[]) {
   return grid
 }
 
-/** Area grows with the value: r = clamp(3, 7 × sqrt(value / median), 11). */
-export function dotRadius(value: number, ref: number | null) {
-  if (!ref || ref <= 0 || value <= 0) {
-    return 3
-  }
-  return Math.min(11, Math.max(3, 7 * Math.sqrt(value / ref)))
-}
-
 // within +-0.5% counts as flat, as in <Delta>
 const FLAT = 0.005
 const money = (copper: number) => moneyText(formatMoney(copper))

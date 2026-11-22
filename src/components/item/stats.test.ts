@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   compareSummary,
   dailyGrid,
-  dotRadius,
   heatmapSummary,
   hourlyGrid,
   inRange,
@@ -104,18 +103,9 @@ describe('hourlyGrid', () => {
   })
 })
 
-describe('rangeMedian and dotRadius', () => {
+describe('rangeMedian', () => {
   it('returns null for an empty set', () => {
     expect(rangeMedian([])).toBeNull()
-  })
-
-  it('scales the area with the value and clamps the radius to 3..11px', () => {
-    expect(dotRadius(100, 100)).toBe(7)
-    expect(dotRadius(400, 100)).toBe(11) // 14 clamped
-    expect(dotRadius(1, 100)).toBe(3) // 0.7 clamped
-    expect(dotRadius(0, 100)).toBe(3)
-    expect(dotRadius(200, 100)).toBeCloseTo(9.9, 1)
-    expect(dotRadius(5, 0)).toBe(3)
   })
 })
 

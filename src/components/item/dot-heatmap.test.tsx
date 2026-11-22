@@ -48,20 +48,45 @@ describe('HeatmapCard', () => {
     expect(screen.getByText(/Pick 30D or 90D to see more/)).toBeTruthy()
   })
 
-  it('draws the daily grid with 7 points and a dot per day', () => {
+  it('draws the daily grid with 7 points and a square per day', () => {
     render(<HeatmapCard {...base} kind="value" points={points(7)} />)
     const svg = screen.getByRole('img')
     expect(svg.getAttribute('aria-label')).toMatch(/^Highest on Sundays/)
-    expect(svg.querySelectorAll('circle')).toHaveLength(7)
-    expect(screen.getByText(/Each dot is one day/)).toBeTruthy()
+    expect(svg.querySelectorAll('rect')).toHaveLength(7)
+    expect(screen.getByText(/Each square is one day/)).toBeTruthy()
+    expect(screen.queryByText(/Bigger/)).toBeNull()
+    const sizes = new Set(
+      [...svg.querySelectorAll('rect')].map((r) => r.getAttribute('width')),
+    )
+    expect(sizes.size).toBe(1)
+  })
+
+  it('centres each week label on its column', () => {
+    render(<HeatmapCard {...base} kind="value" points={points(30)} />)
+    const svg = screen.getByRole('img')
+    const centres = new Set(
+      [...svg.querySelectorAll('rect')].map(
+        (r) =>
+          Number(r.getAttribute('x')) + Number(r.getAttribute('width')) / 2,
+      ),
+    )
+    const labels = [...svg.querySelectorAll('text')].filter(
+      (t) =>
+        t.getAttribute('y') === svg.querySelector('text')?.getAttribute('y'),
+    )
+    expect(labels.length).toBeGreaterThan(1)
+    for (const t of labels) {
+      expect(t.getAttribute('text-anchor')).toBe('middle')
+      expect(centres.has(Number(t.getAttribute('x')))).toBe(true)
+    }
   })
 
   it('lists the same rows in the table toggle as the chart draws', async () => {
     render(<HeatmapCard {...base} kind="value" points={points(10)} />)
-    const dots = screen.getByRole('img').querySelectorAll('circle').length
+    const cells = screen.getByRole('img').querySelectorAll('rect').length
     await userEvent.click(screen.getByRole('button', { name: 'Show as table' }))
     const table = screen.getByRole('table')
-    expect(within(table).getAllByRole('row')).toHaveLength(dots + 1)
+    expect(within(table).getAllByRole('row')).toHaveLength(cells + 1)
     expect(table.textContent).toMatch(/the 90-day median/)
     expect(table.textContent).not.toMatch(/cross-region/)
   })
@@ -99,7 +124,7 @@ describe('HeatmapCard', () => {
         /Hourly view for Nightslayer starts after 7 days of scans \(6 so far\)\./,
       ),
     ).toBeTruthy()
-    expect(screen.getByRole('img').querySelectorAll('circle')).toHaveLength(14)
+    expect(screen.getByRole('img').querySelectorAll('rect')).toHaveLength(14)
   })
 
   it('shows no recorded sales on card 4 when every value is 0', () => {

@@ -13,7 +13,6 @@ import {
   RANGE_DAYS,
   WEEKDAYS,
   dailyGrid,
-  dotRadius,
   heatmapSummary,
   hourlyGrid,
   inRange,
@@ -21,15 +20,17 @@ import {
 } from './stats'
 
 const CELL = 24
+const SQUARE = 20
 const LEFT = 32
 const TOP = 20
 const MIN_DAYS = 7
 
-/** Dot heatmap: colour is the diverging bin vs the median, area grows with the value. */
+/** Weekday heatmap: one square per cell, coloured by the diverging bin vs the median. */
 export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
   const width = LEFT + grid.columns.length * CELL
   const height = TOP + grid.rows.length * CELL
-  // "22 Nov" is wider than a cell, so daily columns label every other week
+  // "22 Nov" is wider than a cell, so daily columns label every other week,
+  // each label centred on its own column
   const every = grid.layout === 'daily' && grid.columns.length > 1 ? 2 : 1
   return (
     <div className="relative overflow-x-auto">
@@ -47,7 +48,7 @@ export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
               key={c.key}
               x={LEFT + i * CELL + CELL / 2}
               y={TOP - 6}
-              textAnchor={every > 1 ? 'start' : 'middle'}
+              textAnchor="middle"
               className="fill-current text-micro"
             >
               {c.label}
@@ -67,11 +68,13 @@ export function DotHeatmap({ grid, label }: { grid: DotGrid; label: string }) {
         {grid.cells.map((c) => {
           const ratio = grid.median ? c.value / grid.median - 1 : null
           return (
-            <circle
+            <rect
               key={`${c.col}:${c.row}`}
-              cx={LEFT + c.col * CELL + CELL / 2}
-              cy={TOP + c.row * CELL + CELL / 2}
-              r={dotRadius(c.value, grid.median)}
+              x={LEFT + c.col * CELL + (CELL - SQUARE) / 2}
+              y={TOP + c.row * CELL + (CELL - SQUARE) / 2}
+              width={SQUARE}
+              height={SQUARE}
+              rx={3}
               fill={binFill(binOf(ratio) ?? 0)}
               stroke="var(--input)"
               strokeWidth={1}
@@ -167,8 +170,8 @@ export function HeatmapCard({
     const grid = useHourly ? hourly : dailyGrid(daily)
     const summary = heatmapSummary(grid, range)
     const caption = useHourly
-      ? `Each dot is the average for that weekday and hour (UTC) on ${realmName}, from ${grid.days} days of scans.`
-      : `Each dot is one day. Bigger and redder means further above the ${RANGE_DAYS[range]}-day median, bluer means below.`
+      ? `Each square is the average for that weekday and hour (UTC) on ${realmName}, from ${grid.days} days of scans.`
+      : `Each square is one day. Redder means further above the ${RANGE_DAYS[range]}-day median, bluer means below.`
     const note = useHourly ? null : rangeNote(range, points.length)
     const fmt = (v: number) =>
       kind === 'value' ? (
@@ -215,9 +218,7 @@ export function HeatmapCard({
           summary={summary}
           footer={
             <p className="text-muted-foreground">
-              {[caption, 'Bigger dots mean higher values.', note, ...notes]
-                .filter(Boolean)
-                .join(' ')}
+              {[caption, note, ...notes].filter(Boolean).join(' ')}
             </p>
           }
           table={() => (
