@@ -145,10 +145,11 @@ describe('runIngest', () => {
       const day2 = stubFetch({
         [US]: { body: regionFile(3, '2026-11-21T08:00:00Z'), etag: '"2"' },
       })
-      const target = method === 'batch' ? db : archive
-      const spy = vi
-        .spyOn(target, method as never)
-        .mockRejectedValueOnce(new Error('D1_ERROR: transient') as never)
+      const transient = new Error('D1_ERROR: transient')
+      const spy =
+        method === 'batch'
+          ? vi.spyOn(db, 'batch').mockRejectedValueOnce(transient)
+          : vi.spyOn(archive, 'put').mockRejectedValueOnce(transient)
       const [failed] = await runIngest(db, archive, day2, {
         kind: 'region',
         now: NOW + 86_400_000,
