@@ -75,6 +75,9 @@ export const ItemSort = z.enum([
 ])
 export type ItemSort = z.infer<typeof ItemSort>
 export const SortDir = z.enum(['asc', 'desc'])
+
+/** Rows per items-list page, shared by the SQL and the pager. */
+export const PAGE_SIZE = 50
 export type SortDir = z.infer<typeof SortDir>
 export const itemsSearch = z.object({
   // the router parses a hand-typed ?q=999999 as a number

@@ -2,10 +2,8 @@ import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { Icon } from '#/components/icon'
 import { formatInt } from '#/lib/format'
+import { PAGE_SIZE } from '#/lib/search'
 import { cn } from '#/lib/utils'
-
-// mirrors PAGE_SIZE in src/server/queries/list.ts, which client code may not import
-export const PAGE_SIZE = 50
 
 export const lastPage = (total: number) =>
   Math.max(1, Math.ceil(total / PAGE_SIZE))

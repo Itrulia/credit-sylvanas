@@ -1,9 +1,8 @@
 import '@tanstack/react-start/server-only'
+import { PAGE_SIZE } from '../../lib/search.ts'
 import type { Faction, ItemSort, Region, SortDir } from '../../lib/search.ts'
 import type { ListResult, ListRow } from '../types.ts'
 import { tokenFilter } from './shared.ts'
-
-export const PAGE_SIZE = 50
 
 // Sort expressions come from this whitelist, never from input.
 const SORT: Record<ItemSort, string> = {
