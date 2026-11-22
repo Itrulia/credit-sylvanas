@@ -14,23 +14,29 @@
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy": "pnpm run build && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "db:migrate:local": "wrangler d1 migrations apply worgen-prices --local",
+    "db:migrate:remote": "wrangler d1 migrations apply worgen-prices --remote",
+    "db:seed": "node scripts/seed-local.ts",
+    "db:synth": "node scripts/seed-synthetic.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/match-sorter-utils": "9.2.6",
     "@tanstack/react-devtools": "0.10.15",
     "@tanstack/react-form": "1.33.5",
+    "@tanstack/react-hotkeys": "0.27.1",
+    "@tanstack/react-pacer": "0.24.1",
+    "@tanstack/react-query": "5.108.2",
     "@tanstack/react-router": "1.170.46",
     "@tanstack/react-router-devtools": "1.167.4",
+    "@tanstack/react-router-ssr-query": "1.167.3",
     "@tanstack/react-start": "1.169.7",
     "@tanstack/react-table": "9.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "cmdk": "^1.1.1",
-    "cn": "^0.5.2",
-    "lucide-react": "^0.577.0",
-    "nitro": "3.0.260610-beta",
     "radix-ui": "^1.8.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -41,23 +47,33 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "1.70.1",
+    "@cloudflare/vitest-plugin": "1.9.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "0.8.7",
     "@tanstack/eslint-config": "0.5.0",
+    "@tanstack/react-form-devtools": "0.2.34",
+    "@tanstack/react-hotkeys-devtools": "0.14.13",
+    "@tanstack/react-pacer-devtools": "0.9.1",
+    "@tanstack/react-query-devtools": "5.108.2",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.13",
+    "@types/jsdom": "30.0.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.20.0",
+    "jiti": "2.7.0",
+    "jsdom": "31.0.1",
     "prettier": "^3.8.1",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
-    "vitest": "^5.1.1"
+    "vitest": "^5.1.1",
+    "wrangler": "4.166.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "lightningcss"
-    ]
+  "engines": {
+    "node": ">=22.18"
   }
 }

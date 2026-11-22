@@ -32,7 +32,6 @@ If you prefer not to use Tailwind CSS:
 
 ## Linting & Formatting
 
-
 This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
 
 ```bash
@@ -40,7 +39,6 @@ pnpm lint
 pnpm format
 pnpm check
 ```
-
 
 ## Shadcn
 
@@ -50,21 +48,17 @@ Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
 pnpm dlx shadcn@latest add button
 ```
 
+## Local data and deploy
 
-## Deploy with Nitro
-
-This project uses Nitro as a generic server adapter, so it can run on any Node-compatible host.
+The app runs on Cloudflare Workers with D1 (`DB`) and R2 (`ARCHIVE`), configured in `wrangler.jsonc`. `pnpm dev` runs the Worker in Miniflare with local D1 and R2 under `.wrangler/`.
 
 ```bash
-npm run build
-node .output/server/index.mjs
+pnpm db:migrate:local   # apply migrations/ to the local D1
+pnpm db:seed            # load TSM CSVs from .seed/ (forever_us_region_items.csv, ...)
+pnpm db:synth           # dev only: 89 days of fake history behind the real day
 ```
 
-The build output is a self-contained Node server. To deploy, push the `.output/` directory to your host (Render, Fly.io, your own VPS, etc.) and run the server command above.
-
-For host-specific presets (Vercel, Netlify, Cloudflare, AWS Lambda, etc.) and tuning, see https://v3.nitro.build/deploy.
-
-
+Development never downloads TSM files. A human creates the D1 database and R2 bucket, pastes the real `database_id` into `wrangler.jsonc`, runs `pnpm db:migrate:remote` and then `pnpm deploy`.
 
 ## Routing
 
@@ -83,7 +77,7 @@ Now that you have two routes you can use a `Link` component to navigate between 
 To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
 
 ```tsx
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router'
 ```
 
 Then anywhere in your JSX you can use it like so:
@@ -151,11 +145,11 @@ const getServerTime = createServerFn({
 // Use in a component
 function MyComponent() {
   const [time, setTime] = useState('')
-  
+
   useEffect(() => {
     getServerTime().then(setTime)
   }, [])
-  
+
   return <div>Server time: {time}</div>
 }
 ```
@@ -207,8 +201,6 @@ function PeopleComponent() {
 ```
 
 Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
 
 # Learn More
 

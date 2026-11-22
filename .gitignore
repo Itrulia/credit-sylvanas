@@ -6,11 +6,10 @@ dist-ssr
 # .env holds public values and is committed; secrets go in the files below
 .env.*
 .dev.vars*
-.nitro
 .tanstack
 .wrangler
 .output
 .vinxi
+.seed/
 __unconfig*
 todos.json
-data/
