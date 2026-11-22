@@ -1,7 +1,6 @@
 import { REGION_INFO } from '#/config/regions'
 import { ChartFigure } from '#/components/chart-figure'
 import { Delta } from '#/components/delta'
-import { DivergingLegend } from '#/components/diverging-legend'
 import { Money } from '#/components/money'
 import { binFill, binInk, binOf } from '#/lib/bins'
 import {
@@ -118,10 +117,6 @@ const TITLE = {
   value: 'Heatmap: market value',
   sales: 'Heatmap: sales',
 } as const
-const LEGEND = {
-  value: ['Below the range median', 'Above the range median'],
-  sales: ['Fewer sales than usual', 'More sales than usual'],
-} as const
 
 /** Cards 3 and 4: weekday heatmaps of market value and sales. */
 export function HeatmapCard({
@@ -188,7 +183,9 @@ export function HeatmapCard({
     const summary = heatmapSummary(grid, range)
     const caption = useHourly
       ? `Each square is the average for that weekday and hour (UTC) on ${realmName}, from ${grid.days} days of scans.`
-      : `Each square is one day and shows how far it sits from the ${RANGE_DAYS[range]}-day median: redder above, bluer below.`
+      : kind === 'sales'
+        ? `Each square is one day and shows how far its sales sit from the ${RANGE_DAYS[range]}-day median: redder means more sales than usual, bluer fewer.`
+        : `Each square is one day and shows how far it sits from the ${RANGE_DAYS[range]}-day median: redder above, bluer below.`
     const note = useHourly ? null : rangeNote(range, points.length)
     const fmt = (v: number) =>
       kind === 'value' ? (
@@ -229,7 +226,6 @@ export function HeatmapCard({
         }))
     body = (
       <>
-        <DivergingLegend labels={LEGEND[kind]} />
         <ChartFigure
           clientOnly={false}
           summary={summary}

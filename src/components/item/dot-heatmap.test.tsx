@@ -55,6 +55,8 @@ describe('HeatmapCard', () => {
     expect(svg.querySelectorAll('rect')).toHaveLength(7)
     expect(screen.getByText(/Each square is one day/)).toBeTruthy()
     expect(screen.queryByText(/Bigger/)).toBeNull()
+    // the squares print their own percentage, so no colour legend
+    expect(screen.queryByText('±2%')).toBeNull()
     const sizes = new Set(
       [...svg.querySelectorAll('rect')].map((r) => r.getAttribute('width')),
     )
@@ -153,6 +155,8 @@ describe('HeatmapCard', () => {
       />,
     )
     expect(screen.getByText(/Sales are only published per region/)).toBeTruthy()
-    expect(screen.getByText(/Fewer sales than usual/)).toBeTruthy()
+    expect(
+      screen.getByText(/redder means more sales than usual, bluer fewer/),
+    ).toBeTruthy()
   })
 })
