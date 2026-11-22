@@ -1,17 +1,24 @@
 import { useRouter } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { SITE } from '#/lib/seo'
 import { StatePanel } from './state-panel'
 import { Button } from './ui/button'
 
-// Stub: WP4 owns the content. An uncaught loader error answers 500.
+/** Router default error page. An uncaught loader error answers 500. */
 export function ErrorPage({ error }: ErrorComponentProps) {
   const router = useRouter()
+  // effects never run during SSR, and Workers observability needs the server log
+  if (typeof window === 'undefined') {
+    console.error(error)
+  }
   useEffect(() => {
     console.error(error)
   }, [error])
   return (
     <div className="page-wrap py-8">
+      <title>{`Something broke · ${SITE}`}</title>
+      <meta name="robots" content="noindex" />
       <StatePanel
         as="h1"
         icon="error"
@@ -20,6 +27,7 @@ export function ErrorPage({ error }: ErrorComponentProps) {
           <Button onClick={() => void router.invalidate()}>Try again</Button>
         }
       >
+        <p>We've logged the error. Try again, or come back in a few minutes.</p>
         {/* no stack trace in production */}
         {import.meta.env.DEV && error instanceof Error && (
           <pre className="text-micro whitespace-pre-wrap">{error.message}</pre>
