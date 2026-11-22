@@ -144,7 +144,7 @@ describe('summary sentences', () => {
   it('says no weekday stands out when every slot sits at the median', () => {
     const grid = dailyGrid(days('2026-11-02', 14, () => 5))
     expect(heatmapSummary(grid, '90d')).toBe(
-      'Every day sits within 0.5% of the 90-day median, so no weekday stands out.',
+      'Every day sits within 0.5% of the 90-day median.',
     )
   })
 
@@ -198,12 +198,13 @@ describe('summary sentences', () => {
     )
   })
 
-  it('names the highest and lowest weekday for the daily layout', () => {
-    // Mon..Sun, two weeks
-    const values = [10, 8, 10, 10, 10, 14, 10, 10, 8, 10, 10, 10, 14, 10]
+  it('names the highest and lowest day for the daily layout, never a weekday', () => {
+    // TSM region values are multi-day averages, so a weekday verdict from
+    // daily snapshots would be noise
+    const values = [10, 8, 10, 10, 10, 14, 10, 10, 9, 10, 10, 10, 12, 10]
     const grid = dailyGrid(days('2026-11-02', 14, (i) => values[i]))
     expect(heatmapSummary(grid, '30d')).toBe(
-      'Highest on Saturdays, on average 40.0% above the 30-day median. Lowest on Tuesdays, 20.0% below.',
+      'Highest on 7 Nov 2026, 40.0% above the 30-day median. Lowest on 3 Nov 2026, 20.0% below. TSM values average several days, so this does not point to a best weekday.',
     )
   })
 

@@ -1,7 +1,13 @@
 // Pure helpers for the item statistics cards (DESIGN §5): range filter,
 // weekday and hour bucketing, dot radius and the summary sentences.
 import { REGION_INFO } from '#/config/regions'
-import { DAY_SECONDS, formatDay, formatNumber, formatPct } from '#/lib/format'
+import {
+  DAY_SECONDS,
+  formatDate,
+  formatDay,
+  formatNumber,
+  formatPct,
+} from '#/lib/format'
 import { median } from '#/lib/median'
 import { formatMoney, moneyText } from '#/lib/money'
 import type { Region, StatRange } from '#/lib/search'
@@ -223,24 +229,23 @@ export function realmCompareSummary(
   return `${realmName} averaged ${pct(avg)} ${side(avg)} the ${REGION_INFO[region].name} market value.`
 }
 
-/** "Highest on {weekday}s …" from the weekday (or weekday and hour) means. */
+/**
+ * Highest and lowest slot. Hourly realm scans can show a weekday and hour
+ * pattern; daily region values are TSM multi-day averages, so the daily
+ * layout names days, never a weekday.
+ */
 export function heatmapSummary(grid: DotGrid, range: StatRange) {
   if (!grid.median || grid.cells.length === 0) {
     return ''
   }
   const ref = grid.median
-  let slots: { label: string; value: number }[]
-  if (grid.layout === 'hourly') {
-    slots = grid.cells.map((c) => ({
-      label: `${WEEKDAY_PLURAL[c.row]} at ${pad(c.hour ?? 0)}:00 UTC`,
-      value: c.value,
-    }))
-  } else {
-    slots = WEEKDAY_PLURAL.flatMap((label, row) => {
-      const values = grid.cells.filter((c) => c.row === row).map((c) => c.value)
-      return values.length ? [{ label, value: mean(values) }] : []
-    })
-  }
+  const slots = grid.cells.map((c) => ({
+    label:
+      grid.layout === 'hourly'
+        ? `${WEEKDAY_PLURAL[c.row]} at ${pad(c.hour ?? 0)}:00 UTC`
+        : formatDate(c.day ?? 0),
+    value: c.value,
+  }))
   const hi = slots.reduce((a, b) => (b.value > a.value ? b : a))
   const lo = slots.reduce((a, b) => (b.value < a.value ? b : a))
   const hiR = hi.value / ref - 1
@@ -248,12 +253,10 @@ export function heatmapSummary(grid: DotGrid, range: StatRange) {
   if (Math.abs(hiR) < FLAT && Math.abs(loR) < FLAT) {
     return grid.layout === 'hourly'
       ? 'Every slot sits within 0.5% of the median, so no time stands out.'
-      : `Every day sits within 0.5% of the ${RANGE_DAYS[range]}-day median, so no weekday stands out.`
+      : `Every day sits within 0.5% of the ${RANGE_DAYS[range]}-day median.`
   }
-  const scope =
-    grid.layout === 'hourly'
-      ? 'the median'
-      : `the ${RANGE_DAYS[range]}-day median`
-  const avg = grid.layout === 'hourly' ? '' : 'on average '
-  return `Highest on ${hi.label}, ${avg}${pct(hiR)} ${side(hiR)} ${scope}. Lowest on ${lo.label}, ${pct(loR)} ${side(loR)}.`
+  if (grid.layout === 'hourly') {
+    return `Highest on ${hi.label}, ${pct(hiR)} ${side(hiR)} the median. Lowest on ${lo.label}, ${pct(loR)} ${side(loR)}.`
+  }
+  return `Highest on ${hi.label}, ${pct(hiR)} ${side(hiR)} the ${RANGE_DAYS[range]}-day median. Lowest on ${lo.label}, ${pct(loR)} ${side(loR)}. TSM values average several days, so this does not point to a best weekday.`
 }

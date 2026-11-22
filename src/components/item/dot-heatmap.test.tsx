@@ -51,7 +51,9 @@ describe('HeatmapCard', () => {
   it('draws the daily grid with 7 points and a square per day', () => {
     render(<HeatmapCard {...base} kind="value" points={points(7)} />)
     const svg = screen.getByRole('img')
-    expect(svg.getAttribute('aria-label')).toMatch(/^Highest on Sundays/)
+    expect(svg.getAttribute('aria-label')).toMatch(
+      /^Highest on \d+ \w+ \d{4}, /,
+    )
     expect(svg.querySelectorAll('rect')).toHaveLength(7)
     expect(screen.getByText(/Each square is one day/)).toBeTruthy()
     expect(screen.queryByText(/Bigger/)).toBeNull()
