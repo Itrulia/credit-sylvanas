@@ -41,5 +41,11 @@ Wowhead Forever tooltips, client-side only and as progressive enhancement:
 plus `https://wow.zamimg.com/js/tooltips.js`. Links are
 `<a href="https://www.wowhead.com/forever/item={id}" data-wowhead="item={id}&domain=forever">`.
 After client navigation call `WH.Tooltips.refreshLinks()` behind a guard (it
-is undocumented). Layout and names never depend on the script. Never scrape
+is undocumented). Layout and names never depend on the script.
+The script prepends `span.iconsmall > ins + del` to each link: `ins` is the
+icon picture, `del` Wowhead's thick frame. `src/styles.css` hides the `del`
+and draws a 1px edge with unlayered `a[data-wowhead] .iconsmall` rules
+(Tailwind layers lose to Wowhead's unlayered CSS). That markup comes from
+reading `tooltips.js` on 2026-11-22 and is undocumented, so recheck it if the
+frame comes back. Never scrape
 or fetch Wowhead server-side; it answers bots with 403.
