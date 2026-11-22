@@ -4,6 +4,7 @@ import {
   HeatmapN,
   HotBy,
   ItemSort,
+  MAX_PAGE,
   MoverBy,
   MoverMetric,
   Region,
@@ -54,7 +55,7 @@ export const ListInput = z.object({
   q: z.string().trim().max(64),
   sort: ItemSort,
   dir: SortDir,
-  page: z.number().int().min(1).max(10_000),
+  page: z.number().int().min(1).max(MAX_PAGE),
   ...realmContext,
 })
 export type ListInput = z.infer<typeof ListInput>

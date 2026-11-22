@@ -53,6 +53,11 @@ describe('search schemas', () => {
     expect(itemsSearch.parse({ q: 999999 }).q).toBe('999999')
   })
 
+  it('items page stays inside what listItems accepts', () => {
+    expect(itemsSearch.parse({ page: 10_000 }).page).toBe(10_000)
+    expect(itemsSearch.parse({ page: 10_001 }).page).toBe(1)
+  })
+
   it('realms ruleset falls back to all', () => {
     expect(realmsSearch.parse({ ruleset: 'xyz' }).ruleset).toBe('all')
   })

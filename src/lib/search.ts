@@ -78,6 +78,8 @@ export const SortDir = z.enum(['asc', 'desc'])
 
 /** Rows per items-list page, shared by the SQL and the pager. */
 export const PAGE_SIZE = 50
+/** Highest page the listItems server fn accepts. */
+export const MAX_PAGE = 10_000
 export type SortDir = z.infer<typeof SortDir>
 export const itemsSearch = z.object({
   // the router parses a hand-typed ?q=999999 as a number
@@ -88,7 +90,7 @@ export const itemsSearch = z.object({
     .catch(''),
   sort: ItemSort.default('soldPerDay').catch('soldPerDay'),
   dir: SortDir.default('desc').catch('desc'),
-  page: z.number().int().min(1).default(1).catch(1),
+  page: z.number().int().min(1).max(MAX_PAGE).default(1).catch(1),
 })
 export const ITEMS_DEFAULTS = {
   q: '',
