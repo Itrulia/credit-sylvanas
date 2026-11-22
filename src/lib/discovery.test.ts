@@ -1,0 +1,97 @@
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+import { REGIONS } from '#/config/regions'
+import { SITE_URL } from '#/lib/seo'
+
+const read = (path: string) => readFileSync(path, 'utf8')
+
+// route patterns from the generated tree, e.g. '/$region/items/$itemId'
+const ROUTES = [
+  ...read('src/routeTree.gen.ts').matchAll(/fullPath: '([^']+)'/g),
+].map(([, path]) => (path.length > 1 ? path.replace(/\/$/, '') : path))
+
+function routeExists(pathname: string) {
+  const parts = pathname.split('/').filter(Boolean)
+  return ROUTES.some((route) => {
+    const pattern = route.split('/').filter(Boolean)
+    return (
+      pattern.length === parts.length &&
+      pattern.every((seg, i) =>
+        seg === '$region'
+          ? (REGIONS as readonly string[]).includes(parts[i])
+          : seg.startsWith('$') || seg === parts[i],
+      )
+    )
+  })
+}
+
+const LINK_LINE = /^- \[([^\]]+)\]\((https:\/\/[^)\s]+)\): (.+)$/
+
+describe('llms.txt', () => {
+  const text = read('public/llms.txt')
+  const lines = text.split('\n')
+  const links = lines.filter((l) => l.startsWith('- '))
+
+  it('opens with the one H1 and a blockquote summary', () => {
+    expect(lines[0]).toBe('# Credit Sylvanas')
+    expect(lines.filter((l) => /^# /.test(l))).toHaveLength(1)
+    expect(lines.find((l) => l.trim() !== '' && l !== lines[0])).toMatch(/^> /)
+    expect(text).toMatch(/Last reviewed \d{4}-\d{2}-\d{2}/)
+  })
+
+  it('has no HTML, tables, images or nested lists', () => {
+    expect(text).not.toMatch(/<[a-z]/i)
+    expect(text).not.toMatch(/^\|/m)
+    expect(text).not.toMatch(/!\[/)
+    expect(text).not.toMatch(/^[ \t]+[-*] /m)
+  })
+
+  it('lists 10 to 30 well-formed canonical links to routes that exist', () => {
+    expect(links.length).toBeGreaterThanOrEqual(10)
+    expect(links.length).toBeLessThanOrEqual(30)
+    for (const line of links) {
+      const match = LINK_LINE.exec(line)
+      expect(match, line).not.toBeNull()
+      const [, , url, description] = match!
+      expect(url.startsWith(`${SITE_URL}/`) || url === SITE_URL, url).toBe(true)
+      expect(description.length, line).toBeLessThan(120)
+      expect(routeExists(new URL(url).pathname), url).toBe(true)
+    }
+  })
+})
+
+describe('robots.txt and sitemap.xml', () => {
+  it('robots.txt points at the sitemap and blocks nothing', () => {
+    const robots = read('public/robots.txt')
+    expect(robots).toContain(`Sitemap: ${SITE_URL}/sitemap.xml`)
+    expect(robots).not.toMatch(/^Disallow: \S/m)
+  })
+
+  it('sitemap.xml lists the static pages and every region page, all real routes', () => {
+    const locs = [
+      ...read('public/sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g),
+    ].map(([, loc]) => new URL(loc).pathname)
+    const expected = [
+      '/',
+      '/about',
+      '/privacy',
+      '/impressum',
+      ...REGIONS.flatMap((r) => [
+        `/${r}`,
+        `/${r}/items`,
+        `/${r}/heatmap`,
+        `/${r}/realms`,
+      ]),
+    ]
+    expect(locs.sort()).toEqual(expected.sort())
+    expect(locs.every(routeExists)).toBe(true)
+  })
+})
+
+describe('root head', () => {
+  it('declares llms.txt with rel=describedby', () => {
+    expect(read('src/routes/__root.tsx')).toMatch(
+      /rel: 'describedby',\s+type: 'text\/plain',\s+href: '\/llms.txt'/,
+    )
+  })
+})

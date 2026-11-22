@@ -41,6 +41,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         ],
         links: [
           ...canonical.links,
+          { rel: 'describedby', type: 'text/plain', href: '/llms.txt' },
           ...PRELOAD_FONTS.map((href) => ({
             rel: 'preload',
             href,
