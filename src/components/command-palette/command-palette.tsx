@@ -90,11 +90,18 @@ export function CommandPalette() {
 
   // reset when the dialog opens, without an effect
   const [wasOpen, setWasOpen] = useState(isOpen)
+  // Radix only refocuses its own DialogTrigger, and this dialog has none
+  const [returnFocus, setReturnFocus] = useState<HTMLElement | null>(null)
   if (isOpen !== wasOpen) {
     setWasOpen(isOpen)
     if (isOpen) {
       setQuery('')
       setActiveIndex(0)
+      setReturnFocus(
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null,
+      )
     }
   }
 
@@ -151,6 +158,10 @@ export function CommandPalette() {
       <DialogContent
         showCloseButton={false}
         aria-describedby={undefined}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          returnFocus?.focus()
+        }}
         className="top-[11vh] flex max-h-[min(70vh,560px)] translate-y-0 flex-col gap-0 overflow-hidden p-0 shadow-pop sm:max-w-[640px]"
       >
         <DialogTitle className="sr-only">Search or jump to</DialogTitle>
