@@ -69,7 +69,11 @@ reach the production bundle; grep `dist/` after a build.
 `pnpm dev` runs the Worker in Miniflare with local D1 and R2 under
 `.wrangler/`. Apply migrations with
 `pnpm exec wrangler d1 migrations apply DB --local`, then seed from CSVs on
-disk (`pnpm db:seed`). Dev never downloads TSM files.
+disk (`pnpm db:seed`, files in `.seed/` named `forever_{region}_region_items.csv`),
+then optionally `pnpm db:synth` for 89 days of fake history. Dev never
+downloads TSM files. Build scripts for `workerd` and `sharp` are allowed in
+`pnpm-workspace.yaml` (`allowBuilds`), which pnpm 12 reads instead of
+`package.json`.
 
 ## Env, secrets and deploy
 

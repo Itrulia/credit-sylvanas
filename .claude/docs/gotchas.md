@@ -9,9 +9,36 @@ Don't merge it back into `vite.config.ts`. Under the app config, vitest loads
 the devtools, runtime and tanstackStart plugins, which crashed it with
 `ReferenceError: module is not defined` at `react/index.js` and left Vite
 servers hanging. The Cloudflare plugin stays out for the same reason.
-The separate config keeps only `resolve.tsconfigPaths`,
-`environment: 'node'` and `passWithNoTests`. Component specs that need a DOM
-set `// @vitest-environment jsdom` per file (install jsdom first).
+The separate config keeps `resolve.tsconfigPaths` and two projects: `server`
+runs `cloudflareTest()` with Miniflare configured inline (pointing it at
+`wrangler.jsonc` would pull in the Start entry), `web` runs in Node.
+Component specs that need a DOM set `// @vitest-environment jsdom` per file.
+
+### TSM rows can have an empty name
+
+About 4% of the real us and eu region rows (2026-11-22) have `name` empty, so
+the CSV schema accepts `''`. Ingest never lets an empty name overwrite a
+known one, and the UI renders `itemName()` from `src/lib/wowhead.ts`
+(`Item #id`). Requiring a name failed the whole file at the 1% bad-row limit.
+Pinned by `csv.test.ts` and `ingest.test.ts`.
+
+### Invalid search params answer 307, valid defaults don't
+
+`?hot=bogus` or `?n=7` falls back through `.catch()`, the router writes the
+canonical URL and SSR answers 307 to it. A URL with valid or no params
+answers 200. Keep `.default(d).catch(d)` and `stripSearchParams` together.
+
+### The scaffold's shadcn files imported `cn` from an npm package
+
+They said `import { cn } from "cn"` (an unrelated package). WP0 pointed them
+at `#/lib/utils` and removed the package. Check the import after any
+`shadcn add`.
+
+### `pnpm dev` takes the next free port
+
+Vite falls back to 3001 and up when 3000 is busy (it prints the URL). Curl the
+printed port, and the local cron path on it:
+`/cdn-cgi/local/scheduled?cron=15+*/3+*+*+*`.
 
 ### ESLint ignores build output, `routeTree.gen.ts` and `src/components/ui/`
 

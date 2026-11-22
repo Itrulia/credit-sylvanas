@@ -12,8 +12,11 @@ pure function.
 
 ## Conventions
 
-- Specs are `*.spec.ts` / `*.spec.tsx`, next to the source
-  (`src/server/ingest/parse.ts` and `parse.spec.ts`).
+- Specs are `*.test.ts` / `*.test.tsx`, next to the source
+  (`src/server/ingest/csv.ts` and `csv.test.ts`). `vitest.config.ts` has two
+  projects: `server` (`src/server/**/*.test.ts`, Miniflare D1 and R2, schema
+  from `migrations/`, helpers in `src/server/test/`) and `web` (everything
+  else, Node; component specs add `// @vitest-environment jsdom`).
 - CSV parsing, price math (copper to g/s/c), snapshot upserts and zod schemas
   are the core. Test them hard, including malformed headers, empty files and
   an unchanged `updatedAt`.
