@@ -4,7 +4,7 @@ export const realms = {
   headTitle: ({ region }: { region: string }) =>
     `Realms · ${region} Forever AH`,
   headDescription: ({ region }: { region: string }) =>
-    `Pick a ${region} Forever realm to see realm prices.`,
+    `Realm prices on the ${region} Forever auction house, by realm and faction.`,
   pageTitle: ({ region }: { region: string }) => `${region} realms`,
   rulesetLabel: () => 'Ruleset',
 

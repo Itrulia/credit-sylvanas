@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { REGIONS } from '#/config/regions'
+import { realmsFor } from '#/config/realms'
 import { SITE_URL } from '#/lib/seo'
 
 const read = (path: string) => readFileSync(path, 'utf8')
@@ -80,7 +81,8 @@ describe('robots.txt and sitemap.xml', () => {
         `/${r}`,
         `/${r}/items`,
         `/${r}/heatmap`,
-        `/${r}/realms`,
+        // an empty realms page is noindex, so it joins the sitemap with its first realm
+        ...(realmsFor(r).length > 0 ? [`/${r}/realms`] : []),
       ]),
     ]
     expect(locs.sort()).toEqual(expected.sort())

@@ -1,5 +1,5 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
-import { realmsFor } from '#/config/realms'
+import { REALMS, realmsFor } from '#/config/realms'
 import { RULESET_LABEL, RealmList } from '#/components/realms/realm-list'
 import type { RealmsFilter } from '#/components/realms/realm-list'
 import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
@@ -17,6 +17,8 @@ export const Route = createFileRoute('/$region/realms')({
     return pageHead(
       m.realms.headTitle({ region: name }),
       m.realms.headDescription({ region: name }),
+      // an empty state is thin content: keep it out of the index until realms exist
+      !REALMS.some((r) => r.region === params.region),
     )
   },
   component: Realms,

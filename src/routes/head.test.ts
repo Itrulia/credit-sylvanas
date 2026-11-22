@@ -38,4 +38,9 @@ describe('region page heads', () => {
     expect(text).toContain('NA Forever')
     expect(text).not.toMatch(/\bUS\b/)
   })
+
+  it('realms page is noindex while src/config/realms.ts is empty', () => {
+    const meta = run(Realms, 'eu').meta ?? []
+    expect(meta).toContainEqual({ name: 'robots', content: 'noindex' })
+  })
 })
