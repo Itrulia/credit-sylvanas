@@ -23,6 +23,7 @@ export function publicReason(reason: string | null): string | null {
 }
 
 // Metadata only: no source URL, R2 key or ETag ever leaves this query.
+// Skipped checks (an hourly 304) are left out, or they would bury the imports.
 export async function importLog(
   db: D1Database,
   limit: number,
@@ -30,7 +31,7 @@ export async function importLog(
   const rows = await db
     .prepare(
       `SELECT fetched_at, updated_at, region, kind, realm, rows, status, reason, substr(sha256, 1, 12) AS sha
-       FROM imports ORDER BY id DESC LIMIT ?1`,
+       FROM imports WHERE status != 'skipped' ORDER BY id DESC LIMIT ?1`,
     )
     .bind(limit)
     .all<{

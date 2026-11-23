@@ -56,8 +56,9 @@ limits that shape the code: 10 GB per database, 50M rows written per month
 included, 30 s CPU per invocation.
 
 Ingest is the Worker's `scheduled` handler. A custom server entry exports
-`{ fetch, scheduled }`, and Cron Triggers in `wrangler.jsonc` call it once a
-day for region files and every 3 hours for realm files (only while
+`{ fetch, scheduled }`, and Cron Triggers in `wrangler.jsonc` call it every hour
+(minute 50) for region files, since TSM publishes EU and NA at different
+times and an unchanged file is a 304, and every 3 hours for realm files (only while
 `src/config/realms.ts` has entries). Cron strings live in `wrangler.jsonc`
 and [DESIGN.md](../../docs/DESIGN.md) §3.
 
@@ -89,7 +90,7 @@ outside its cron, `pnpm ingest:prod [region|realm]` posts to the Worker's
 `.env`, which is committed); the same value must be set
 as a Worker secret (`wrangler secret put INGEST_TOKEN`), and without it the
 endpoint answers 404. It prints every file's result and exits 1 when one
-failed. Don't run it while the cron runs (19:30 UTC for regions) or twice at
+failed. Don't run it while the cron runs (minute 50 of every hour for regions) or twice at
 once: nothing serialises ingest runs, so two overlapping runs both download
 the new file and both record an import. Never deploy from a
 working tree with uncommitted changes, and never run `wrangler login`.

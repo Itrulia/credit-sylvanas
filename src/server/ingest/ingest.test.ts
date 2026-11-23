@@ -514,6 +514,10 @@ describe('runIngest', () => {
 })
 
 describe('runScheduled', () => {
+  it('checks the region files every hour', () => {
+    expect(REGION_CRON).toBe('50 * * * *')
+  })
+
   it('runs the region ingest for REGION_CRON', async () => {
     const fetchFn = stubFetch({ [US]: { body: usCsv, etag: '"x"' } })
     const results = await runScheduled(

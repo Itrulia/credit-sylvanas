@@ -61,6 +61,20 @@ describe('importLog', () => {
     }
     expect(await importLog(db, 1)).toHaveLength(1)
   })
+
+  it('leaves out skipped checks, which the hourly cron writes when nothing changed', async () => {
+    await seedDay('us', D, [{ id: 1 }])
+    for (const status of ['skipped', 'failed', 'skipped']) {
+      await db
+        .prepare(
+          `INSERT INTO imports (region, kind, source_url, fetched_at, status, reason) VALUES ('eu', 'region', 'u', 1, ?1, 'x')`,
+        )
+        .bind(status)
+        .run()
+    }
+    const rows = await importLog(db, 2)
+    expect(rows.map((r) => r.status)).toEqual(['failed', 'imported'])
+  })
 })
 
 describe('publicReason', () => {

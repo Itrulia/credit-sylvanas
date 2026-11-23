@@ -475,7 +475,7 @@
   "items_tableLabel": "{region} items",
   "items_wowheadLinkLabel": "View {name} on Wowhead (opens Wowhead)",
   "legal_aboutCreditTitle": "Credit",
-  "legal_aboutDataLogText": "Each time we fetch a price file, we log when it happened, which scan it held, how many rows it had and a short fingerprint of the file. A skipped row means the file hadn't changed since the last fetch.",
+  "legal_aboutDataLogText": "Each time we download a new price file, we log when it happened, which scan it held, how many rows it had and a short fingerprint of the file. We check for new files every hour; checks that found nothing new are not listed.",
   "legal_aboutDataLogTitle": "Data log",
   "legal_aboutHeadDescription": "How {site} gets its prices, what each number means and how often it updates.",
   "legal_aboutHeadTitle": "About and data sources",
