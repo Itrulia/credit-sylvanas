@@ -237,7 +237,6 @@ export function HeatmapCard({
     body = (
       <>
         <ChartFigure
-          clientOnly={false}
           summary={summary}
           footer={
             <p className="text-muted-foreground">

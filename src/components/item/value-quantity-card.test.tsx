@@ -3,7 +3,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
-import { endDot } from './chart-parts'
+import { renderToString } from 'react-dom/server'
 import { ValueQuantityCard } from './value-quantity-card'
 
 beforeAll(() => {
@@ -51,21 +51,28 @@ describe('ValueQuantityCard', () => {
     ).toBeTruthy()
   })
 
+  it('renders the chart in the server HTML', () => {
+    const html = renderToString(
+      <ValueQuantityCard {...base} {...noRealm} points={points(20)} />,
+    )
+    expect(html).toMatch(/<svg[^>]*class="[^"]*ts-chart/)
+    expect(html).toContain('>Value<')
+    expect(html).toContain('>Avg<')
+  })
+
   it('draws a dot on every point of a short series, only the last otherwise', () => {
-    // recharts can't measure in jsdom, so the dot renderer is checked on its own
-    const dots = (count: number) =>
+    const dots = (n: number) =>
       render(
-        <svg>
-          {Array.from({ length: count }, (_, index) =>
-            endDot(count, 'blue', 'tomato')({ cx: index, cy: 1, index }),
-          )}
-        </svg>,
-      ).getAllByTestId('point-dot')
-    expect(dots(4)).toHaveLength(4)
+        <ValueQuantityCard {...base} {...noRealm} points={points(n)} />,
+      ).container.querySelectorAll('[data-ts-key^="end-dot"] circle')
+    // two lines (value and 60-day average)
+    expect(dots(4)).toHaveLength(8)
     cleanup()
     const long = dots(20)
-    expect(long).toHaveLength(1)
-    expect(long[0].getAttribute('fill')).toBe('tomato')
+    expect(long).toHaveLength(2)
+    expect(
+      [...long].some((c) => c.getAttribute('fill') === 'var(--brand-tomato)'),
+    ).toBe(true)
   })
 
   it('draws a money axis and a sales axis for a region', () => {

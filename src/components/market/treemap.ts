@@ -15,7 +15,7 @@ function worst(areas: number[], sum: number, side: number) {
 
 /**
  * Squarified treemap layout for values sorted largest first. Plain math, so
- * the market map renders on the server (recharts' Treemap only draws after mount).
+ * the market map renders on the server as plain HTML link tiles.
  */
 export function squarify(
   values: number[],

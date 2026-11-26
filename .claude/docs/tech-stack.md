@@ -2,9 +2,10 @@
 
 Align suggestions with this stack unless asked otherwise. TanStack first:
 before adding any dependency, check whether a TanStack library covers it
-(Query, DB, Table, Form, Virtual, Pacer, Store, Hotkeys, Ranger) or the
-Workers runtime does. Charts are the exception: recharts through the shadcn
-`chart` component is the only charting library.
+(Query, DB, Table, Form, Virtual, Pacer, Store, Hotkeys, Ranger, Charts) or
+the Workers runtime does. Check npm (`npm view @tanstack/<name>`), not memory:
+TanStack ships new libraries often, and recharts was picked here because
+TanStack Charts (1.0 in Oct 2026) was assumed not to exist.
 
 - TanStack Start (`@tanstack/react-start`) on Vite 8, React 19, strict
   TypeScript, pnpm. Everything is `.ts`/`.tsx`, config included; no
@@ -18,6 +19,11 @@ Workers runtime does. Charts are the exception: recharts through the shadcn
 - TanStack Router (file-based, `src/routes`), Query with
   `@tanstack/react-router-ssr-query`, Table, Form, Pacer (debounce),
   Hotkeys (`useHotkey`); zod v4.
+- TanStack Charts (`@tanstack/charts`, React adapter at
+  `@tanstack/charts/react/tooltip`) for the item page's line and bar charts.
+  It renders SVG on the server, so charts are in the first HTML; the
+  heatmaps, mover bars and market map stay plain HTML. Its docs ship in
+  `node_modules/@tanstack/charts/docs` (start at `llms.txt`).
 - Tailwind CSS 4, shadcn/ui (new-york, Radix). Dialogs are shadcn `Dialog`;
   cmdk is not used.
 - Paraglide JS 3 (`@inlang/paraglide-js`, messages in `messages/en.json`,
@@ -25,7 +31,7 @@ Workers runtime does. Charts are the exception: recharts through the shadcn
   compiling never fetches a CDN).
 - Vitest 5, ESLint 9 (`@tanstack/eslint-config`), Prettier 3.
 
-`@tanstack/*` and `recharts` are pinned to exact versions. Start 1.169.x
+`@tanstack/*` are pinned to exact versions. Start 1.169.x
 peers `vite >= 8`.
 
 ## Client data

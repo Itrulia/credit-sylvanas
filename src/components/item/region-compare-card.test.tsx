@@ -2,6 +2,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { renderToString } from 'react-dom/server'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
 import { RegionCompareCard } from './region-compare-card'
 
@@ -82,6 +83,19 @@ describe('RegionCompareCard', () => {
         .map((h) => h.textContent),
     ).toEqual(['Day', 'EU', 'NA'])
     expect(within(table).getAllByRole('row')).toHaveLength(11)
+  })
+
+  it('renders the lines with end labels in the server HTML', () => {
+    const html = renderToString(
+      <RegionCompareCard
+        {...base}
+        points={points(10)}
+        others={[{ region: 'eu', points: other(10, 9_000) }]}
+      />,
+    )
+    expect(html).toMatch(/<svg[^>]*class="[^"]*ts-chart/)
+    expect(html).toContain('>EU<')
+    expect(html).toContain('>NA<')
   })
 
   it('compares the realm with the region', () => {

@@ -1,10 +1,15 @@
-// Shared recharts bits for cards 1 and 2 (DESIGN §5 chart rules).
+// Shared TanStack Charts bits for cards 1 and 2 (DESIGN §5 chart rules).
 import type { ReactNode } from 'react'
+import { dot, text } from '@tanstack/charts'
+import { decorative } from '@tanstack/charts/mark/decorative'
+import { scaleLinear } from '@tanstack/charts/scales/linear'
 import { formatDay, formatDayLong } from '#/lib/format'
 import { formatMoney, moneyText } from '#/lib/money'
 import { mondayOf } from './stats'
 
 export const CHART_HEIGHT = 240
+/** Width of the server-rendered SVG; the chart refits its card after mount. */
+export const CHART_INITIAL_WIDTH = 560
 
 export const axisMoney = (copper: number) =>
   moneyText(formatMoney(copper, 'axis'))
@@ -37,57 +42,101 @@ export function dayTicks(days: readonly number[]) {
 
 export const tickDay = (day: number) => formatDay(day)
 
-interface DotArgs {
-  cx?: number
-  cy?: number
-  index?: number
+/** The left money axis with grid lines, padded around every plotted value. */
+export function moneyAxis(values: readonly (number | null | undefined)[]) {
+  const v = values.filter((x): x is number => x != null)
+  const domain = v.length
+    ? moneyDomain([Math.min(...v), Math.max(...v)])
+    : [0, 1]
+  return {
+    scale: scaleLinear().domain(domain),
+    grid: { stroke: 'var(--chart-grid)', strokeOpacity: 1 },
+    axis: {
+      line: false,
+      ticks: { count: 5, size: 0, format: axisMoney },
+    },
+  }
+}
+
+/** Day axis options: a baseline and `dayTicks` labels, no tick stubs. */
+export const dayAxis = (days: readonly number[]) => ({
+  line: { stroke: 'var(--chart-baseline)', strokeOpacity: 1 },
+  ticks: { values: dayTicks(days), size: 0, format: tickDay },
+})
+
+interface EndMarkOptions<T> {
+  key: string
+  y: (row: T) => number | null | undefined
+  color: string
+  label: string
+  /** fill of the last dot; the region market value line ends in tomato */
+  lastFill?: string
+  /** dot every point (short series), only the last, or none */
+  dots: 'every' | 'last' | 'none'
+  yScale?: string
 }
 
 /**
- * Dot renderer: every point when the series is short, otherwise only the last.
- * `lastFill` lets the region market value line mark its end in tomato.
+ * Dots and a direct end label for one line, so series never rely on colour
+ * alone. Decorative: focus and the tooltip come from the line itself.
  */
-export const endDot =
-  (count: number, stroke: string, lastFill = stroke, everyPoint = count <= 6) =>
-  ({ cx, cy, index }: DotArgs) => {
-    const isLast = index === count - 1
-    if (cx === undefined || cy === undefined || (!isLast && !everyPoint)) {
-      return <g key={`dot-${index}`} />
-    }
-    return (
-      <circle
-        key={`dot-${index}`}
-        data-testid="point-dot"
-        cx={cx}
-        cy={cy}
-        r={isLast ? 4 : 3}
-        fill={isLast ? lastFill : stroke}
-        stroke="var(--card)"
-        strokeWidth={1}
-      />
-    )
+export function endMarks<T extends { day: number }>(
+  rows: readonly T[],
+  { key, y, color, label, lastFill = color, dots, yScale }: EndMarkOptions<T>,
+) {
+  const valid = rows.filter((r) => y(r) != null)
+  const last = valid.at(-1)
+  if (!last) {
+    return []
   }
-
-interface LabelArgs {
-  x?: number | string
-  y?: number | string
-  index?: number
+  const ring = { stroke: 'var(--card)', strokeWidth: 1 }
+  return [
+    ...(dots === 'every'
+      ? [
+          decorative(
+            dot(valid.slice(0, -1), {
+              id: `end-dot-${key}`,
+              x: (r) => r.day,
+              y,
+              yScale,
+              r: 3,
+              fill: color,
+              ...ring,
+            }),
+          ),
+        ]
+      : []),
+    ...(dots === 'none'
+      ? []
+      : [
+          decorative(
+            dot([last], {
+              id: `end-dot-${key}-last`,
+              x: (r) => r.day,
+              y,
+              yScale,
+              r: 4,
+              fill: lastFill,
+              ...ring,
+            }),
+          ),
+        ]),
+    decorative(
+      text([last], {
+        id: `end-label-${key}`,
+        x: (r) => r.day,
+        y,
+        yScale,
+        text: () => label,
+        fill: color,
+        anchor: 'start',
+        dx: 6,
+        fontSize: 11,
+        fontWeight: 500,
+      }),
+    ),
+  ]
 }
-
-/** Direct end label on the last point, so series never rely on colour alone. */
-export const endLabel =
-  (count: number, text: string, fill: string) =>
-  ({ x, y, index }: LabelArgs) =>
-    index === count - 1 ? (
-      <text
-        x={Number(x) + 6}
-        y={Number(y) + 4}
-        fill={fill}
-        className="text-micro"
-      >
-        {text}
-      </text>
-    ) : null
 
 export interface TooltipRow {
   key: string

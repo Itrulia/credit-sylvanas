@@ -1,28 +1,21 @@
-import {
-  Bar,
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { barY, defineChart, lineY } from '@tanstack/charts'
+import { Chart } from '@tanstack/charts/react/tooltip'
+import { scaleBand } from '@tanstack/charts/scales/band'
+import { scaleLinear } from '@tanstack/charts/scales/linear'
+import { tooltip } from '@tanstack/charts/tooltip'
 import { ChartFigure } from '#/components/chart-figure'
 import { Money } from '#/components/money'
-import { ChartContainer } from '#/components/ui/chart'
 import { m } from '#/paraglide/messages.js'
 import { formatDate, formatDayLong, formatNumber } from '#/lib/format'
 import type { Region, StatRange } from '#/lib/search'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
 import {
   CHART_HEIGHT,
+  CHART_INITIAL_WIDTH,
   ChartTip,
-  axisMoney,
-  dayTicks,
-  endDot,
-  endLabel,
-  moneyDomain,
-  tickDay,
+  dayAxis,
+  endMarks,
+  moneyAxis,
 } from './chart-parts'
 import { CardNote, StatCard, StatTable } from './stat-card'
 import { inRange, rangeNote, valueSummary } from './stats'
@@ -89,14 +82,7 @@ export function ValueQuantityCard({
       rangeNote(range, all.length),
       isRealm ? m.item_salesRegionOnly() : null,
     ]
-    const tip = ({
-      active,
-      payload,
-    }: {
-      active?: boolean
-      payload?: readonly { payload?: Row }[]
-    }) => {
-      const r = active ? payload?.[0]?.payload : undefined
+    const tip = (r: Row | undefined) => {
       if (!r) {
         return null
       }
@@ -145,9 +131,104 @@ export function ValueQuantityCard({
         />
       )
     }
+    const lines = isRealm
+      ? [
+          {
+            key: 'minBuyout',
+            y: (r: Row) => r.minBuyout || null,
+            color: C.mv,
+            dash: '2 3',
+            width: 1.5,
+            label: m.item_endLabelBuyout(),
+          },
+          {
+            key: 'mv',
+            y: (r: Row) => r.mv,
+            color: C.realm,
+            width: 2,
+            label: m.item_endLabelRealm(),
+          },
+        ]
+      : [
+          {
+            key: 'hist',
+            y: (r: Row) => r.hist,
+            color: C.hist,
+            dash: '4 3',
+            width: 1.5,
+            label: m.item_endLabelAvg(),
+          },
+          {
+            key: 'mv',
+            y: (r: Row) => r.mv,
+            color: C.mv,
+            lastFill: C.tomato,
+            width: 2,
+            label: m.item_endLabelValue(),
+          },
+        ]
+    const definition = defineChart({
+      marks: [
+        ...(isRealm
+          ? []
+          : [
+              barY(rows, {
+                id: 'spd',
+                x: 'day',
+                y: (r) => r.spd ?? 0,
+                yScale: 'spd',
+                fill: C.spd,
+              }),
+            ]),
+        ...lines.flatMap((l) => [
+          lineY(rows, {
+            id: l.key,
+            x: 'day',
+            y: l.y,
+            stroke: l.color,
+            strokeWidth: l.width,
+            strokeDasharray: l.dash,
+          }),
+          ...endMarks(rows, { ...l, dots: short ? 'every' : 'last' }),
+        ]),
+      ],
+      scales: {
+        x: {
+          // barCategoryGap 40%, lines sit on the band centres
+          scale: scaleBand<number>().domain(days).padding(0.4),
+          axis: dayAxis(days),
+        },
+        y: moneyAxis(rows.flatMap((r) => lines.map((l) => l.y(r)))),
+        ...(isRealm
+          ? {}
+          : {
+              spd: {
+                channel: 'y' as const,
+                scale: scaleLinear().domain([
+                  0,
+                  Math.max(1, ...rows.map((r) => r.spd ?? 0)),
+                ]),
+                nice: 5,
+                side: 'right' as const,
+                axis: {
+                  line: false,
+                  ticks: {
+                    count: 5,
+                    size: 0,
+                    // room for the end labels between the plot and this axis
+                    padding: 40,
+                    format: (v: number) => formatNumber(v),
+                  },
+                },
+              },
+            }),
+      },
+      focus: 'group-x',
+      maxFocusDistance: Number.POSITIVE_INFINITY,
+      tooltip: { use: tooltip, anchor: 'group-center' },
+    })
     body = (
       <ChartFigure
-        height={CHART_HEIGHT + 24}
         summary={valueSummary(rows)}
         footer={
           <p className="text-muted-foreground">
@@ -202,110 +283,14 @@ export function ValueQuantityCard({
             <p className="text-label">{m.shell_glossarySoldPerDayLabel()}</p>
           )}
         </div>
-        <ChartContainer
-          config={{}}
-          className="aspect-auto w-full"
-          style={{ height: CHART_HEIGHT }}
-        >
-          <ComposedChart
-            data={rows}
-            accessibilityLayer
-            barCategoryGap="40%"
-            margin={{ top: 8, right: 36, bottom: 0, left: 0 }}
-          >
-            <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
-            <XAxis
-              dataKey="day"
-              ticks={dayTicks(days)}
-              tickFormatter={tickDay}
-              tickLine={false}
-              stroke="var(--chart-baseline)"
-              className="text-micro"
-            />
-            <YAxis
-              yAxisId="mv"
-              domain={moneyDomain}
-              tickFormatter={axisMoney}
-              tickCount={5}
-              tickLine={false}
-              axisLine={false}
-              width={56}
-              className="text-micro"
-            />
-            {!isRealm && (
-              <YAxis
-                yAxisId="spd"
-                orientation="right"
-                domain={[0, 'auto']}
-                tickFormatter={(v: number) => formatNumber(v)}
-                tickCount={5}
-                tickLine={false}
-                axisLine={false}
-                width={40}
-                className="text-micro"
-              />
-            )}
-            <Tooltip content={tip} isAnimationActive={false} />
-            {!isRealm && (
-              <Bar
-                yAxisId="spd"
-                dataKey="spd"
-                name={m.shell_glossarySoldPerDayLabel()}
-                fill={C.spd}
-                isAnimationActive={false}
-              />
-            )}
-            {isRealm ? (
-              <>
-                <Line
-                  yAxisId="mv"
-                  dataKey="minBuyout"
-                  name={m.shell_glossaryMinBuyoutLabel()}
-                  stroke={C.mv}
-                  strokeWidth={1.5}
-                  strokeDasharray="2 3"
-                  dot={endDot(n, C.mv, C.mv, short)}
-                  label={endLabel(n, m.item_endLabelBuyout(), C.mv)}
-                  isAnimationActive={false}
-                />
-                <Line
-                  yAxisId="mv"
-                  dataKey="mv"
-                  name={m.item_realmValueLabel()}
-                  stroke={C.realm}
-                  strokeWidth={2}
-                  dot={endDot(n, C.realm, C.realm, short)}
-                  label={endLabel(n, m.item_endLabelRealm(), C.realm)}
-                  isAnimationActive={false}
-                />
-              </>
-            ) : (
-              <>
-                <Line
-                  yAxisId="mv"
-                  dataKey="hist"
-                  name={m.shell_glossaryHistoricalLabel()}
-                  stroke={C.hist}
-                  strokeWidth={1.5}
-                  strokeDasharray="4 3"
-                  dot={endDot(n, C.hist, C.hist, short)}
-                  label={endLabel(n, m.item_endLabelAvg(), C.hist)}
-                  isAnimationActive={false}
-                />
-                <Line
-                  yAxisId="mv"
-                  dataKey="mv"
-                  name={m.shell_glossaryMarketValueLabel()}
-                  stroke={C.mv}
-                  strokeWidth={2}
-                  dot={endDot(n, C.mv, C.tomato, short)}
-                  label={endLabel(n, m.item_endLabelValue(), C.mv)}
-                  isAnimationActive={false}
-                />
-              </>
-            )}
-          </ComposedChart>
-        </ChartContainer>
+        <Chart
+          definition={definition}
+          ariaLabel={title}
+          height={CHART_HEIGHT}
+          initialWidth={CHART_INITIAL_WIDTH}
+          className="text-muted-foreground"
+          renderTooltipBody={(ctx) => tip(ctx.points[0]?.datum)}
+        />
       </ChartFigure>
     )
   }

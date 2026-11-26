@@ -1,22 +1,22 @@
-import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { defineChart, lineY } from '@tanstack/charts'
+import { Chart } from '@tanstack/charts/react/tooltip'
+import { scalePoint } from '@tanstack/charts/scales/point'
+import { tooltip } from '@tanstack/charts/tooltip'
 import { REGIONS, REGION_INFO } from '#/config/regions'
 import { ChartFigure } from '#/components/chart-figure'
 import { Money } from '#/components/money'
-import { ChartContainer } from '#/components/ui/chart'
 import { m } from '#/paraglide/messages.js'
 import { formatDate, formatDayLong } from '#/lib/format'
 import type { Region, StatRange } from '#/lib/search'
 import type { HistoryPoint, ItemHistory } from '#/server/types'
 import {
   CHART_HEIGHT,
+  CHART_INITIAL_WIDTH,
   ChartTip,
   Swatch,
-  axisMoney,
-  dayTicks,
-  endDot,
-  endLabel,
-  moneyDomain,
-  tickDay,
+  dayAxis,
+  endMarks,
+  moneyAxis,
 } from './chart-parts'
 import { CardNote, StatCard, StatTable } from './stat-card'
 import {
@@ -166,14 +166,9 @@ export function RegionCompareCard({
   const rows = [...merged.values()].sort((a, b) => a.day - b.day)
   const count = rows.length
 
-  const tip = ({
-    active,
-    payload,
-  }: {
-    active?: boolean
-    payload?: readonly { payload?: Record<string, number> }[]
-  }) => {
-    const r = active ? payload?.[0]?.payload : undefined
+  const byDay = new Map(rows.map((r) => [r.day, r]))
+  const tip = (day: number | undefined) => {
+    const r = day === undefined ? undefined : byDay.get(day)
     return r ? (
       <ChartTip
         day={r.day}
@@ -188,11 +183,43 @@ export function RegionCompareCard({
     ) : null
   }
 
+  const days = rows.map((r) => r.day)
+  const definition = defineChart({
+    marks: series.flatMap((s) => [
+      lineY(s.points, {
+        id: s.key,
+        x: 'day',
+        y: 'mv',
+        stroke: s.color,
+        strokeWidth: s.width,
+        strokeDasharray: s.dash,
+      }),
+      ...endMarks(s.points, {
+        key: s.key,
+        y: (p) => p.mv,
+        color: s.color,
+        label: s.label,
+        dots:
+          count <= 6
+            ? 'every'
+            : s.key === region || s.key === 'realm'
+              ? 'last'
+              : 'none',
+      }),
+    ]),
+    scales: {
+      x: { scale: scalePoint<number>().domain(days), axis: dayAxis(days) },
+      y: moneyAxis(series.flatMap((s) => s.points.map((p) => p.mv))),
+    },
+    focus: 'group-x',
+    maxFocusDistance: Number.POSITIVE_INFINITY,
+    tooltip: { use: tooltip, anchor: 'group-center' },
+  })
+
   return (
     <StatCard title={title} range={range} onRangeChange={onRangeChange}>
       {empty ?? (
         <ChartFigure
-          height={CHART_HEIGHT + 24}
           summary={summary}
           footer={
             <p className="text-muted-foreground">
@@ -241,55 +268,14 @@ export function RegionCompareCard({
               </li>
             ))}
           </ul>
-          <ChartContainer
-            config={{}}
-            className="aspect-auto w-full"
-            style={{ height: CHART_HEIGHT }}
-          >
-            <LineChart
-              data={rows}
-              accessibilityLayer
-              margin={{ top: 8, right: 36, bottom: 0, left: 0 }}
-            >
-              <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
-              <XAxis
-                dataKey="day"
-                ticks={dayTicks(rows.map((r) => r.day))}
-                tickFormatter={tickDay}
-                tickLine={false}
-                stroke="var(--chart-baseline)"
-                className="text-micro"
-              />
-              <YAxis
-                domain={moneyDomain}
-                tickFormatter={axisMoney}
-                tickCount={5}
-                tickLine={false}
-                axisLine={false}
-                width={56}
-                className="text-micro"
-              />
-              <Tooltip content={tip} isAnimationActive={false} />
-              {series.map((s) => (
-                <Line
-                  key={s.key}
-                  dataKey={s.key}
-                  name={s.label}
-                  stroke={s.color}
-                  strokeWidth={s.width}
-                  strokeDasharray={s.dash}
-                  connectNulls
-                  dot={
-                    s.key === region || s.key === 'realm' || count <= 6
-                      ? endDot(count, s.color)
-                      : false
-                  }
-                  label={endLabel(count, s.label, s.color)}
-                  isAnimationActive={false}
-                />
-              ))}
-            </LineChart>
-          </ChartContainer>
+          <Chart
+            definition={definition}
+            ariaLabel={title}
+            height={CHART_HEIGHT}
+            initialWidth={CHART_INITIAL_WIDTH}
+            className="text-muted-foreground"
+            renderTooltipBody={(ctx) => tip(ctx.points[0]?.datum.day)}
+          />
         </ChartFigure>
       )}
     </StatCard>
